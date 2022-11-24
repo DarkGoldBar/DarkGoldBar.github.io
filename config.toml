@@ -1,5 +1,26 @@
-baseURL = 'https://darkgoldbar.github.io/hugo'
-languageCode = 'zh-cn'
-title = 'My New Hugo Site'
-theme = 'LoveIt'
+baseURL = "https://darkgoldbar.github.io/hugo"
+# [en, zh-cn, fr, pl, ...] determines default content language
+# [en, zh-cn, fr, pl, ...] 设置默认的语言
+defaultContentLanguage = "zh-cn"
+# 网站语言, 仅在这里 CN大写
+languageCode = "zh-CN"
+# 是否包括中日韩文字
+hasCJKLanguage = true
+# 主题
+theme = "LoveIt"
+# 网站标题
+title = "DarkGoldBar的主页"
+# 是否使用 robots.txt
+enableRobotsTXT = true
+# 是否使用 git 信息
+enableGitInfo = true
+# 是否使用 emoji 代码
+enableEmoji = true
+# 输出目录
 publishDir = 'docs'
+
+[author]
+  name = "DarkGoldBar"
+  email = "hanetama@qq.com"
+  link = "https://darkgoldbar.github.io/hugo"
+
