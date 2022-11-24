@@ -31,10 +31,12 @@ authorLink: https://darkgoldbar.github.io/hugo
 hugo new posts/first_post.md
 ```
 
-关闭github的构建功能
+开启本地预览
 ```
-touch .nojekyll
+hugo serve
 ```
+
+关闭本地预览 `ctrl + c`
 
 
 ### config.toml 设置
