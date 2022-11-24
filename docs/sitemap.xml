@@ -2,8 +2,8 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>http://example.org/</loc><lastmod>2022-11-24T14:41:20&#43;08:00</lastmod></url><url>
-            <loc>http://example.org/posts/</loc><lastmod>2022-11-24T14:41:20&#43;08:00</lastmod></url><url>
-            <loc>http://example.org/posts/usage/</loc><lastmod>2022-11-24T14:41:20&#43;08:00</lastmod></url><url>
-            <loc>http://example.org/categories/</loc></url><url>
-            <loc>http://example.org/tags/</loc></url></urlset>
+            <loc>https://darkgoldbar.github.io/hugo/</loc><lastmod>2022-11-24T14:41:20&#43;08:00</lastmod></url><url>
+            <loc>https://darkgoldbar.github.io/hugo/posts/</loc><lastmod>2022-11-24T14:41:20&#43;08:00</lastmod></url><url>
+            <loc>https://darkgoldbar.github.io/hugo/posts/usage/</loc><lastmod>2022-11-24T14:41:20&#43;08:00</lastmod></url><url>
+            <loc>https://darkgoldbar.github.io/hugo/categories/</loc></url><url>
+            <loc>https://darkgoldbar.github.io/hugo/tags/</loc></url></urlset>
