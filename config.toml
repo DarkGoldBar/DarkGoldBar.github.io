@@ -1,0 +1,5 @@
+baseURL = 'http://example.org/'
+languageCode = 'zh-cn'
+title = 'My New Hugo Site'
+theme = 'LoveIt'
+publishDir = 'docs'
