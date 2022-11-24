@@ -6,35 +6,38 @@ author: DarkGoldBar
 authorLink: https://darkgoldbar.github.io/hugo
 ---
 
-## 文档编辑语法
-[基础语法](https://hugoloveit.com/zh-cn/basic-markdown-syntax/)
-[扩展语法](https://hugoloveit.com/zh-cn/theme-documentation-content/)
-[简便语法](https://hugoloveit.com/zh-cn/theme-documentation-built-in-shortcodes/)
-[扩展简便语法](https://hugoloveit.com/zh-cn/theme-documentation-extended-shortcodes/)
+## 文档编辑
+### 语法
+- [基础语法](https://hugoloveit.com/zh-cn/basic-markdown-syntax/)
+- [扩展语法](https://hugoloveit.com/zh-cn/theme-documentation-content/)
+- [简便语法](https://hugoloveit.com/zh-cn/theme-documentation-built-in-shortcodes/)
+- [扩展简便语法](https://hugoloveit.com/zh-cn/theme-documentation-extended-shortcodes/)
 
 ### 插图
-静态图片复制到`static/images/`目录下，然后在MD中引用
+静态图片复制到`static/images/`目录下，然后在MD中引用  
+这里由于这个网页的类型是**项目主页**，域名和根目录之间多了一个`/hugo`前缀，也需要加上
 ```
-![雪山](/images/270px-梅里雪山.jpg)
+![雪山](/hugo/images/270px-梅里雪山.jpg)
 ```
-![雪山](/images/270px-梅里雪山.jpg)
+![雪山](/hugo/images/270px-梅里雪山.jpg)
 
+----------------------------------------
 
-
-## shell 命令 
+## 各种设置
+### shell 命令 
 
 创建一个新的文章
 ```
 hugo new posts/first_post.md
 ```
 
-关闭github的功能
+关闭github的构建功能
 ```
 touch .nojekyll
 ```
 
 
-## config.toml 设置
+### config.toml 设置
 
 主题设置
 ```
