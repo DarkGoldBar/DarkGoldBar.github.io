@@ -1,19 +1,16 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>All Posts - My New Hugo Site</title>
+        <title>所有文章 - DarkGoldBar的主页</title>
         <link>https://darkgoldbar.github.io/hugo/posts/</link>
-        <description>All Posts | My New Hugo Site</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 24 Nov 2022 14:41:20 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/hugo/posts/" rel="self" type="application/rss+xml" /><item>
+        <description>所有文章 | DarkGoldBar的主页</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Thu, 24 Nov 2022 14:41:20 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/hugo/posts/" rel="self" type="application/rss+xml" /><item>
     <title>使用方法记录</title>
     <link>https://darkgoldbar.github.io/hugo/posts/usage/</link>
     <pubDate>Thu, 24 Nov 2022 14:41:20 &#43;0800</pubDate>
-    <author>Author</author>
+    <author>DarkGoldBar</author>
     <guid>https://darkgoldbar.github.io/hugo/posts/usage/</guid>
-    <description><![CDATA[shell 命令 创建一个新的文章
-hugo new posts/first_post.md 关闭github的功能
-touch .nojekyll config.toml 设置 主题设置
-theme = &#39;LoveIt&#39; 更改输出文件夹为gitpage的可用目录
-publishDir = &#39;docs&#39; ]]></description>
+    <description><![CDATA[文档编辑语法 基础语法 扩展语法 简便语法 扩展简便语法 插图 静态图片复制到static/images/目录下，然后在MD中引用 ![雪山](/imag]]></description>
 </item>
 </channel>
 </rss>
