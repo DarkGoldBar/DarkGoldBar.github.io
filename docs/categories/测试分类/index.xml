@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>测试分类 - 分类 - DarkGoldBar的主页</title>
+        <link>https://darkgoldbar.github.io/hugo/categories/%E6%B5%8B%E8%AF%95%E5%88%86%E7%B1%BB/</link>
+        <description>测试分类 - 分类 - DarkGoldBar的主页</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Thu, 24 Nov 2022 14:41:20 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/hugo/categories/%E6%B5%8B%E8%AF%95%E5%88%86%E7%B1%BB/" rel="self" type="application/rss+xml" /><item>
+    <title>使用方法记录</title>
+    <link>https://darkgoldbar.github.io/hugo/posts/usage/</link>
+    <pubDate>Thu, 24 Nov 2022 14:41:20 &#43;0800</pubDate>
+    <author>DarkGoldBar</author>
+    <guid>https://darkgoldbar.github.io/hugo/posts/usage/</guid>
+    <description><![CDATA[文档编辑 语法 基础语法 扩展语法 简便语法 扩展简便语法 插图 静态图片复制到static/images/目录下，然后在MD中引用 这里由于这个网页的类型]]></description>
+</item>
+</channel>
+</rss>

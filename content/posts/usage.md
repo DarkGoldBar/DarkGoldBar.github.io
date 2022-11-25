@@ -4,6 +4,8 @@ date: 2022-11-24T14:41:20+08:00
 draft: false
 author: DarkGoldBar
 authorLink: https://darkgoldbar.github.io/hugo
+tags: ['测试']
+categories: ['测试分类']
 ---
 
 ## 文档编辑
