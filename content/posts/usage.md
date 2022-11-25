@@ -41,11 +41,6 @@ hugo serve
 
 ### config.toml 设置
 
-主题设置
-```
-theme = 'LoveIt'
-```
-
 更改输出文件夹为gitpage的可用目录
 ```
 publishDir = 'docs'

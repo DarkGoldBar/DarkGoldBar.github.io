@@ -4,12 +4,12 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>使用方法记录 - DarkGoldBar的主页</title><meta name="Description" content="This is my cool site"><meta property="og:title" content="使用方法记录" />
+        <title>使用方法记录 - DarkGoldBar的主页</title><meta name="Description" content="DarkGoldBar的主页"><meta property="og:title" content="使用方法记录" />
 <meta property="og:description" content="文档编辑 语法 基础语法 扩展语法 简便语法 扩展简便语法 插图 静态图片复制到static/images/目录下，然后在MD中引用 这里由于这个网页的类型" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://darkgoldbar.github.io/hugo/posts/usage/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-11-24T14:41:20+08:00" />
-<meta property="article:modified_time" content="2022-11-24T16:11:26+08:00" /><meta property="og:site_name" content="My cool site" />
+<meta property="article:modified_time" content="2022-11-24T21:31:45+08:00" /><meta property="og:site_name" content="DarkGoldBar的主页" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用方法记录"/>
@@ -28,8 +28,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/darkgoldbar.github.io\/hugo\/posts\/usage\/"
-        },"genre": "posts","wordcount":  203 ,
-        "url": "https:\/\/darkgoldbar.github.io\/hugo\/posts\/usage\/","datePublished": "2022-11-24T14:41:20+08:00","dateModified": "2022-11-24T16:11:26+08:00","publisher": {
+        },"genre": "posts","wordcount":  196 ,
+        "url": "https:\/\/darkgoldbar.github.io\/hugo\/posts\/usage\/","datePublished": "2022-11-24T14:41:20+08:00","dateModified": "2022-11-24T21:31:45+08:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -42,10 +42,10 @@
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/hugo/" title="DarkGoldBar的主页">My cool site</a>
+            <a href="/hugo/" title="DarkGoldBar的主页"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+            <div class="menu-inner"><a class="menu-item" href="/hugo/posts/"> Posts </a><a class="menu-item" href="/hugo/tags/"> Tags </a><a class="menu-item" href="/hugo/categories/"> Categories </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
                     <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
                 </a></div>
         </div>
@@ -54,13 +54,13 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/hugo/" title="DarkGoldBar的主页">My cool site</a>
+                <a href="/hugo/" title="DarkGoldBar的主页"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
             </div>
         </div>
-        <div class="menu" id="menu-mobile"><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/hugo/posts/" title="">Posts</a><a class="menu-item" href="/hugo/tags/" title="">Tags</a><a class="menu-item" href="/hugo/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a></div>
     </div>
@@ -70,7 +70,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">使用方法记录</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://darkgoldbar.github.io/hugo" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>DarkGoldBar</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-24">2022-11-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 203 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-24">2022-11-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 196 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 1 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -122,15 +122,14 @@
 <pre tabindex="0"><code>hugo serve
 </code></pre><p>关闭本地预览 <code>ctrl + c</code></p>
 <h3 id="configtoml-设置">config.toml 设置</h3>
-<p>主题设置</p>
-<pre tabindex="0"><code>theme = &#39;LoveIt&#39;
-</code></pre><p>更改输出文件夹为gitpage的可用目录</p>
+<p>更改输出文件夹为gitpage的可用目录</p>
 <pre tabindex="0"><code>publishDir = &#39;docs&#39;
 </code></pre></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2022-11-24</span>
+                <span>更新于 2022-11-24&nbsp;<a class="git-hash" href="https://github.com/DarkGoldBar/hugo/commit/876b11f85112e536e9e78e250474d46afd1a9b58" target="_blank" title="commit by hqlee(hqlee@hqlee529.localdomain) 876b11f85112e536e9e78e250474d46afd1a9b58: update">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>876b11f</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"></div>
@@ -161,5 +160,5 @@
             </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{}};</script><script type="text/javascript" src="/hugo/js/theme.min.js"></script></body>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"data":{"id-1":"DarkGoldBar","id-2":"DarkGoldBar"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/hugo/js/theme.min.js"></script></body>
 </html>
