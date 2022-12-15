@@ -3,7 +3,7 @@ title: "ffmpeg使用笔记"
 date: 2022-11-15T15:30:00+08:00
 draft: false
 author: DarkGoldBar
-authorLink: https://darkgoldbar.github.io/hugo
+authorLink: https://darkgoldbar.github.io
 tags: ['ffmpeg']
 categories: ['代码笔记']
 enableEmoji: false

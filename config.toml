@@ -1,4 +1,4 @@
-baseURL = "https://darkgoldbar.github.io/hugo"
+baseURL = "https://darkgoldbar.github.io"
 
 # [en, zh-cn, fr, pl, ...] determines default content language
 # [en, zh-cn, fr, pl, ...] 设置默认的语言
@@ -32,7 +32,7 @@ publishDir = 'docs'
 [author]
   name = "DarkGoldBar"
   email = "hanetama@qq.com"
-  link = "https://darkgoldbar.github.io/hugo"
+  link = "https://darkgoldbar.github.io"
 
 # 菜单配置
 [menu]
@@ -70,7 +70,7 @@ publishDir = 'docs'
   defaultTheme = "auto"
 
   # 公共 git 仓库路径，仅在 enableGitInfo 设为 true 时有效
-  gitRepo = "https://github.com/DarkGoldBar/hugo"
+  gitRepo = "https://github.com/DarkGoldBar/DarkGoldBar.github.io"
 
   # 哪种哈希函数用来 SRI, 为空时表示不使用 SRI ["sha256", "sha384", "sha512", "md5"]
   fingerprint = ""

@@ -1,25 +1,25 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>DarkGoldBar的主页</title>
-        <link>https://darkgoldbar.github.io/hugo/</link>
+        <link>https://darkgoldbar.github.io/</link>
         <description>DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
             <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Thu, 24 Nov 2022 14:41:20 &#43;0800</lastBuildDate>
-            <atom:link href="https://darkgoldbar.github.io/hugo/index.xml" rel="self" type="application/rss+xml" />
+            <atom:link href="https://darkgoldbar.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
     <title>使用方法记录</title>
-    <link>https://darkgoldbar.github.io/hugo/posts/usage/</link>
+    <link>https://darkgoldbar.github.io/posts/usage/</link>
     <pubDate>Thu, 24 Nov 2022 14:41:20 &#43;0800</pubDate>
     <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/hugo/posts/usage/</guid>
-    <description><![CDATA[文档编辑 语法 基础语法 扩展语法 简便语法 扩展简便语法 插图 静态图片复制到static/images/目录下，然后在MD中引用 这里由于这个网页的类型]]></description>
+    <guid>https://darkgoldbar.github.io/posts/usage/</guid>
+    <description><![CDATA[文档编辑 语法 基础语法 扩展语法 简便语法 扩展简便语法 插图 静态图片复制到static/images/目录下，然后在MD中引用 ![雪山](/imag]]></description>
 </item>
 <item>
     <title>ffmpeg使用笔记</title>
-    <link>https://darkgoldbar.github.io/hugo/posts/ffmpeg/</link>
+    <link>https://darkgoldbar.github.io/posts/ffmpeg/</link>
     <pubDate>Tue, 15 Nov 2022 15:30:00 &#43;0800</pubDate>
     <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/hugo/posts/ffmpeg/</guid>
+    <guid>https://darkgoldbar.github.io/posts/ffmpeg/</guid>
     <description><![CDATA[ffmpeg ffmpeg官网下载 基础格式转换 ffmpeg -i video.avi video.mp4 图片转视频 ffmpeg -r 10 -i image_%4d.jpg -vf eq=brightness=0.06:saturation=1 video.mp4 -y 视频转gif ffmpeg -ss 00:00:01.00 -t 10 -i baiweibing.mp4 \ -vf &#34;fps=16,scale=160:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=32:reserve_transparent=0[p];[s1][p]paletteuse&#34; \ output.gif 参数 -i : 输入文件 image_%4d.jpg 表示 image_0000.jpg -&gt; image_9999.jpg -r : 帧]]></description>
 </item>
 </channel>
