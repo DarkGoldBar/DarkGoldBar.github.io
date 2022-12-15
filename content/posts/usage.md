@@ -3,7 +3,7 @@ title: "使用方法记录"
 date: 2022-11-24T14:41:20+08:00
 draft: false
 author: DarkGoldBar
-authorLink: https://darkgoldbar.github.io/hugo
+authorLink: https://darkgoldbar.github.io
 tags: ['测试']
 categories: ['测试分类']
 ---
@@ -17,11 +17,10 @@ categories: ['测试分类']
 
 ### 插图
 静态图片复制到`static/images/`目录下，然后在MD中引用  
-这里由于这个网页的类型是**项目主页**，域名和根目录之间多了一个`/hugo`前缀，也需要加上
 ```
-![雪山](/hugo/images/270px-梅里雪山.jpg)
+![雪山](/images/270px-梅里雪山.jpg)
 ```
-![雪山](/hugo/images/270px-梅里雪山.jpg)
+![雪山](/images/270px-梅里雪山.jpg)
 
 ----------------------------------------
 
