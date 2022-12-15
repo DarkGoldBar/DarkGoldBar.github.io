@@ -44,5 +44,5 @@ output.gif
 ### 滤镜
 - "setpts=2.0*PTS" : 调整视频速率
 - "fps=16" : fps
-- "scale=160:-1" : 缩放
-- "flags=...paletteuse" : gif调色盘, gif加上就对了
+- "scale=160:-1:flags=lanczos" : 缩放
+- "split...paletteuse" : gif调色盘, gif加上就对了

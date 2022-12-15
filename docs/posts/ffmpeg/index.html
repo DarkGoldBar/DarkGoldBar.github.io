@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://darkgoldbar.github.io/posts/ffmpeg/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-11-15T15:30:00+08:00" />
-<meta property="article:modified_time" content="2022-11-25T16:01:21+08:00" /><meta property="og:site_name" content="DarkGoldBar的主页" />
+<meta property="article:modified_time" content="2022-12-15T10:42:43+08:00" /><meta property="og:site_name" content="DarkGoldBar的主页" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="ffmpeg使用笔记"/>
@@ -28,8 +28,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/darkgoldbar.github.io\/posts\/ffmpeg\/"
-        },"genre": "posts","keywords": "ffmpeg","wordcount":  139 ,
-        "url": "https:\/\/darkgoldbar.github.io\/posts\/ffmpeg\/","datePublished": "2022-11-15T15:30:00+08:00","dateModified": "2022-11-25T16:01:21+08:00","publisher": {
+        },"genre": "posts","keywords": "ffmpeg","wordcount":  175 ,
+        "url": "https:\/\/darkgoldbar.github.io\/posts\/ffmpeg\/","datePublished": "2022-11-15T15:30:00+08:00","dateModified": "2022-12-15T10:42:43+08:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -70,7 +70,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">ffmpeg使用笔记</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://darkgoldbar.github.io" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>DarkGoldBar</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>代码笔记</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-15">2022-11-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 139 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-15">2022-11-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 175 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 1 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -122,15 +122,15 @@ output.gif
 <ul>
 <li>&ldquo;setpts=2.0*PTS&rdquo; : 调整视频速率</li>
 <li>&ldquo;fps=16&rdquo; : fps</li>
-<li>&ldquo;scale=160:-1&rdquo; : 缩放</li>
-<li>&ldquo;flags=&hellip;paletteuse&rdquo; : gif调色盘, gif加上就对了</li>
+<li>&ldquo;scale=160👎flags=lanczos&rdquo; : 缩放</li>
+<li>&ldquo;split&hellip;paletteuse&rdquo; : gif调色盘, gif加上就对了</li>
 </ul>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2022-11-25&nbsp;<a class="git-hash" href="https://github.com/DarkGoldBar/DarkGoldBar.github.io/commit/53138c36fca7c9e32c9b8c9c12dbee6b6a4cedd6" target="_blank" title="commit by bochen.li(bochen.li@xtalpi.com) 53138c36fca7c9e32c9b8c9c12dbee6b6a4cedd6: update">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>53138c3</a></span>
+                <span>更新于 2022-12-15&nbsp;<a class="git-hash" href="https://github.com/DarkGoldBar/DarkGoldBar.github.io/commit/edac21f65636eb3f0c65df866105cf3129aa92fe" target="_blank" title="commit by bochen.li(bochen.li@xtalpi.com) edac21f65636eb3f0c65df866105cf3129aa92fe: build">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>edac21f</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"></div>
