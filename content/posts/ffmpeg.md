@@ -4,7 +4,7 @@ date: 2022-11-15T15:30:00+08:00
 draft: false
 author: DarkGoldBar
 authorLink: https://darkgoldbar.github.io
-tags: ['ffmpeg']
+tags: ['shell']
 categories: ['代码笔记']
 enableEmoji: false
 ---
