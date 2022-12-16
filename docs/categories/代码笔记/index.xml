@@ -4,7 +4,15 @@
         <link>https://darkgoldbar.github.io/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/</link>
         <description>代码笔记 - 分类 - DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
-            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Tue, 15 Nov 2022 15:30:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Fri, 16 Dec 2022 09:59:51 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/" rel="self" type="application/rss+xml" /><item>
+    <title>飞书去水印</title>
+    <link>https://darkgoldbar.github.io/posts/lark_water_mark/</link>
+    <pubDate>Fri, 16 Dec 2022 09:59:51 &#43;0800</pubDate>
+    <author>DarkGoldBar</author>
+    <guid>https://darkgoldbar.github.io/posts/lark_water_mark/</guid>
+    <description><![CDATA[直接上代码 regex = /data\:image\/svg\+xml;base64,[a-zA-Z0-9+\=]+/g; body = document.getElementsByTagName(&#39;body&#39;)[0]; body.innerHTML = body.innerHTML.replace(regex, &#39;AAA&#39;); 去掉之后，网页会卡住在一个白色屏幕，失去所有交互。 但是如果提前打开准备截图的聊天界面，往下拉还是可以看到已经加]]></description>
+</item>
+<item>
     <title>ffmpeg使用笔记</title>
     <link>https://darkgoldbar.github.io/posts/ffmpeg/</link>
     <pubDate>Tue, 15 Nov 2022 15:30:00 &#43;0800</pubDate>
