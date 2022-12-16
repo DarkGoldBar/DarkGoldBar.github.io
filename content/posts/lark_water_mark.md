@@ -1,7 +1,7 @@
 ---
 title: "飞书去水印"
 date: 2022-12-16T09:59:51+08:00
-draft: true
+draft: false
 author: DarkGoldBar
 authorLink: https://darkgoldbar.github.io
 tags: ['javascript']
