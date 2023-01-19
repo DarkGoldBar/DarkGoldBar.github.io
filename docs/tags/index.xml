@@ -4,7 +4,15 @@
         <link>https://darkgoldbar.github.io/tags/</link>
         <description>Tags - 标签 - DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
-            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Fri, 16 Dec 2022 09:59:51 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Wed, 18 Jan 2023 13:54:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>Python</title>
+    <link>https://darkgoldbar.github.io/tags/python/</link>
+    <pubDate>Wed, 18 Jan 2023 13:54:00 &#43;0800</pubDate>
+    <author>DarkGoldBar</author>
+    <guid>https://darkgoldbar.github.io/tags/python/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>javascript</title>
     <link>https://darkgoldbar.github.io/tags/javascript/</link>
     <pubDate>Fri, 16 Dec 2022 09:59:51 &#43;0800</pubDate>

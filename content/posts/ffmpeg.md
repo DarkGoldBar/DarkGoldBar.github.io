@@ -16,18 +16,14 @@ enableEmoji: false
 
 -------------------------------------
 
-### 基础格式转换
+### 常用命令
+
 ```
+# 基础格式转换
 ffmpeg -i video.avi video.mp4
-```
-
-### 图片转视频
-```
+# 图片转视频
 ffmpeg -r 10 -i image_%4d.jpg -vf eq=brightness=0.06:saturation=1 video.mp4 -y
-```
-
-### 视频转gif
-```
+# 视频转gif
 ffmpeg -ss 00:00:01.00 -t 10 -i baiweibing.mp4 \
 -vf "fps=16,scale=160{?:}-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=32:reserve_transparent=0[p];[s1][p]paletteuse" \
 output.gif
