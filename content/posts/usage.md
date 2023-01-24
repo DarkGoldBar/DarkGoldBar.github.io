@@ -1,6 +1,6 @@
 ---
 title: "使用方法记录"
-date: 2022-11-24T14:41:20+08:00
+date: 2022-10-24T14:41:20+08:00
 draft: false
 author: DarkGoldBar
 authorLink: https://darkgoldbar.github.io

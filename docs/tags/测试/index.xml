@@ -4,10 +4,10 @@
         <link>https://darkgoldbar.github.io/tags/%E6%B5%8B%E8%AF%95/</link>
         <description>测试 - 标签 - DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
-            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Thu, 24 Nov 2022 14:41:20 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/tags/%E6%B5%8B%E8%AF%95/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Mon, 24 Oct 2022 14:41:20 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/tags/%E6%B5%8B%E8%AF%95/" rel="self" type="application/rss+xml" /><item>
     <title>使用方法记录</title>
     <link>https://darkgoldbar.github.io/posts/usage/</link>
-    <pubDate>Thu, 24 Nov 2022 14:41:20 &#43;0800</pubDate>
+    <pubDate>Mon, 24 Oct 2022 14:41:20 &#43;0800</pubDate>
     <author>DarkGoldBar</author>
     <guid>https://darkgoldbar.github.io/posts/usage/</guid>
     <description><![CDATA[文档编辑 语法 基础语法 扩展语法 简便语法 扩展简便语法 插图 静态图片复制到static/images/目录下，然后在MD中引用 ![雪山](/imag]]></description>
