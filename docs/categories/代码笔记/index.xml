@@ -6,34 +6,34 @@
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
             <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Wed, 18 Jan 2023 13:54:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/" rel="self" type="application/rss+xml" /><item>
     <title>python爬虫代码笔记</title>
-    <link>https://darkgoldbar.github.io/posts/learn-note-python-spider/</link>
+    <link>https://darkgoldbar.github.io/posts/code/learn-note-python-spider/</link>
     <pubDate>Wed, 18 Jan 2023 13:54:00 &#43;0800</pubDate>
     <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/posts/learn-note-python-spider/</guid>
+    <guid>https://darkgoldbar.github.io/posts/code/learn-note-python-spider/</guid>
     <description><![CDATA[使用环境 import requests # Standard library from pandas import DataFrame from bs4 import BeautifulSoup # pip install beautifulsoup4 代理和地址 这里是用的本地http服务器代理，爬nist的数据 可以用v2ray把其他类型的代理变成一]]></description>
 </item>
 <item>
     <title>去除网页版飞书水印</title>
-    <link>https://darkgoldbar.github.io/posts/remove-lark-watermark-on-browser/</link>
+    <link>https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/</link>
     <pubDate>Fri, 16 Dec 2022 09:59:51 &#43;0800</pubDate>
     <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/posts/remove-lark-watermark-on-browser/</guid>
+    <guid>https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/</guid>
     <description><![CDATA[F12调控制台，把JS代码粘贴进去运行 去掉水印之后，网页会卡住在一个白色屏幕，失去所有交互。 但是如果提前打开准备截图的聊天界面，往下拉还是可]]></description>
 </item>
 <item>
     <title>ffmpeg代码笔记</title>
-    <link>https://darkgoldbar.github.io/posts/learn-note-ffmpeg/</link>
+    <link>https://darkgoldbar.github.io/posts/code/learn-note-ffmpeg/</link>
     <pubDate>Tue, 15 Nov 2022 15:30:00 &#43;0800</pubDate>
     <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/posts/learn-note-ffmpeg/</guid>
+    <guid>https://darkgoldbar.github.io/posts/code/learn-note-ffmpeg/</guid>
     <description><![CDATA[ffmpeg ffmpeg官网下载 常用命令 # 基础格式转换 ffmpeg -i video.avi video.mp4 # 图片转视频 ffmpeg -r 10 -i image_%4d.jpg -vf eq=brightness=0.06:saturation=1 video.mp4 -y # 视频转gif ffmpeg -ss 00:00:01.00 -t 10 -i baiweibing.mp4 \ -vf &#34;fps=16,scale=160:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=32:reserve_transparent=0[p];[s1][p]paletteuse&#34; \ output.gif 参数 -i : 输入文件 image_%4d.jpg 表]]></description>
 </item>
 <item>
     <title>Hugo-LoveIt代码笔记</title>
-    <link>https://darkgoldbar.github.io/posts/learn-note-hugo-loveit/</link>
+    <link>https://darkgoldbar.github.io/posts/code/learn-note-hugo-loveit/</link>
     <pubDate>Mon, 24 Oct 2022 14:41:20 &#43;0800</pubDate>
     <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/posts/learn-note-hugo-loveit/</guid>
+    <guid>https://darkgoldbar.github.io/posts/code/learn-note-hugo-loveit/</guid>
     <description><![CDATA[文档编辑 语法 基础语法 扩展语法 简便语法 扩展简便语法 插图 静态图片复制到static/images/目录下，然后在MD中引用 ![雪山](/imag]]></description>
 </item>
 </channel>
