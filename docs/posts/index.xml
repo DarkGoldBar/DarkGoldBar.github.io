@@ -4,7 +4,23 @@
         <link>https://darkgoldbar.github.io/posts/</link>
         <description>所有文章 | DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
-            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Thu, 26 Jan 2023 12:20:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Sat, 28 Jan 2023 18:07:41 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>二维码生成器</title>
+    <link>https://darkgoldbar.github.io/posts/tools/qrcode/</link>
+    <pubDate>Sat, 28 Jan 2023 18:07:41 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://darkgoldbar.github.io/posts/tools/qrcode/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>建立新的Hugo工作环境</title>
+    <link>https://darkgoldbar.github.io/posts/code/setting-up-new-working-env/</link>
+    <pubDate>Fri, 27 Jan 2023 22:19:02 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://darkgoldbar.github.io/posts/code/setting-up-new-working-env/</guid>
+    <description><![CDATA[安装 VSCode 官网下载安装 https://code.visualstudio.com/Download 安装git 打开VSCode, 侧栏里打开git面板, 没有找到git的时候, 会提示你下载安装git, 跟随链接安装即可 (此处应]]></description>
+</item>
+<item>
     <title>转载陕西省地方志资料库中有刘建侯的部分文章</title>
     <link>https://darkgoldbar.github.io/posts/ljh/ljh016/</link>
     <pubDate>Thu, 26 Jan 2023 12:20:00 &#43;0800</pubDate>
@@ -71,22 +87,6 @@
     <author>DarkGoldBar</author>
     <guid>https://darkgoldbar.github.io/posts/ljh/ljh008/</guid>
     <description><![CDATA[上世纪三十年代末，关中平原在国民党的统治之下，国民党地方政府严酷的苛捐杂税把老百姓压迫得几乎家家破产，刘建侯的共产党员身份是秘密的，公开身份]]></description>
-</item>
-<item>
-    <title>一张珍贵的老照片--民国二十七年建侯公全家合影</title>
-    <link>https://darkgoldbar.github.io/posts/ljh/ljh010/</link>
-    <pubDate>Wed, 25 Jan 2023 10:30:00 &#43;0800</pubDate>
-    <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/posts/ljh/ljh010/</guid>
-    <description><![CDATA[这张珍贵的老照片的拍摄时间为，民国二十七年二月十五日，即1938年2月15日。最中间正襟危坐者，刘公建侯，时年四十三岁。当时建侯公长子刘申阁]]></description>
-</item>
-<item>
-    <title>刘建侯二子名字的来由</title>
-    <link>https://darkgoldbar.github.io/posts/ljh/ljh007/</link>
-    <pubDate>Wed, 25 Jan 2023 10:00:00 &#43;0800</pubDate>
-    <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/posts/ljh/ljh007/</guid>
-    <description><![CDATA[山之南，为阳；山之北，为阴。所谓“华阴”，即华山之北。 水之北，为阳；水这南，为阴。所谓“渭阳”，即渭河之北。 上世纪二三十年代，对于当时的渭南]]></description>
 </item>
 </channel>
 </rss>

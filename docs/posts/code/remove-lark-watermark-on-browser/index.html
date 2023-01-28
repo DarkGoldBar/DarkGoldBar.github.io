@@ -9,7 +9,8 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-12-16T09:59:51+08:00" />
-<meta property="article:modified_time" content="2022-12-16T09:59:51+08:00" /><meta property="og:site_name" content="DarkGoldBar的主页" />
+<meta property="article:modified_time" content="2023-01-28T11:52:55+08:00" /><meta property="og:site_name" content="DarkGoldBar的主页" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="去除网页版飞书水印"/>
 <meta name="twitter:description" content="F12调控制台，把JS代码粘贴进去运行 去掉水印之后，网页会卡住在一个白色屏幕，失去所有交互。 但是如果提前打开准备截图的聊天界面，往下拉还是可"/>
@@ -28,7 +29,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/darkgoldbar.github.io\/posts\/code\/remove-lark-watermark-on-browser\/"
         },"genre": "posts","keywords": "javascript","wordcount":  93 ,
-        "url": "https:\/\/darkgoldbar.github.io\/posts\/code\/remove-lark-watermark-on-browser\/","datePublished": "2022-12-16T09:59:51+08:00","dateModified": "2022-12-16T09:59:51+08:00","publisher": {
+        "url": "https:\/\/darkgoldbar.github.io\/posts\/code\/remove-lark-watermark-on-browser\/","datePublished": "2022-12-16T09:59:51+08:00","dateModified": "2023-01-28T11:52:55+08:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -44,8 +45,11 @@
             <a href="/" title="DarkGoldBar的主页"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
                     <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/code/remove-lark-watermark-on-browser/" selected>简体中文</option></select>
                 </a></div>
         </div>
     </div>
@@ -59,16 +63,19 @@
                 <span></span><span></span><span></span>
             </div>
         </div>
-        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/code/remove-lark-watermark-on-browser/" selected>简体中文</option></select>
+                </a></div>
     </div>
 </header><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">目录</h2>
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">去除网页版飞书水印</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="https://darkgoldbar.github.io" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>DarkGoldBar</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>代码笔记</a></span></div>
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/DarkGoldBar" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>DarkGoldBar</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>代码笔记</a></span></div>
             <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-12-16">2022-12-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 93 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 1 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -87,7 +94,8 @@ body.innerHTML = body.innerHTML.replace(regex, &#39;AAA&#39;);
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2022-12-16</span>
+                <span>更新于 2023-01-28&nbsp;<a class="git-hash" href="https://github.com/DarkGoldBar/DarkGoldBar.github.io/commit/e68a2a482161af7f56324235bdbdd8df4ec385f3" target="_blank" title="commit by bochen.li(bochen.li@xtalpi.com) e68a2a482161af7f56324235bdbdd8df4ec385f3: 更新网站配置">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>e68a2a4</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"></div>
@@ -109,8 +117,8 @@ body.innerHTML = body.innerHTML.replace(regex, &#39;AAA&#39;);
 </div>
 </article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.110.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://darkgoldbar.github.io" target="_blank">DarkGoldBar</a></span></div>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.106.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/DarkGoldBar" target="_blank">DarkGoldBar</a></span></div>
         </div>
     </footer></div>
 

@@ -1,0 +1,10 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>DarkGoldBar的主页</title>
+        <link>https://darkgoldbar.github.io/en/</link>
+        <description>DarkGoldBar的主页</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster>
+            <atom:link href="https://darkgoldbar.github.io/en/index.xml" rel="self" type="application/rss+xml" />
+        </channel>
+</rss>
