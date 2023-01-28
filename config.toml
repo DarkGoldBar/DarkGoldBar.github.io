@@ -1,38 +1,32 @@
 baseURL = "https://darkgoldbar.github.io"
+publishDir = 'docs'
 
-# [en, zh-cn, fr, pl, ...] determines default content language
-# [en, zh-cn, fr, pl, ...] 设置默认的语言
+# 设置默认的语言 ["en", "zh-cn", "fr", "pl", ...]
 defaultContentLanguage = "zh-cn"
-
-# 网站语言, 仅在这里 CN大写
+# 网站语言, 仅在这里 CN 大写 ["en", "zh-CN", "fr", "pl", ...]
 languageCode = "zh-CN"
-
+# 语言名称 ["English", "简体中文", "Français", "Polski", ...]
+languageName = "简体中文"
 # 是否包括中日韩文字
 hasCJKLanguage = true
 
 # 主题
 theme = "LoveIt"
-
 # 网站标题
 title = "DarkGoldBar的主页"
 
 # 是否使用 robots.txt
 enableRobotsTXT = true
-
 # 是否使用 git 信息
 enableGitInfo = true
-
 # 是否使用 emoji 代码
-enableEmoji = true
-
-# 输出目录
-publishDir = 'docs'
+enableEmoji = false
 
 # 作者配置
 [author]
   name = "DarkGoldBar"
   email = "hanetama@qq.com"
-  link = "https://darkgoldbar.github.io"
+  link = "https://github.com/DarkGoldBar"
 
 # 菜单配置
 [menu]
@@ -64,6 +58,65 @@ publishDir = 'docs'
     url = "/categories/"
     title = ""
 
+[languages]
+  [languages.en]
+    weight = 1
+    languageCode = "en"
+    languageName = "English"
+    [[languages.en.menu.main]]
+      weight = 1
+      identifier = "posts"
+      pre = ""
+      post = ""
+      name = "Posts"
+      url = "/posts/"
+      title = ""
+    [[languages.en.menu.main]]
+      weight = 2
+      identifier = "tags"
+      pre = ""
+      post = ""
+      name = "Tags"
+      url = "/tags/"
+      title = ""
+    [[languages.en.menu.main]]
+      weight = 3
+      identifier = "categories"
+      pre = ""
+      post = ""
+      name = "Categories"
+      url = "/categories/"
+      title = ""
+
+  [languages.zh-cn]
+    weight = 2
+    languageCode = "zh-CN"
+    languageName = "简体中文"
+    hasCJKLanguage = true
+    [[languages.zh-cn.menu.main]]
+      weight = 1
+      identifier = "posts"
+      pre = ""
+      post = ""
+      name = "文章"
+      url = "/posts/"
+      title = ""
+    [[languages.zh-cn.menu.main]]
+      weight = 2
+      identifier = "tags"
+      pre = ""
+      post = ""
+      name = "标签"
+      url = "/tags/"
+      title = ""
+    [[languages.zh-cn.menu.main]]
+      weight = 3
+      identifier = "categories"
+      pre = ""
+      post = ""
+      name = "分类"
+      url = "/categories/"
+      title = ""
 
 [params]
   # 网站默认主题 ["auto", "light", "dark"]

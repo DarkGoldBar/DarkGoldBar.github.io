@@ -1,12 +1,17 @@
 ---
 title: "去除网页版飞书水印"
+subtitle: ""
 date: 2022-12-16T09:59:51+08:00
+lastmod: 2023-01-28T11:20:00+08:00
 draft: false
-author: DarkGoldBar
-authorLink: https://darkgoldbar.github.io
+author: ""
+authorLink: ""
+description: ""
+license: ""
+images: []
+
 tags: ['javascript']
 categories: ['代码笔记']
-enableEmoji: false
 ---
 
 F12调控制台，把JS代码粘贴进去运行
