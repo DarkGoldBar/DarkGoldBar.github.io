@@ -4,7 +4,15 @@
         <link>https://darkgoldbar.github.io/posts/</link>
         <description>所有文章 | DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
-            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Fri, 27 Jan 2023 22:19:02 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Sat, 28 Jan 2023 18:07:41 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>二维码生成器</title>
+    <link>https://darkgoldbar.github.io/posts/tools/qrcode/</link>
+    <pubDate>Sat, 28 Jan 2023 18:07:41 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://darkgoldbar.github.io/posts/tools/qrcode/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>建立新的Hugo工作环境</title>
     <link>https://darkgoldbar.github.io/posts/code/setting-up-new-working-env/</link>
     <pubDate>Fri, 27 Jan 2023 22:19:02 &#43;0800</pubDate>
@@ -75,14 +83,6 @@
     <author>DarkGoldBar</author>
     <guid>https://darkgoldbar.github.io/posts/ljh/ljh008/</guid>
     <description><![CDATA[上世纪三十年代末，关中平原在国民党的统治之下，国民党地方政府严酷的苛捐杂税把老百姓压迫得几乎家家破产，刘建侯的共产党员身份是秘密的，公开身份]]></description>
-</item>
-<item>
-    <title>一张珍贵的老照片--民国二十七年建侯公全家合影</title>
-    <link>https://darkgoldbar.github.io/posts/ljh/ljh010/</link>
-    <pubDate>Wed, 25 Jan 2023 10:30:00 &#43;0800</pubDate>
-    <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/posts/ljh/ljh010/</guid>
-    <description><![CDATA[这张珍贵的老照片的拍摄时间为，民国二十七年二月十五日，即1938年2月15日。最中间正襟危坐者，刘公建侯，时年四十三岁。当时建侯公长子刘申阁]]></description>
 </item>
 </channel>
 </rss>
