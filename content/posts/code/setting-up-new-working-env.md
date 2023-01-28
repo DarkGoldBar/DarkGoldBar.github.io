@@ -1,30 +1,35 @@
 ---
 title: "建立新的Hugo工作环境"
+subtitle: ""
 date: 2023-01-27T22:19:02+08:00
-draft: true
-author: DarkGoldBar
-authorLink: https://darkgoldbar.github.io
+lastmod: 2023-01-28T11:30:00+08:00
+draft: false
+author: ""
+authorLink: ""
+description: ""
+license: ""
+images: []
+
 tags: ['hugo']
 categories: ['代码笔记']
 ---
 
 ## 安装 VSCode
-官网下载安装
-
+官网下载安装  
 https://code.visualstudio.com/Download 
 
 ## 安装git
 打开VSCode, 侧栏里打开git面板, 没有找到git的时候, 会提示你下载安装git, 跟随链接安装即可
+(此处应有图)
 
 ## 设置以ssh方式操作代码仓库
-在VSCode里点新建终端
-
-新建终端我这里是powershell, 手动切换到git bash
+在VSCode里点新建终端  
+新建终端我这里是powershell, 手动切换到git bash  
+(此处应有图)
 
 ### 设置git用户
-第一次使用git需要先设置用户名和邮箱地址
-
-这里填写自己的名字和邮箱, 会记录在创建的提交里, 可以任意填写, 身份认证以后面的ssh密钥为准
+第一次使用git需要先设置用户名和邮箱地址  
+这里填写自己的名字和邮箱, 会记录在创建的提交里, 可以任意填写, 身份认证以后面的ssh密钥为准  
 ```
 git config --global user.name "DarkGoldBar"
 git config --global user.email username@domain.com
