@@ -1,37 +1,45 @@
 ---
 title: "python爬虫代码笔记"
+subtitle: ""
 date: 2023-01-18T13:54:00+08:00
+lastmod: 2023-01-28T11:20:00+08:00
 draft: false
-author: DarkGoldBar
-authorLink: https://darkgoldbar.github.io
+author: ""
+authorLink: ""
+description: ""
+license: ""
+images: []
+
 tags: ['Python']
 categories: ['代码笔记']
-enableEmoji: false
 ---
 
-### 使用环境
+### import环境
 ```
-import requests  # Standard library
+import requests
 from pandas import DataFrame  
 from bs4 import BeautifulSoup  # pip install beautifulsoup4
 ```
 
-### 代理和地址
+### 获取数据
+这里是用的本地http服务器代理，爬nist的数据  
+可以用v2ray把其他类型的代理变成一个本地http代理  
 
-这里是用的本地http服务器代理，爬nist的数据
-可以用v2ray把其他类型的代理变成一个本地http代理
+`requests.get` 获取网页  
+`proxies` 参数指定代理  
+`timeout` 参数指定超时时间，不设超时容易出现卡死  
+
 ```
 proxies = {
    'http': '172.19.0.11:8118',
    'https': '172.19.0.11:8118',
 }
 url = 'https://srdata.nist.gov/solubility/sys_category.aspx'
-```
-
-### 获取数据和解析
-
-```
 response = requests.get(url, proxies=proxies, timeout=10)
+```
+
+### 解析
+```
 soup = BeautifulSoup(response.content)
 
 ele = soup.find("select", {"id": "MainContentPlaceHolder_DDL_Sys"})
@@ -46,10 +54,6 @@ index = DataFrame({'value': value_list, 'name': name_list})
 ```
 
 ### 常用方法和参数
-
-调用 `requests.get` 获取网页  
-`proxies` 参数指定代理  
-`timeout` 参数指定超时时间，不设超时容易出现卡死  
 
 
 |BS4查询方法|功能|
