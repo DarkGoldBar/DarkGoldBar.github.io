@@ -1,5 +1,5 @@
 ---
-title: "ffmpeg使用笔记"
+title: "ffmpeg代码笔记"
 date: 2022-11-15T15:30:00+08:00
 draft: false
 author: DarkGoldBar
