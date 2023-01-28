@@ -5,11 +5,11 @@
         <description>javascript - 标签 - DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
             <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Fri, 16 Dec 2022 09:59:51 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/tags/javascript/" rel="self" type="application/rss+xml" /><item>
-    <title>飞书去水印</title>
-    <link>https://darkgoldbar.github.io/posts/lark_water_mark/</link>
+    <title>去除网页版飞书水印</title>
+    <link>https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/</link>
     <pubDate>Fri, 16 Dec 2022 09:59:51 &#43;0800</pubDate>
     <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/posts/lark_water_mark/</guid>
+    <guid>https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/</guid>
     <description><![CDATA[F12调控制台，把JS代码粘贴进去运行 去掉水印之后，网页会卡住在一个白色屏幕，失去所有交互。 但是如果提前打开准备截图的聊天界面，往下拉还是可]]></description>
 </item>
 </channel>

@@ -5,11 +5,11 @@
         <description>Python - 标签 - DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
             <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Wed, 18 Jan 2023 13:54:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/tags/python/" rel="self" type="application/rss+xml" /><item>
-    <title>python 爬虫笔记</title>
-    <link>https://darkgoldbar.github.io/posts/python-spider/</link>
+    <title>python爬虫代码笔记</title>
+    <link>https://darkgoldbar.github.io/posts/code/learn-note-python-spider/</link>
     <pubDate>Wed, 18 Jan 2023 13:54:00 &#43;0800</pubDate>
     <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/posts/python-spider/</guid>
+    <guid>https://darkgoldbar.github.io/posts/code/learn-note-python-spider/</guid>
     <description><![CDATA[使用环境 import requests # Standard library from pandas import DataFrame from bs4 import BeautifulSoup # pip install beautifulsoup4 代理和地址 这里是用的本地http服务器代理，爬nist的数据 可以用v2ray把其他类型的代理变成一]]></description>
 </item>
 </channel>

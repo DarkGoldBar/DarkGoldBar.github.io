@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>hugo - 标签 - DarkGoldBar的主页</title>
+        <link>https://darkgoldbar.github.io/tags/hugo/</link>
+        <description>hugo - 标签 - DarkGoldBar的主页</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Mon, 24 Oct 2022 14:41:20 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/tags/hugo/" rel="self" type="application/rss+xml" /><item>
+    <title>Hugo-LoveIt代码笔记</title>
+    <link>https://darkgoldbar.github.io/posts/code/learn-note-hugo-loveit/</link>
+    <pubDate>Mon, 24 Oct 2022 14:41:20 &#43;0800</pubDate>
+    <author>DarkGoldBar</author>
+    <guid>https://darkgoldbar.github.io/posts/code/learn-note-hugo-loveit/</guid>
+    <description><![CDATA[文档编辑 语法 基础语法 扩展语法 简便语法 扩展简便语法 插图 静态图片复制到static/images/目录下，然后在MD中引用 ![雪山](/imag]]></description>
+</item>
+</channel>
+</rss>
