@@ -55,7 +55,7 @@ seo:
 
 ### 创建Lambda函数
 
-```
+``` python
 import json, boto3, time
 
 client = boto3.client('dynamodb')
@@ -84,7 +84,7 @@ def lambda_handler(event, context):
             TableName=TableName,
             Key=key
         )
-        
+
         data = {
             'last': resp['Item']['last_visit']['N'],
             'visit': resp['Item']['visit']['N'],
@@ -99,14 +99,13 @@ def lambda_handler(event, context):
             ExpressionAttributeValues = {':inc' : {'N': '1'}, ':time': {'N': str(now)}},
             ReturnValues="UPDATED_OLD"
         )
-            
+
         data = {
             'last': resp['Attributes']['last_visit']['N'],
             'visit': resp['Attributes']['visit']['N'] + 1,
         }
 
     return data
-
 ```
 
 #### 手动向Lambda执行角色添加两个权限
@@ -120,15 +119,15 @@ Allow:dynamodb:UpdateItem
 
 
 ### 网页JS脚本
-```
+``` javascript
 var xmlhttp = new XMLHttpRequest();
 var url = "https://3jrymxtdceti2icc6r4mgqmpei0gzzls.lambda-url.ap-northeast-3.on.aws";
 var data = {page: "www.example.com", action: "get"};
 
 xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-        var myArr = JSON.parse(this.responseText);
-        alert(this.responseText);
+        // JSON.parse(this.responseText);
+        element.text(this.responseText);
     }
 };
 
@@ -137,10 +136,10 @@ xmlhttp.send(JSON.stringify(data));
 ```
 
 ### 网页HTML展示
-```
+``` HTML
 <div class='MyVisitorCounter'>
-    <p>访问计数: <span role='visit'>6</span></p>
-    <p>上次访问: <span role='last'>2023-02-10</span></p>
+    访问计数: <span name='visit'>xxx</span>
+    上次访问: <span name='last'>xxxx-xx-xx</span>
 </div>
 ```
 
