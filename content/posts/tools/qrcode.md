@@ -97,7 +97,7 @@ seo:
 <div id="qrcode"></div>
 {{< /raw >}}
 
-{{<script>}}
+{{< script >}}
 function generateQRCode() { 
   document.getElementById('qrcode').innerHTML = '';
   var params = {
@@ -110,4 +110,4 @@ function generateQRCode() {
   };
   var qrcode = new QRCode("qrcode", params); 
 }
-{{</script>}}
+{{< /script >}}
