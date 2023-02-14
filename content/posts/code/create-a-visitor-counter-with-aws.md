@@ -118,7 +118,8 @@ Allow:dynamodb:UpdateItem
 
 
 
-### 网页JS脚本
+### JS
+在jupyter-notebook用测试代码测试一下
 ``` javascript
 var xmlhttp = new XMLHttpRequest();
 var url = "https://3jrymxtdceti2icc6r4mgqmpei0gzzls.lambda-url.ap-northeast-3.on.aws";
@@ -135,7 +136,16 @@ xmlhttp.open("POST", url);
 xmlhttp.send(JSON.stringify(data));
 ```
 
-### 网页HTML展示
+正式使用的代码
+``` javascript
+var url = "https://3jrymxtdceti2icc6r4mgqmpei0gzzls.lambda-url.ap-northeast-3.on.aws";
+var target = "MyVisitorCounter";
+function query() {
+  
+}
+```
+
+### HTML
 ``` HTML
 <div class='MyVisitorCounter'>
     访问计数: <span name='visit'>xxx</span>
