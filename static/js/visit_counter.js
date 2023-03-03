@@ -1,22 +1,19 @@
 
 var CurrentPage=window.location.origin + window.location.pathname;
-var vcresponse=null;
+var vcServer="https://3jrymxtdceti2icc6r4mgqmpei0gzzls.lambda-url.ap-northeast-3.on.aws/";
+var vcResponse=null;
 
+window.addEventListener('load', vcOnLoad);
 
-window.addEventListener('load', vconload);
-
-function vconload() {
-    if (vccheck()) {
-        vcrequest('get');
+function vcOnLoad() {
+    if (vcCheck()) {
+        vcRequest('get');
     } else {
-        vcrequest('update');
+        vcRequest('update');
     }
 }
 
-
-function vcrequest(action) {
-    let url=window.location.origin + window.location.pathname;
-    let server = "https://3jrymxtdceti2icc6r4mgqmpei0gzzls.lambda-url.ap-northeast-3.on.aws/";
+function vcRequest(action) {
     let data = {page: CurrentPage, action: action};
     let xmlhttp = new XMLHttpRequest();
     let resp_data = null;
@@ -24,19 +21,18 @@ function vcrequest(action) {
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             resp_data = JSON.parse(this.responseText);
-            vcrender(resp_data);
+            vcRender(resp_data);
         } else if (this.readyState == 4 && this.status != 200) {
             console.log('visit counter API failed');
-            vcresponse = this;
+            vcResponse = this;
         }
     };
 
-    xmlhttp.open("POST", server);
+    xmlhttp.open("POST", vcServer);
     xmlhttp.send(JSON.stringify(data));
 }
 
-
-function vccheck(){
+function vcCheck(){
     let visited = false;
     let cookie_key = 'last_visit:' + CurrentPage;
     let currentTimeStamp = new Date().getTime();
@@ -48,11 +44,10 @@ function vccheck(){
     return visited
 }
 
-
-function vcrender(data) {
+function vcRender(data) {
     // data = {last:"1675853136",visit:"6"}
     let vcnode = document.getElementById('visitCount');
     let d = new Date();
     d.setTime(Number(data.last + "000"));
-    vcnode.innerHTML = 'Count: <span>' +data.visit+ '</span> Last: <span>' +d.toISOString()+ '</span>'
+    vcnode.innerHTML = '浏览次数: <span>' +data.visit+ '</span> 最后访问: <span>' +d.toISOString()+ '</span>'
 }
