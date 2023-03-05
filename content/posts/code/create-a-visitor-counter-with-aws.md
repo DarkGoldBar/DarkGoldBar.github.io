@@ -143,7 +143,7 @@ Allow:dynamodb:UpdateItem
 
 ### 测试跨站请求能否正常运行
 
-### 网页JS脚本
+用浏览器控制台测试一下aws-lambda是否正常工作
 ``` javascript
 var xmlhttp = new XMLHttpRequest();
 var url = "https://3jrymxtdceti2icc6r4mgqmpei0gzzls.lambda-url.ap-northeast-3.on.aws";
@@ -159,12 +159,71 @@ xmlhttp.open("POST", url);
 xmlhttp.send(JSON.stringify(data));
 ```
 
-### 网页HTML展示
+
+## Hugo模板中插入代码片段
+
+### 创建partial模板
+新建一个partial模板，路径为`/layouts/partials/my_vc.html`，就可以被Hugo自动识别
 ``` HTML
-<div class='MyVisitorCounter'>
-    访问计数: <span name='visit'>xxx</span>
-    上次访问: <span name='last'>xxxx-xx-xx</span>
-</div>
+<div id="visitCount"></div>
+<script src="/js/visit_counter.js"></script>
+```
+
+这里使用的js文件，对应的目录就是`/static/js/visit_counter.js`
+其中，vcServer 的值改成lambda函数的调用地址
+``` javascript
+var CurrentPage=window.location.origin + window.location.pathname;
+var vcServer="https://xxxxxxxx.lambda-url.ap-northeast-3.on.aws/";
+var vcResponse=null;
+
+window.addEventListener('load', vcOnLoad);
+
+function vcOnLoad() {
+    if (vcCheck()) {
+        vcRequest('get');
+    } else {
+        vcRequest('update');
+    }
+}
+
+function vcRequest(action) {
+    let data = {page: CurrentPage, action: action};
+    let xmlhttp = new XMLHttpRequest();
+    let resp_data = null;
+
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            resp_data = JSON.parse(this.responseText);
+            vcRender(resp_data);
+        } else if (this.readyState == 4 && this.status != 200) {
+            console.log('visit counter API failed');
+            vcResponse = this;
+        }
+    };
+
+    xmlhttp.open("POST", vcServer);
+    xmlhttp.send(JSON.stringify(data));
+}
+
+function vcCheck(){
+    let visited = false;
+    let cookie_key = 'last_visit:' + CurrentPage;
+    let currentTimeStamp = new Date().getTime();
+    let lastTimeStamp = new Number(localStorage.getItem(cookie_key));
+    if (lastTimeStamp && ((currentTimeStamp - lastTimeStamp) < 24 * 60 * 60 * 1000)) {
+        visited = true;
+    }
+    localStorage.setItem(cookie_key, currentTimeStamp);
+    return visited
+}
+
+function vcRender(data) {
+    // data = {last:"1675853136", visit:"6"}
+    let vcnode = document.getElementById('visitCount');
+    let d = new Date();
+    d.setTime(Number(data.last + "000"));
+    vcnode.innerHTML = '浏览次数: <span>' +data.visit+ '</span> 最后访问: <span>' +d.toISOString()+ '</span>'
+}
 ```
 #### 插入posts模板
 
