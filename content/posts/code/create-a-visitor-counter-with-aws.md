@@ -49,11 +49,28 @@ seo:
 ---
 
 <!-- 正文 -->
+# 结构设计
+![结构设计](/images/code/vc005.png)
+1. 用户访问静态站点(Gitpage)
+2. 静态站点服务返回预渲染页面和JS脚本
+3. 计数统计的脚本向AWS Lambda发送计数请求
+4. Lambda收到请求后，发起数据库请求
+5. 数据库返回结果到Lambda
+6. Lambda把结果返回给用户
+最后页面JS收到计数结果，渲染到网页上。
 
-### 创建DynamoDB
+这个流程里Lambda提供了处理匿名请求的功能，同时简单处理数据接口，而DynamoDB提供了数据存储的功能。
 
+这里用到的Lambda服务和DynamoDB服务，在个人小用量的情况下都是能免费使用的。
+具体额度可以在AWS官网上查到  
+[aws计算&数据库免费额度](https://aws.amazon.com/cn/free/?nc2=h_ql_pr_ft&all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all)
 
-### 创建Lambda函数
+# 代码工作
+## 创建DynamoDB
+![创建表](/images/code/vc001.png)
+![添加样例行](/images/code/vc002.png)
+
+## 创建Lambda函数
 
 ``` python
 import json, boto3, time
@@ -69,8 +86,12 @@ def get_args(event):
     return args
 
 def lambda_handler(event, context):
+    EMPTY_RESP = {
+        'last_visit': {'N': 0},
+        'visit': {'N': 0},
+    }
+    print('RECIVE', dict(event))
     args = get_args(event)
-    print(dict(event))
 
     key = {'page': {'S': args.get('page')}}
     action = args.get('action')
@@ -84,10 +105,11 @@ def lambda_handler(event, context):
             TableName=TableName,
             Key=key
         )
-
+        
+        d = resp.get('Item', EMPTY_RESP)
         data = {
-            'last': resp['Item']['last_visit']['N'],
-            'visit': resp['Item']['visit']['N'],
+            'last': d['last_visit']['N'],
+            'visit': d['visit']['N'],
         }
 
     if action == 'update':
@@ -100,23 +122,26 @@ def lambda_handler(event, context):
             ReturnValues="UPDATED_OLD"
         )
 
+        d = resp.get('Attributes', EMPTY_RESP)
         data = {
-            'last': resp['Attributes']['last_visit']['N'],
-            'visit': resp['Attributes']['visit']['N'] + 1,
+            'last': d['last_visit']['N'],
+            'visit': str(int(d['visit']['N']) + 1),
         }
 
+    print('SEND', data)
     return data
 ```
 
-#### 手动向Lambda执行角色添加两个权限
+### 手动向Lambda执行角色添加两个权限
 ```
 Allow:dynamodb:GetItem
 Allow:dynamodb:UpdateItem
 ```
 
-#### 配置允许CROS源为自己的网站
+### 配置允许CROS源为自己的网站
 
 
+### 测试跨站请求能否正常运行
 
 ### 网页JS脚本
 ``` javascript
@@ -126,8 +151,7 @@ var data = {page: "www.example.com", action: "get"};
 
 xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-        // JSON.parse(this.responseText);
-        element.text(this.responseText);
+        console.log(this.responseText);
     }
 };
 
@@ -142,5 +166,9 @@ xmlhttp.send(JSON.stringify(data));
     上次访问: <span name='last'>xxxx-xx-xx</span>
 </div>
 ```
+#### 插入posts模板
 
-### 代码段嵌入 Hugo
+找到需要插入访问计数的模板文件，我这里是使用了Loveit模板，
+路径为`themes/LoveIt/layouts/posts/single.html`，
+把这个文件复制到`layouts/posts/single.html`，然后在模板文件里找到合适的地方，
+插入代码片段`{{- partial "my_vc.html" . -}}`，我这里是插入到了正文目录的前面。
