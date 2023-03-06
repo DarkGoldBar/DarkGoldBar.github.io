@@ -1,14 +1,17 @@
 var CurrentPage=window.location.origin + window.location.pathname;
-var vcServer="https://3jrymxtdceti2icc6r4mgqmpei0gzzls.lambda-url.ap-northeast-3.on.aws/";
+var vcSite="https://darkgoldbar.github.io";
+var vcServer="https://xxxxxxxx.lambda-url.ap-northeast-3.on.aws/";
 var vcResponse=null;
 
 window.addEventListener('load', vcOnLoad);
 
 function vcOnLoad() {
-    if (vcCheck()) {
-        vcRequest('get');
-    } else {
-        vcRequest('update');
+    if (window.location.origin == vcSite){
+        if (vcCheck()) {
+            vcRequest('get');
+        } else {
+            vcRequest('update');
+        }
     }
 }
 
