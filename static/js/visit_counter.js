@@ -49,7 +49,19 @@ function vcCheck(){
 function vcRender(data) {
     // data = {last:"1675853136",visit:"6"}
     let vcnode = document.getElementById('visitCount');
-    let d = new Date();
-    d.setTime(Number(data.last + "000"));
-    vcnode.innerHTML = '浏览次数: <span>' +data.visit+ '</span> 最后访问: <span>' +d.toISOString()+ '</span>'
+    let ts = Number(data.last + "000");
+    vcnode.innerHTML = '浏览次数: <span>' +data.visit+ '</span> 最后访问: <span>' +formatDateTime(ts)+ '</span>'
 }
+
+function formatDateTime(timestamp) {
+    // written by chatGPT
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+    return year + '年' + month + '月' + day + '日 ' + hour + '时' + minute + '分' + second + '秒';
+  }
+  
