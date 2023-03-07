@@ -1,6 +1,6 @@
 var CurrentPage=window.location.origin + window.location.pathname;
 var vcSite="https://darkgoldbar.github.io";
-var vcServer="https://xxxxxxxx.lambda-url.ap-northeast-3.on.aws/";
+var vcServer="https://3jrymxtdceti2icc6r4mgqmpei0gzzls.lambda-url.ap-northeast-3.on.aws/";
 var vcResponse=null;
 
 window.addEventListener('load', vcOnLoad);
