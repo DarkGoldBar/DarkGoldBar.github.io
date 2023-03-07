@@ -4,20 +4,36 @@
         <link>https://darkgoldbar.github.io/tags/</link>
         <description>Tags - 标签 - DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
-            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Sat, 28 Jan 2023 23:33:31 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Wed, 01 Mar 2023 15:48:45 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>hugo</title>
+    <link>https://darkgoldbar.github.io/tags/hugo/</link>
+    <pubDate>Wed, 01 Mar 2023 15:48:45 &#43;0800</pubDate>
+    <author>DarkGoldBar</author>
+    <guid>https://darkgoldbar.github.io/tags/hugo/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>javascript</title>
+    <link>https://darkgoldbar.github.io/tags/javascript/</link>
+    <pubDate>Wed, 01 Mar 2023 15:48:45 &#43;0800</pubDate>
+    <author>DarkGoldBar</author>
+    <guid>https://darkgoldbar.github.io/tags/javascript/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Python</title>
+    <link>https://darkgoldbar.github.io/tags/python/</link>
+    <pubDate>Wed, 01 Mar 2023 15:48:45 &#43;0800</pubDate>
+    <author>DarkGoldBar</author>
+    <guid>https://darkgoldbar.github.io/tags/python/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>史料</title>
     <link>https://darkgoldbar.github.io/tags/%E5%8F%B2%E6%96%99/</link>
     <pubDate>Sat, 28 Jan 2023 23:33:31 &#43;0800</pubDate>
     <author>DarkGoldBar</author>
     <guid>https://darkgoldbar.github.io/tags/%E5%8F%B2%E6%96%99/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>hugo</title>
-    <link>https://darkgoldbar.github.io/tags/hugo/</link>
-    <pubDate>Fri, 27 Jan 2023 22:19:02 &#43;0800</pubDate>
-    <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/tags/hugo/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -34,22 +50,6 @@
     <pubDate>Wed, 25 Jan 2023 10:30:00 &#43;0800</pubDate>
     <author>DarkGoldBar</author>
     <guid>https://darkgoldbar.github.io/tags/%E8%BD%B6%E4%BA%8B/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Python</title>
-    <link>https://darkgoldbar.github.io/tags/python/</link>
-    <pubDate>Wed, 18 Jan 2023 13:54:00 &#43;0800</pubDate>
-    <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/tags/python/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>javascript</title>
-    <link>https://darkgoldbar.github.io/tags/javascript/</link>
-    <pubDate>Fri, 16 Dec 2022 09:59:51 &#43;0800</pubDate>
-    <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/tags/javascript/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>

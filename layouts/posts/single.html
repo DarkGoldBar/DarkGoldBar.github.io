@@ -60,6 +60,7 @@
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;{{ T "views" }}
                     </span>&nbsp;
                 {{- end -}}
+                {{- partial "my_vc.html" . -}}
             </div>
         </div>
 
@@ -73,8 +74,6 @@
                 {{- dict "Src" . "Title" $.Description "Resources" $.Resources | partial "plugin/img.html" -}}
             </div>
         {{- end -}}
-
-        {{- partial "my_vc.html" . -}}
 
         {{- /* Static TOC */ -}}
         {{- if ne $toc.enable false -}}
