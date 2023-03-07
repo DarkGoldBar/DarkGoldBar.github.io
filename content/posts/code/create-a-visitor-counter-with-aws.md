@@ -1,9 +1,9 @@
 ---
 title: "用AWS做一个免费的访客计数"
 subtitle: ""
-date: 2023-02-08T15:48:45+08:00
-lastmod: 2023-02-08T15:48:45+08:00
-draft: true
+date: 2023-03-01T15:48:45+08:00
+lastmod: 2023-03-07T09:24:00+08:00
+draft: false
 author: ""
 authorLink: ""
 description: ""
@@ -90,15 +90,45 @@ seo:
 {{< image src="/images/code/vc007.png" caption="Lambda设置2">}}
 
 ### 修改Lambda权限
-```
-Allow:dynamodb:GetItem
-Allow:dynamodb:UpdateItem
+在函数页面，找到**配置**->**权限**，点执行角色的名字，转到IAM页面。
+
+在IAM里把这个执行角色的策略改成`AWSLambdaDynamoDBExecutionRole`，
+然后再添加一条自定义策略，增加查询、更新数据的权限。
+``` json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:UpdateItem"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
 ```
 
+
 ### 修改CROS限制
+在函数页面，找到**配置**->**函数 URL**。
+
+这里暂时先把CORS允许源设置为`*`，在测试完成后，再改成自己的域名。
+{{< image src="/images/code/vc008.png" caption="CROS设置">}}
 
 
 ### 代码
+把写好的lambda函数代码贴进去保存，然后部署。
+
+`get_args`函数: 
+- 输入预处理，可对应HTTP请求和一般socket
+
+`lambda_handler` 函数:
+- 接受一个字典数据`{'page': xxx, 'action': [get|update]}`
+- `action == get`时，返回page页面的访问量和最后一个时间戳
+- `action == update`时，page页面访问量+1，更新时间戳，然后返回page页面的新的访问量和上一个时间戳
+
 {{< highlight python "linenos=table">}}
 import json, boto3, time
 
@@ -161,10 +191,10 @@ def lambda_handler(event, context):
 
 ### 测试
 
-用浏览器控制台测试一下aws-lambda是否正常工作
+用浏览器控制台简单测试一下aws-lambda是否正常工作
 ``` javascript
 var xmlhttp = new XMLHttpRequest();
-var url = "https://3jrymxtdceti2icc6r4mgqmpei0gzzls.lambda-url.ap-northeast-3.on.aws";
+var url = "https://xxxxxxxxxxx.lambda-url.ap-northeast-3.on.aws";
 var data = {page: "www.example.com", action: "get"};
 
 xmlhttp.onreadystatechange = function() {
@@ -189,8 +219,9 @@ xmlhttp.send(JSON.stringify(data));
 
 ### 插入posts模板
 
-找到需要插入访问计数的模板文件，我这里是使用了Loveit模板，路径为`themes/LoveIt/layouts/posts/single.html`，把这个文件复制到`layouts/posts/single.html`，然后在模板文件里找到合适的地方，
-插入代码片段`{{- partial "my_vc.html" . -}}`，我这里是插入到了正文目录的前面。
+找到需要插入访问计数的模板文件，我这里是使用了Loveit模板，路径为`themes/LoveIt/layouts/posts/single.html`，
+把这个文件复制到`layouts/posts/single.html`，然后在模板文件里找到合适的地方插入。
+这里我选择在`<div class="post-meta-line">`这个节点里面，插入代码片段`{{- partial "my_vc.html" . -}}`。
 
 ### JS代码
 根据partial模板中写的脚本对应的目录就是`/static/js/visit_counter.js`
