@@ -2,7 +2,7 @@
 title: "二维码生成器"
 subtitle: ""
 date: 2023-01-28T18:07:41+08:00
-lastmod: 2023-01-28T18:07:41+08:00
+lastmod: 2023-02-14T00:11:41+08:00
 draft: false
 author: ""
 authorLink: ""
@@ -49,42 +49,67 @@ seo:
 ---
 
 <!-- 正文 -->
+
+## 二维码设置
+---------------------------
 {{< raw >}}
-<div>
-  <p>
-    <label for="text">输入文本: </label>
-    <input type="text" id="qrcode-text" name="text">
-  </p>
-  <p>
-    <label for="text">二维码大小: </label>
-    <input type="text" id="qrcode-size" name="size" value="128">
-  </p>
-  <p>
-    <label for="text">二维码颜色: </label>
-    <input type="text" id="qrcode-color" name="color" value="#000000">
-  </p>
-  <p>
-    <label for="text">二维码背景颜色: </label>
-    <input type="text" id="qrcode-bgcolor" name="bgcolor" value="#ffffff">
-  </p>
-  <p>
-    <button onclick="generateQRCode()">生成二维码</button>
-  </p>
-</div>
+<style>
+  #qrcode-form {
+    border-collapse: collapse;
+  }
+  #qrcode-form td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+    width: auto;
+    white-space: nowrap;
+  }
+</style>
+
+<form id='qrcode-form' onchange='generateQRCode()'>
+  <table>
+    <tr>
+      <td><label for="content">内容：</label></td>
+      <td><input type="text" id="qr-content" name="content"></td>
+    </tr>
+    <tr>
+      <td><label for="size">大小：</label></td>
+      <td>
+        <input type="range" id="qr-size" name="size" min="40" max="640" value="80" oninput="document.getElementById('size-value').innerHTML=this.value">
+        <span id="size-value">80</span>
+      </td>
+    </tr>
+    <tr>
+      <td><label for="fg-color">前景色：</label></td>
+      <td><input type="color" id="qr-fg-color" name="fg-color"></td>
+    </tr>
+    <tr>
+      <td><label for="bg-color">背景色：</label></td>
+      <td><input type="color" id="qr-bg-color" name="bg-color" value="#FFFFFF"></td>
+    </tr>
+  </table>
+</form>
+{{< /raw >}}
+
+## 二维码
+---------------------------
+{{< raw >}}
 <div id="qrcode"></div>
 {{< /raw >}}
 
-{{<script>}}
+{{< script >}}
+window.addEventListener('keydown',function(e){if(e.keyIdentifier=='U+000A'||e.keyIdentifier=='Enter'||e.keyCode==13){if(e.target.nodeName=='INPUT'&&e.target.type=='text'){e.preventDefault();generateQRCode();return false;}}},true);
+
 function generateQRCode() { 
   document.getElementById('qrcode').innerHTML = '';
   var params = {
-    text: document.getElementById("qrcode-text").value,
-    width: document.getElementById("qrcode-size").value,
-    height: document.getElementById("qrcode-size").value,
-    colorDark : document.getElementById("qrcode-color").value,
-    colorLight : document.getElementById("qrcode-bgcolor").value,
+    text: document.getElementById("qr-content").value,
+    width: document.getElementById("qr-size").value,
+    height: document.getElementById("qr-size").value,
+    colorDark : document.getElementById("qr-fg-color").value,
+    colorLight : document.getElementById("qr-bg-color").value,
     correctLevel : QRCode.CorrectLevel.H
   };
   var qrcode = new QRCode("qrcode", params); 
 }
-{{</script>}}
+{{< /script >}}
