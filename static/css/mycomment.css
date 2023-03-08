@@ -1,0 +1,41 @@
+#mycomment form {
+    max-width: 500px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    background-color: #f6f6f6;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+#mycomment label {
+    font-weight: bold;
+}
+
+#mycomment input[type="text"],
+#mycomment input[type="email"],
+#mycomment textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: none;
+    background-color: #f0f0f0;
+}
+
+#mycomment textarea {
+    height: 120px;
+}
+
+#mycomment button[type="submit"] {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#mycomment button[type="submit"]:hover {
+    background-color: #3e8e41;
+}

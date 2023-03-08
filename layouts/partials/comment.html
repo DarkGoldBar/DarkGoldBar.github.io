@@ -1,0 +1,40 @@
+{{- $cdn := .Scratch.Get "cdn" | default dict -}}
+{{- $fingerprint := .Scratch.Get "fingerprint" -}}
+{{- $comment := .Scratch.Get "comment" | default dict -}}
+{{- $commentConfig := dict -}}
+
+{{- if $comment.enable -}}
+    <div id="comments">
+        {{- /* My Comment System */ -}}
+        {{- $mycomment := $comment.mycomment | default dict -}}
+        {{- if $mycomment.enable -}}
+            <div id="mycomment" class="comment">
+                <form action="#" method="post">
+                    <div>
+                      <label for="name">姓名：</label>
+                      <input type="text" id="name" name="name" required>
+                    </div>
+                    <div>
+                      <label for="email">电子邮件：</label>
+                      <input type="email" id="email" name="email" required>
+                    </div>
+                    <div>
+                      <label for="comment">评论：</label>
+                      <textarea id="comment" name="comment" rows="5" required></textarea>
+                    </div>
+                    <div id="rendered-comment"></div>
+                    <button type="submit">提交</button>
+                  </form>
+            </div>
+            {{- $source := "css/mycomment.css" -}}
+            {{- dict "Source" $source "Minify" true "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/style.html" -}}
+            {{- $source := "js/mycomment.js" -}}
+            {{- dict "Source" $source "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/style.html" -}}
+            <noscript>
+                Please enable JavaScript to view the comments powered by myself.
+            </noscript>
+        {{- end -}}
+    </div>
+{{- end -}}
+
+{{- dict "comment" $commentConfig | dict "config" | merge (.Scratch.Get "this") | .Scratch.Set "this" -}}
