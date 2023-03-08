@@ -213,6 +213,12 @@ enableEmoji = false
     # RSS 文章数目
     rss = 10
 
+  [params.page]
+    [params.page.comment]
+      enable = true
+      [params.page.comment.mycomment]
+        enable = true
+
 [markup]
   [markup.highlight]
     anchorLineNos = false
