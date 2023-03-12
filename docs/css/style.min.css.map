@@ -1,7 +1,7 @@
 {
 	"version": 3,
 	"file": "style.min.css",
-	"sourceRoot": "/mnt/data/home/bochen.li/Source/mycode/DarkGoldBar.github.io",
+	"sourceRoot": "D:/workspace/DarkGoldBar.github.io",
 	"sources": [
 		"themes/LoveIt/assets/css/style.scss",
 		"themes/LoveIt/assets/lib/normalize/normalize.css",
