@@ -96,7 +96,13 @@
         {{- /* Footer */ -}}
         {{- partial "single/footer.html" . -}}
 
-        {{- /* Comment */ -}}
-        {{- partial "comment.html" . -}}
+        <div id="comments">
+            <link rel="stylesheet" href="comment.css" type="text/css">
+            <div id="d-comment"></div>
+            <script src="comment.js"></script>
+            <noscript>
+                Please enable JavaScript to view the comments powered by DarkGoldBar D-comment</a>.
+            </noscript>
+        </div>
     </article>
 {{- end -}}
