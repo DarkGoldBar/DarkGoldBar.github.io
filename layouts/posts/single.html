@@ -60,7 +60,7 @@
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;{{ T "views" }}
                     </span>&nbsp;
                 {{- end -}}
-                {{- partial "my_vc.html" . -}}
+                {{- partial "vc.html" . -}}
             </div>
         </div>
 
@@ -96,13 +96,7 @@
         {{- /* Footer */ -}}
         {{- partial "single/footer.html" . -}}
 
-        <div id="comments">
-            <link rel="stylesheet" href="comment.css" type="text/css">
-            <div id="d-comment"></div>
-            <script src="comment.js"></script>
-            <noscript>
-                Please enable JavaScript to view the comments powered by DarkGoldBar D-comment</a>.
-            </noscript>
-        </div>
+        {{- /* Comment */ -}}
+        {{- partial "comment.html" . -}}
     </article>
 {{- end -}}
