@@ -1,11 +1,14 @@
-const dcomPage=window.location.pathname;
-const dcomSite="https://darkgoldbar.github.io";
+const dcomPage = window.location.pathname;
+const dcomSite = "https://DarkGoldbar.github.io";
 const dcomServer="https://27n4glpsqowyvyndhv4tltfoby0ovlty.lambda-url.ap-northeast-3.on.aws/";
+
 
 window.addEventListener('load', dcomInit);
 
+
 function dcomInit() {
     const dcomEle = document.getElementById('d-comment');
+    const dcomVCEle = document.getElementById('d-counter');
     dcomEle.innerHTML = `
     <form action="#">
         <div class="flex">
@@ -33,7 +36,21 @@ function dcomInit() {
         event.preventDefault();
         dcomPost(true);
     });
-    dcomGet();
+    if (!(dcomSite) || (window.location.origin == dcomSite)) {
+        if (dcomEle) {
+            dcomGet();
+        }
+        if (dcomVCEle)  {
+            dcomVC();
+        }
+    }
+}
+
+function dcomVCRender(count, timestamp) {
+    const vcNode = document.getElementById('d-counter');
+    const date = new Date(timestamp * 1000);
+    const dateString = date.toLocaleString();
+    vcNode.innerHTML = `浏览次数: ${count} 最后访问: ${dateString}`
 }
 
 function dcomRenderComment(commentDict) {
@@ -41,7 +58,7 @@ function dcomRenderComment(commentDict) {
     const date = new Date(timestamp * 1000);
     const dateString = date.toLocaleString();
     email = email || '';
-  
+
     const html = `
       <div class="comment" data-cid="${cid}">
         <div class="comment-name">${nickname}</div>
@@ -86,7 +103,7 @@ function dcomGetMore() {
     dcomGet(minCid);
 }
 
-function dcomGet(offset=null, limit=10) {
+function dcomGet(offset=null, limit=10, page=dcomPage) {
     const xhr = new XMLHttpRequest();
     let query = `?limit=${limit}`;
     if (offset) {
@@ -103,11 +120,11 @@ function dcomGet(offset=null, limit=10) {
     };
 
     xhr.open("GET", dcomServer + query, true);
-    xhr.setRequestHeader("x-referer-page", dcomPage);
+    xhr.setRequestHeader("x-referer-page", page);
     xhr.send();
 }
 
-function dcomPost(doRefresh=false) {
+function dcomPost(doRefresh=false, page=dcomPage) {
     const xhr = new XMLHttpRequest();
     const nickname = document.querySelector("#d-comment [name=nickname]").value;
     const email = document.querySelector("#d-comment [name=email]").value;
@@ -125,6 +142,31 @@ function dcomPost(doRefresh=false) {
     };
 
     xhr.open("POST", dcomServer, true);
-    xhr.setRequestHeader("x-referer-page", dcomPage);
+    xhr.setRequestHeader("x-referer-page", page);
     xhr.send(JSON.stringify({ nickname, email, comment }));
+}
+
+function dcomVC() {
+    const cookieKey = 'dcom:visited:' + CurrentPage;
+    const currentTimeStamp = new Date().getTime();
+    const lastTimeStamp = new Number(localStorage.getItem(cookieKey));
+    localStorage.setItem(cookieKey, currentTimeStamp);
+
+    const doUpdate = !(lastTimeStamp && ((currentTimeStamp - lastTimeStamp) < 86400000));
+    dcomVCRequest(doUpdate);
+}
+
+function dcomVCRequest(doUpdate=false, page=dcomPage) {
+    const xhr = new XMLHttpRequest();
+    const query = "?action=" + (doUpdate ? "VCUpdate" : "VCGet");
+    xhr.responseType = 'json';
+
+    xhr.onload = function() {
+        let { Counter, LastVisit } = this.response
+        dcomVCRender(Counter, LastVisit);
+    };
+
+    xhr.open("GET", dcomServer + query);
+    xhr.setRequestHeader("x-referer-page", page);
+    xhr.send();
 }
