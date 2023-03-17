@@ -1,5 +1,5 @@
 const dcomPage = window.location.pathname;
-const dcomSite = "https://DarkGoldbar.github.io";
+const dcomSite = "https://darkgoldbar.github.io";
 const dcomServer="https://27n4glpsqowyvyndhv4tltfoby0ovlty.lambda-url.ap-northeast-3.on.aws/";
 
 
