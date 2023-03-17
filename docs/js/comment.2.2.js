@@ -12,11 +12,11 @@ function dcomInit() {
     dcomEle.innerHTML = `
     <form action="#">
         <div class="flex">
-            <input type="text" name="nickname" placeholder="昵称" required>
-            <input type="email" name="email" placeholder="邮箱">
+            <input type="text" name="nickname" placeholder="昵称(必填)" required>
+            <input type="email" name="email" placeholder="邮箱(选填)">
         </div>
         <div class="flex">
-            <textarea name="comment" rows="5" placeholder="请输入评论" required></textarea>
+            <textarea name="comment" rows="5" placeholder="请输入评论..." required></textarea>
         </div>
         <div>
             <input class="button" type="submit" value="提交评论">
@@ -50,7 +50,7 @@ function dcomVCRender(count, timestamp) {
     const vcNode = document.getElementById('d-counter');
     const date = new Date(timestamp * 1000);
     const dateString = date.toLocaleString();
-    vcNode.innerHTML = `浏览次数: ${count} 最后访问: ${dateString}`
+    vcNode.innerHTML = `<i class="far fa-eye fa-fw" aria-hidden="true"></i> 浏览次数: ${count} 最后访问: ${dateString}`;
 }
 
 function dcomRenderComment(commentDict) {
