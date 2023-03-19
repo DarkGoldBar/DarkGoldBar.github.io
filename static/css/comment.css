@@ -8,7 +8,6 @@
 }
 
 #d-comment form{
-  width: 100%;
   max-width: 800px; /* 限制最大宽度，避免太宽 */
   margin: 0 auto; /* 水平居中 */
   background-color: #f8f8f8;
