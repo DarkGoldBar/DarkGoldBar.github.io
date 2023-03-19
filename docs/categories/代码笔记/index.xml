@@ -4,7 +4,19 @@
         <link>https://darkgoldbar.github.io/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/</link>
         <description>代码笔记 - 分类 - DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
-            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Wed, 01 Mar 2023 15:48:45 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Sun, 19 Mar 2023 14:02:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/" rel="self" type="application/rss+xml" /><item>
+    <title>制作一个无服务器博客评论系统</title>
+    <link>https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/</link>
+    <pubDate>Sun, 19 Mar 2023 14:02:00 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/</guid>
+    <description><![CDATA[<h2 id="前言">前言</h2>
+<p>做完访客计数之后，就在调研哪个博客评论系统好用。
+先看了一遍LoveIt模板的支持列表，海外的服务的主要问题是禁止访问和访问速度很慢。
+注意到Valine是用的国内的LeanCloud，尝试注册了一下，居然找我要身份证+支付宝验证，直接给我吓跑了。
+看来还是得靠自己，继续用 AWS Lambda + DynamoDB 做一个自己的评论系统。</p>]]></description>
+</item>
+<item>
     <title>用AWS做一个免费的访客计数</title>
     <link>https://darkgoldbar.github.io/posts/code/create-a-visitor-counter-with-aws/</link>
     <pubDate>Wed, 01 Mar 2023 15:48:45 &#43;0800</pubDate>

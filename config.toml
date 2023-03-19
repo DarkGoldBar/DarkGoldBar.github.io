@@ -213,6 +213,27 @@ enableEmoji = false
     # RSS 文章数目
     rss = 10
 
+  [params.page]
+    # 是否显示原始 Markdown 文档内容的链接
+    linkToMarkdown = true
+    # 是否在 RSS 中显示全文内容
+    rssFullText = false
+    # 目录配置
+    [params.page.toc]
+      # 是否使用目录
+      enable = true
+      # 是否保持使用文章前面的静态目录
+      keepStatic = false
+      # 是否使侧边目录自动折叠展开
+      auto = false
+    # Code config
+    # 代码配置
+    [params.page.code]
+      # 是否显示代码块的复制按钮
+      copy = true
+      # 默认展开显示的代码行数
+      maxShownLines = 50
+
 [markup]
   [markup.highlight]
     anchorLineNos = false
@@ -222,9 +243,9 @@ enableEmoji = false
     hl_inline = false
     lineAnchors = ''
     lineNoStart = 1
-    lineNos = false
+    lineNos = true
     lineNumbersInTable = true
     noClasses = true
     noHl = false
-    style = 'vs'
+    style = 'emacs'
     tabWidth = 4

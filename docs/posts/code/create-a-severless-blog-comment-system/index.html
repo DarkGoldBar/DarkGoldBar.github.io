@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>制作一个无服务器博客评论系统 - DarkGoldBar的主页</title><meta name="Description" content="DarkGoldBar的主页"><meta property="og:title" content="制作一个无服务器博客评论系统" />
+<meta property="og:description" content="前言
+做完访客计数之后，就在调研哪个博客评论系统好用。
+先看了一遍LoveIt模板的支持列表，海外的服务的主要问题是禁止访问和访问速度很慢。
+注意到Valine是用的国内的LeanCloud，尝试注册了一下，居然找我要身份证&#43;支付宝验证，直接给我吓跑了。
+看来还是得靠自己，继续用 AWS Lambda &#43; DynamoDB 做一个自己的评论系统。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-03-19T14:02:00+08:00" />
+<meta property="article:modified_time" content="2023-03-17T21:56:22+08:00" /><meta property="og:site_name" content="DarkGoldBar的主页" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="制作一个无服务器博客评论系统"/>
+<meta name="twitter:description" content="前言
+做完访客计数之后，就在调研哪个博客评论系统好用。
+先看了一遍LoveIt模板的支持列表，海外的服务的主要问题是禁止访问和访问速度很慢。
+注意到Valine是用的国内的LeanCloud，尝试注册了一下，居然找我要身份证&#43;支付宝验证，直接给我吓跑了。
+看来还是得靠自己，继续用 AWS Lambda &#43; DynamoDB 做一个自己的评论系统。"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/" /><link rel="prev" href="https://darkgoldbar.github.io/posts/code/create-a-visitor-counter-with-aws/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "制作一个无服务器博客评论系统",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/darkgoldbar.github.io\/posts\/code\/create-a-severless-blog-comment-system\/"
+        },"genre": "posts","keywords": "javascript, Python, hugo","wordcount":  4147 ,
+        "url": "https:\/\/darkgoldbar.github.io\/posts\/code\/create-a-severless-blog-comment-system\/","datePublished": "2023-03-19T14:02:00+08:00","dateModified": "2023-03-17T21:56:22+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "DarkGoldBar"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="DarkGoldBar的主页"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/code/create-a-severless-blog-comment-system/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="DarkGoldBar的主页"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/code/create-a-severless-blog-comment-system/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">制作一个无服务器博客评论系统</h1><h2 class="single-subtitle">手搓的，就是最好的</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/DarkGoldBar" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>DarkGoldBar</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>代码笔记</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-19">2023-03-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4147 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 9 分钟&nbsp;<div id="d-counter"></div>
+            </div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#设计">设计</a>
+      <ul>
+        <li><a href="#数据库设计">数据库设计</a></li>
+        <li><a href="#前端设计">前端设计</a></li>
+      </ul>
+    </li>
+    <li><a href="#实现">实现</a>
+      <ul>
+        <li><a href="#lambda函数">Lambda函数</a></li>
+        <li><a href="#lambda函数配置">Lambda函数配置</a></li>
+        <li><a href="#javascript">Javascript</a></li>
+      </ul>
+    </li>
+    <li><a href="#部署">部署</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="前言">前言</h2>
+<p>做完访客计数之后，就在调研哪个博客评论系统好用。
+先看了一遍LoveIt模板的支持列表，海外的服务的主要问题是禁止访问和访问速度很慢。
+注意到Valine是用的国内的LeanCloud，尝试注册了一下，居然找我要身份证+支付宝验证，直接给我吓跑了。
+看来还是得靠自己，继续用 AWS Lambda + DynamoDB 做一个自己的评论系统。</p>
+<h2 id="设计">设计</h2>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>技巧<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><em>先设计好再动手</em> &mdash;-沃·兹基硕德</div>
+        </div>
+    </div>
+<h3 id="数据库设计">数据库设计</h3>
+<p>DynamoDB是AWS提供的NoSQL数据库服务，其数据模型与关系型数据库有很大不同。其中，DynamoDB的数据是按照分区键（Partition Key）进行分区存储，分区键是一个唯一标识符，用来将数据分布在不同的物理分区中。在每个分区内，数据根据排序键（Sort Key）排序存储。在查询时，会对分区键进行哈希查询，对排序键进行二分查询。</p>
+<table>
+<thead>
+<tr>
+<th>键</th>
+<th>类型</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>page</td>
+<td><strong>分区键</strong> 字符串</td>
+<td>评论所属的页面地址</td>
+</tr>
+<tr>
+<td>cid</td>
+<td><strong>排序键</strong> 数字</td>
+<td>评论的编号，<em>自增</em>，以后可以用于回复转发</td>
+</tr>
+<tr>
+<td>timestamp</td>
+<td>数字</td>
+<td>发帖时间，服务端填写</td>
+</tr>
+<tr>
+<td>nickname</td>
+<td>字符串</td>
+<td>发帖人的名字，必填字段，任意填写</td>
+</tr>
+<tr>
+<td>email</td>
+<td>字符串</td>
+<td>发帖人的邮箱，选填字段，仅作前端格式检查</td>
+</tr>
+<tr>
+<td>comment</td>
+<td>字符串</td>
+<td>评论内容纯文本</td>
+</tr>
+</tbody>
+</table>
+<p>但是，DynamoDB中并没有自增键的功能，需要自己实现一个自增功能。因此增加一条名为Metadata的记录储存一个属性LastID，从1000开始，每次在增加评论前让LastID+1，新的LastID值作为新评论的cid。</p>
+<table>
+<thead>
+<tr>
+<th>page</th>
+<th>cid</th>
+<th>LastID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&ldquo;Metadata&rdquo;</td>
+<td>0</td>
+<td>1000</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到评论的数据库的分区键和访客计数都用的页面地址，也是为了节省成本，这两个功能可以做在同一张表里。对于访客统计可以对每一个page用一条记录来存储，cid设为-1，LastVisit和Counter记录最后访问时间戳和访问次数。</p>
+<table>
+<thead>
+<tr>
+<th>page</th>
+<th>cid</th>
+<th>LastVisit</th>
+<th>Counter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>page</em></td>
+<td>-1</td>
+<td>1679058053</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>最后，添加一些样例数据，可以得到这样一张数据表</p>
+<a class="lightgallery" href="/images/code/dcom1.png" title="数据库设计" data-thumbnail="/images/code/dcom1.png">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/code/dcom1.png"
+            data-srcset="/images/code/dcom1.png, /images/code/dcom1.png 1.5x, /images/code/dcom1.png 2x"
+            data-sizes="auto"
+            alt="/images/code/dcom1.png" width="100%" />
+    </a>
+<h3 id="前端设计">前端设计</h3>
+<p>HTML发帖表单就照着数据库设计的做。发表评论的form用三个input元素负责nickname、email、comment这三个用户输入的部分，再加一个提交按钮，然后用CSS美化一下。这部分我实际上是交给chatGPT写的。一行分割线之后就是评论展示区域，展示出来的评论除了名字邮箱和正文之外再加上一个发帖时间。为了一些需要获得评论id的逻辑，还要把cid写在元素DOM里。</p>
+<p>展示评论的逻辑构想上是在打开页面的时候，展示10条评论，下滑加载更多评论。但是这里我还没有做下滑加载的功能，暂时是点按钮加载更多。</p>
+<a class="lightgallery" href="/images/code/dcom2.png" title="前端样式" data-thumbnail="/images/code/dcom2.png">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/code/dcom2.png"
+            data-srcset="/images/code/dcom2.png, /images/code/dcom2.png 1.5x, /images/code/dcom2.png 2x"
+            data-sizes="auto"
+            alt="/images/code/dcom2.png" width="100%" />
+    </a>
+<p>在这个简单的前端，我们需要实现这几个功能</p>
+<ol>
+<li>提交评论表单</li>
+<li>展示评论列表</li>
+<li>获取访客统计数据</li>
+<li>更新访客统计数据</li>
+</ol>
+<h2 id="实现">实现</h2>
+<p>完成设计之后，就可以开始动手实现了。这里我假设已经有可正常使用的AWS账号，为了方便起见我的操作都是在用邮箱登录的根账号上进行的。</p>
+<h3 id="lambda函数">Lambda函数</h3>
+<p>lambda函数对接JS和数据库。简单创建空函数，部署代码。<br>
+<code>DComment</code>数据库类实现了4个操作：</p>
+<ul>
+<li><code>DComment.get_visitor_counter</code>函数查询页面的访客数据</li>
+<li><code>DComment.update_visitor_counter</code>函数查询页面的访客数据，并更新数据</li>
+<li><code>DComment.list_comments</code>函数查询页面的评论列表切片，由于cid=-1是访客数据，所以查询时要求key&gt;0</li>
+<li><code>DComment.post_comments</code>函数在插入新评论前，先更新Metadata获得新的cid，然后在插入时判断当前cid是否存在，如果存在则插入失败</li>
+</ul>
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">os</span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">time</span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">json</span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">typing</span> <span style="color:#a2f;font-weight:bold">import</span> List
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">boto3</span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">boto3.dynamodb.types</span> <span style="color:#a2f;font-weight:bold">import</span> Decimal
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">boto3.dynamodb.conditions</span> <span style="color:#a2f;font-weight:bold">import</span> Key
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>_DEFAULT_RESOURCE <span style="color:#666">=</span> boto3<span style="color:#666">.</span>resource(<span style="color:#b44">&#39;dynamodb&#39;</span>)
+</span></span><span style="display:flex;"><span>_DEFAULT_TABLENAME <span style="color:#666">=</span> os<span style="color:#666">.</span>environ[<span style="color:#b44">&#39;TableName&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">lambda_handler</span>(event, context):
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f">print</span>(<span style="color:#b44">&#39;RECIVE&#39;</span>, <span style="color:#a2f">dict</span>(event))
+</span></span><span style="display:flex;"><span>    method <span style="color:#666">=</span> event[<span style="color:#b44">&#39;requestContext&#39;</span>][<span style="color:#b44">&#39;http&#39;</span>][<span style="color:#b44">&#39;method&#39;</span>]
+</span></span><span style="display:flex;"><span>    origin <span style="color:#666">=</span> event[<span style="color:#b44">&#39;headers&#39;</span>][<span style="color:#b44">&#39;origin&#39;</span>]
+</span></span><span style="display:flex;"><span>    x_page <span style="color:#666">=</span> event[<span style="color:#b44">&#39;headers&#39;</span>][<span style="color:#b44">&#39;x-referer-page&#39;</span>]
+</span></span><span style="display:flex;"><span>    query <span style="color:#666">=</span> event<span style="color:#666">.</span>get(<span style="color:#b44">&#39;queryStringParameters&#39;</span>, {})
+</span></span><span style="display:flex;"><span>    body <span style="color:#666">=</span> json<span style="color:#666">.</span>loads(event<span style="color:#666">.</span>get(<span style="color:#b44">&#39;body&#39;</span>, <span style="color:#b44">&#39;</span><span style="color:#b68;font-weight:bold">{}</span><span style="color:#b44">&#39;</span>))
+</span></span><span style="display:flex;"><span>    page <span style="color:#666">=</span> origin <span style="color:#666">+</span> x_page
+</span></span><span style="display:flex;"><span>    obj <span style="color:#666">=</span> DComment()
+</span></span><span style="display:flex;"><span>    result <span style="color:#666">=</span> obj<span style="color:#666">.</span>handler(method, page, query, body)
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f">print</span>(<span style="color:#b44">&#39;SEND&#39;</span>, result)
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">return</span> json<span style="color:#666">.</span>dumps(result)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">_decimal_to_int</span>(d):
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">for</span> k, v <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#a2f">list</span>(d<span style="color:#666">.</span>items()):
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#a2f">isinstance</span>(v, Decimal):
+</span></span><span style="display:flex;"><span>            d[k] <span style="color:#666">=</span> <span style="color:#a2f">int</span>(v)
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">return</span> d
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">class</span> <span style="color:#00f">DComment</span>:
+</span></span><span style="display:flex;"><span>    COMMENT_META_PAGE <span style="color:#666">=</span> <span style="color:#b44">&#39;Metadata&#39;</span>
+</span></span><span style="display:flex;"><span>    COMMENT_META_CID <span style="color:#666">=</span> <span style="color:#666">0</span>
+</span></span><span style="display:flex;"><span>    VC_GET <span style="color:#666">=</span> <span style="color:#b44">&#39;VCGet&#39;</span>
+</span></span><span style="display:flex;"><span>    VC_UPDATE <span style="color:#666">=</span> <span style="color:#b44">&#39;VCUpdate&#39;</span>
+</span></span><span style="display:flex;"><span>    VC_CID <span style="color:#666">=</span> <span style="color:#666">-</span><span style="color:#666">1</span>
+</span></span><span style="display:flex;"><span>    VC_EMPTY <span style="color:#666">=</span> {<span style="color:#b44">&#39;LastVisit&#39;</span>: <span style="color:#666">0</span>, <span style="color:#b44">&#39;Counter&#39;</span>: <span style="color:#666">0</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">def</span> __init__(self, dyn_resource<span style="color:#666">=</span>_DEFAULT_RESOURCE, table_name<span style="color:#666">=</span>_DEFAULT_TABLENAME):
+</span></span><span style="display:flex;"><span>        self<span style="color:#666">.</span>dyn_resource <span style="color:#666">=</span> dyn_resource
+</span></span><span style="display:flex;"><span>        self<span style="color:#666">.</span>table_name <span style="color:#666">=</span> table_name
+</span></span><span style="display:flex;"><span>        self<span style="color:#666">.</span>table <span style="color:#666">=</span> dyn_resource<span style="color:#666">.</span>Table(table_name)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">handler</span>(self, method, page, query<span style="color:#666">=</span>{}, body<span style="color:#666">=</span>{}):
+</span></span><span style="display:flex;"><span>        action <span style="color:#666">=</span> query<span style="color:#666">.</span>get(<span style="color:#b44">&#34;action&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> method <span style="color:#666">==</span> <span style="color:#b44">&#34;GET&#34;</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#a2f;font-weight:bold">if</span> action <span style="color:#666">==</span> self<span style="color:#666">.</span>VC_GET:
+</span></span><span style="display:flex;"><span>                <span style="color:#a2f;font-weight:bold">return</span> self<span style="color:#666">.</span>get_visitor_counter(page)
+</span></span><span style="display:flex;"><span>            <span style="color:#a2f;font-weight:bold">elif</span> action <span style="color:#666">==</span> self<span style="color:#666">.</span>VC_UPDATE:
+</span></span><span style="display:flex;"><span>                <span style="color:#a2f;font-weight:bold">return</span> self<span style="color:#666">.</span>update_visitor_counter(page)
+</span></span><span style="display:flex;"><span>            <span style="color:#a2f;font-weight:bold">else</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#a2f;font-weight:bold">return</span> self<span style="color:#666">.</span>list_comments(page, <span style="color:#666">**</span>query)
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">elif</span> method <span style="color:#666">==</span> <span style="color:#b44">&#34;POST&#34;</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#a2f;font-weight:bold">return</span> self<span style="color:#666">.</span>post_comments(page, <span style="color:#666">**</span>body)
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">else</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#a2f;font-weight:bold">raise</span> <span style="color:#d2413a;font-weight:bold">ValueError</span>(<span style="color:#b44">f</span><span style="color:#b44">&#34;Invalid method: </span><span style="color:#b68;font-weight:bold">{</span>method<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">get_visitor_counter</span>(self, page: <span style="color:#a2f">str</span>) <span style="color:#666">-&gt;</span> <span style="color:#a2f">dict</span>:
+</span></span><span style="display:flex;"><span>        response <span style="color:#666">=</span> self<span style="color:#666">.</span>table<span style="color:#666">.</span>get_item(Key<span style="color:#666">=</span>{<span style="color:#b44">&#39;page&#39;</span>: page, <span style="color:#b44">&#39;cid&#39;</span>: self<span style="color:#666">.</span>VC_CID})
+</span></span><span style="display:flex;"><span>        resp <span style="color:#666">=</span> response<span style="color:#666">.</span>get(<span style="color:#b44">&#39;Item&#39;</span>, self<span style="color:#666">.</span>VC_EMPTY)
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">return</span> _decimal_to_int(resp)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">update_visitor_counter</span>(self, page: <span style="color:#a2f">str</span>) <span style="color:#666">-&gt;</span> <span style="color:#a2f">dict</span>:
+</span></span><span style="display:flex;"><span>        response <span style="color:#666">=</span> self<span style="color:#666">.</span>table<span style="color:#666">.</span>update_item(
+</span></span><span style="display:flex;"><span>            Key<span style="color:#666">=</span>{<span style="color:#b44">&#34;page&#34;</span>: page, <span style="color:#b44">&#34;cid&#34;</span>: self<span style="color:#666">.</span>VC_CID},
+</span></span><span style="display:flex;"><span>            UpdateExpression<span style="color:#666">=</span><span style="color:#b44">&#34;SET LastVisit = :t ADD #k :i&#34;</span>,
+</span></span><span style="display:flex;"><span>            ExpressionAttributeNames<span style="color:#666">=</span>{<span style="color:#b44">&#39;#k&#39;</span>: <span style="color:#b44">&#39;Counter&#39;</span>},
+</span></span><span style="display:flex;"><span>            ExpressionAttributeValues<span style="color:#666">=</span>{<span style="color:#b44">&#39;:t&#39;</span>: <span style="color:#a2f">int</span>(time<span style="color:#666">.</span>time()), <span style="color:#b44">&#39;:i&#39;</span>: <span style="color:#666">1</span>},
+</span></span><span style="display:flex;"><span>            ReturnValues<span style="color:#666">=</span><span style="color:#b44">&#39;UPDATED_OLD&#39;</span>)
+</span></span><span style="display:flex;"><span>        resp <span style="color:#666">=</span> response<span style="color:#666">.</span>get(<span style="color:#b44">&#39;Attributes&#39;</span>, self<span style="color:#666">.</span>VC_EMPTY)
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">return</span> _decimal_to_int(resp)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">list_comments</span>(self, page, offset<span style="color:#666">=</span><span style="color:#666">0</span>, limit<span style="color:#666">=</span><span style="color:#666">10</span>, <span style="color:#666">**</span>kwargs) <span style="color:#666">-&gt;</span> List[<span style="color:#a2f">dict</span>]:
+</span></span><span style="display:flex;"><span>        offset <span style="color:#666">=</span> <span style="color:#a2f">int</span>(offset)
+</span></span><span style="display:flex;"><span>        limit <span style="color:#666">=</span> <span style="color:#a2f">int</span>(limit)
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> offset:
+</span></span><span style="display:flex;"><span>            kce <span style="color:#666">=</span> Key(<span style="color:#b44">&#39;page&#39;</span>)<span style="color:#666">.</span>eq(page) <span style="color:#666">&amp;</span> Key(<span style="color:#b44">&#39;cid&#39;</span>)<span style="color:#666">.</span>between(<span style="color:#666">0</span>, offset)
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">else</span>:
+</span></span><span style="display:flex;"><span>            kce <span style="color:#666">=</span> Key(<span style="color:#b44">&#39;page&#39;</span>)<span style="color:#666">.</span>eq(page) <span style="color:#666">&amp;</span> Key(<span style="color:#b44">&#39;cid&#39;</span>)<span style="color:#666">.</span>gt(<span style="color:#666">0</span>)
+</span></span><span style="display:flex;"><span>        response <span style="color:#666">=</span> self<span style="color:#666">.</span>table<span style="color:#666">.</span>query(
+</span></span><span style="display:flex;"><span>            KeyConditionExpression<span style="color:#666">=</span>(kce),
+</span></span><span style="display:flex;"><span>            Limit<span style="color:#666">=</span>limit,
+</span></span><span style="display:flex;"><span>            ScanIndexForward<span style="color:#666">=</span><span style="color:#a2f;font-weight:bold">False</span>,
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">for</span> it <span style="color:#a2f;font-weight:bold">in</span> response[<span style="color:#b44">&#39;Items&#39;</span>]:
+</span></span><span style="display:flex;"><span>            it[<span style="color:#b44">&#39;cid&#39;</span>] <span style="color:#666">=</span> <span style="color:#a2f">int</span>(it[<span style="color:#b44">&#39;cid&#39;</span>])
+</span></span><span style="display:flex;"><span>            it[<span style="color:#b44">&#39;timestamp&#39;</span>] <span style="color:#666">=</span> <span style="color:#a2f">int</span>(it[<span style="color:#b44">&#39;timestamp&#39;</span>])
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">return</span> response[<span style="color:#b44">&#39;Items&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">post_comments</span>(self, page, nickname, comment, email<span style="color:#666">=</span><span style="color:#a2f;font-weight:bold">None</span>, <span style="color:#666">**</span>kwargs) <span style="color:#666">-&gt;</span> <span style="color:#a2f">dict</span>:
+</span></span><span style="display:flex;"><span>        resp <span style="color:#666">=</span> self<span style="color:#666">.</span>table<span style="color:#666">.</span>update_item(
+</span></span><span style="display:flex;"><span>            Key<span style="color:#666">=</span>{<span style="color:#b44">&#39;page&#39;</span>: self<span style="color:#666">.</span>COMMENT_META_PAGE, <span style="color:#b44">&#39;cid&#39;</span>: self<span style="color:#666">.</span>COMMENT_META_CID},
+</span></span><span style="display:flex;"><span>            UpdateExpression<span style="color:#666">=</span><span style="color:#b44">&#39;ADD LastID :inc&#39;</span>,
+</span></span><span style="display:flex;"><span>            ExpressionAttributeValues<span style="color:#666">=</span>{<span style="color:#b44">&#39;:inc&#39;</span>: <span style="color:#666">1</span>},
+</span></span><span style="display:flex;"><span>            ReturnValues<span style="color:#666">=</span><span style="color:#b44">&#34;UPDATED_NEW&#34;</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        cid <span style="color:#666">=</span> resp[<span style="color:#b44">&#39;Attributes&#39;</span>][<span style="color:#b44">&#39;LastID&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        item <span style="color:#666">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#34;page&#34;</span>: page,
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#34;cid&#34;</span>: <span style="color:#a2f">int</span>(cid),
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#34;nickname&#34;</span>: nickname,
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#34;comment&#34;</span>: comment,
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#34;timestamp&#34;</span>: <span style="color:#a2f">int</span>(time<span style="color:#666">.</span>time()),
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> email:
+</span></span><span style="display:flex;"><span>            item[<span style="color:#b44">&#34;email&#34;</span>] <span style="color:#666">=</span> email
+</span></span><span style="display:flex;"><span>        self<span style="color:#666">.</span>table<span style="color:#666">.</span>put_item(
+</span></span><span style="display:flex;"><span>            Item<span style="color:#666">=</span>item,
+</span></span><span style="display:flex;"><span>            ConditionExpression<span style="color:#666">=</span><span style="color:#b44">&#34;attribute_not_exists(cid)&#34;</span>,
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">return</span> {<span style="color:#b44">&#39;status&#39;</span>: <span style="color:#b44">&#39;success&#39;</span>}</span></span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="lambda函数配置">Lambda函数配置</h3>
+<p>代码部署之后，需要做一些配置调整：</p>
+<ol>
+<li>设置Lambda函数的环境变量，<code>TableName</code>设为自己创建的数据表的名字，代码中表的名字从环境变量读取</li>
+<li>调整函数权限，为执行角色添加DynamoDB的<code>PutItem,GetItem,Query,UpdateItem</code>的权限，可以在可视化权限编辑器里操作</li>
+<li>设置CORS允许标头，页面路径通过 headers <code>x-referer-page</code> 传递</li>
+<li>设置CORS允许源为自己的主页，我这里是<code>https://darkgoldbar.github.io</code>，</li>
+<li>设置CORS允许方法为<code>GET &amp; POST</code></li>
+</ol>
+<p>设置完成的样子
+<a class="lightgallery" href="/images/code/dcom3.png" title="/images/code/dcom3.png" data-thumbnail="/images/code/dcom3.png">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/code/dcom3.png"
+            data-srcset="/images/code/dcom3.png, /images/code/dcom3.png 1.5x, /images/code/dcom3.png 2x"
+            data-sizes="auto"
+            alt="/images/code/dcom3.png" width="100%" />
+    </a>
+<a class="lightgallery" href="/images/code/dcom4.png" title="/images/code/dcom4.png" data-thumbnail="/images/code/dcom4.png">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/code/dcom4.png"
+            data-srcset="/images/code/dcom4.png, /images/code/dcom4.png 1.5x, /images/code/dcom4.png 2x"
+            data-sizes="auto"
+            alt="/images/code/dcom4.png" width="100%" />
+    </a>
+<a class="lightgallery" href="/images/code/dcom5.png" title="/images/code/dcom5.png" data-thumbnail="/images/code/dcom5.png">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/code/dcom5.png"
+            data-srcset="/images/code/dcom5.png, /images/code/dcom5.png 1.5x, /images/code/dcom5.png 2x"
+            data-sizes="auto"
+            alt="/images/code/dcom5.png" width="100%" />
+    </a></p>
+<h3 id="javascript">Javascript</h3>
+<p>完成了后端的数据库和lambda的部署之后，接下里就是写一个简单的前端了。
+这里我用尽量简单的HTML和原生JS实现一个计数和评论的展示和交互。
+同时为了在博客模板中插入的代码尽量简洁，选择用JS把内容插入空元素。
+最终在博客模板中插入的HTML代码是这个样子的：</p>
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-HTML" data-lang="HTML"><span style="display:flex;"><span><span style="color:#080;font-style:italic">&lt;!-- 访客计数 --&gt;</span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;d-counter&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#080;font-style:italic">&lt;!-- 评论 --&gt;</span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;d-comment&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#008000;font-weight:bold">link</span> <span style="color:#b44">rel</span><span style="color:#666">=</span><span style="color:#b44">&#34;stylesheet&#34;</span> <span style="color:#b44">href</span><span style="color:#666">=</span><span style="color:#b44">&#34;/css/comment.css&#34;</span> <span style="color:#b44">type</span><span style="color:#666">=</span><span style="color:#b44">&#34;text/css&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#008000;font-weight:bold">script</span> <span style="color:#b44">src</span><span style="color:#666">=</span><span style="color:#b44">&#34;/js/comment.2.2.js&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">script</span>&gt;</span></span></code></pre></td></tr></table>
+</div>
+</div>
+<p>JS代码做了这几个函数：</p>
+<ul>
+<li>
+<p><code>dcomPage</code>: 获取当前页面路径。</p>
+</li>
+<li>
+<p><code>dcomSite</code>: 存储当前站点地址，用于前端判断是否需要请求计数和评论。</p>
+</li>
+<li>
+<p><code>dcomServer</code>: 存储dcom的API地址。</p>
+</li>
+<li>
+<p><code>dcomInit</code>: 在页面加载完毕后，初始化评论区域，包括填充HTML、绑定事件等。</p>
+</li>
+<li>
+<p><code>dcomVCRender</code>: 渲染浏览量计数器，接受计数和时间戳参数，将它们插入DOM中。</p>
+</li>
+<li>
+<p><code>dcomRenderComment</code>: 渲染单条评论，接受评论信息，将其转化为HTML字符串。</p>
+</li>
+<li>
+<p><code>dcomRenderCommentList</code>: 渲染评论列表，接受评论列表和“没有更多评论”的标记，将其转化为HTML字符串并插入DOM中。</p>
+</li>
+<li>
+<p><code>dcomGetMore</code>: 加载更多评论，查询页面中所有评论的data-cid值，找到最小值作为下一个偏移量，并调用dcomGet函数获取更多评论。</p>
+</li>
+<li>
+<p><code>dcomGet</code>: 获取评论，接受偏移量和限制数量，向dcomServer发起GET请求，获取评论列表，然后调用dcomRenderCommentList函数渲染评论列表。</p>
+</li>
+<li>
+<p><code>dcomPost</code>: 提交评论，获取表单信息，将其转换为JSON格式，然后向dcomServer发起POST请求，提交评论，如果需要刷新评论列表，还会再次调用dcomGet获取最新评论列表。</p>
+</li>
+<li>
+<p><code>dcomVC</code>: 访客计数，调用Cookie存储页面访问标记，根据上次访问时间和当前时间调用dcomVCRequest。</p>
+</li>
+<li>
+<p><code>dcomVCRequest</code>: 向dcomServer发起GET请求，根据“doUpdate”标记确定是否更新访客数。</p>
+</li>
+</ul>
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">130
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">131
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">132
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">133
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">134
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">135
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">136
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">137
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">138
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">139
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">140
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">141
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">142
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">143
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">144
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">145
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">146
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">147
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">148
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">149
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">150
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">151
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">152
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">153
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">154
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">155
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">156
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">157
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">158
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">159
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">160
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">161
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">162
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">163
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">164
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">165
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">166
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">167
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">168
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">169
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">170
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> dcomPage <span style="color:#666">=</span> <span style="color:#a2f">window</span>.location.pathname;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> dcomSite <span style="color:#666">=</span> <span style="color:#b44">&#34;https://darkgoldbar.github.io&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> dcomServer<span style="color:#666">=</span><span style="color:#b44">&#34;https://27n4glpsqowyvyndhv4tltfoby0ovlty.lambda-url.ap-northeast-3.on.aws/&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f">window</span>.addEventListener(<span style="color:#b44">&#39;load&#39;</span>, dcomInit);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> dcomInit() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> dcomEle <span style="color:#666">=</span> <span style="color:#a2f">document</span>.getElementById(<span style="color:#b44">&#39;d-comment&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> dcomVCEle <span style="color:#666">=</span> <span style="color:#a2f">document</span>.getElementById(<span style="color:#b44">&#39;d-counter&#39;</span>);
+</span></span><span style="display:flex;"><span>    dcomEle.innerHTML <span style="color:#666">=</span> <span style="color:#b44">`
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">    &lt;form action=&#34;#&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">        &lt;div class=&#34;flex&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">            &lt;input type=&#34;text&#34; name=&#34;nickname&#34; placeholder=&#34;昵称(必填)&#34; required&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">            &lt;input type=&#34;email&#34; name=&#34;email&#34; placeholder=&#34;邮箱(选填)&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">        &lt;/div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">        &lt;div class=&#34;flex&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">            &lt;textarea name=&#34;comment&#34; rows=&#34;5&#34; placeholder=&#34;请输入评论...&#34; required&gt;&lt;/textarea&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">        &lt;/div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">        &lt;div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">            &lt;input class=&#34;button&#34; type=&#34;submit&#34; value=&#34;提交评论&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">        &lt;/div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">        &lt;sub&gt;Powered by &lt;a href=&#34;https://github.com/DarkGoldBar&#34;&gt;D-comment&lt;/a&gt;&lt;/sub&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">    &lt;/form&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">    &lt;hr&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">    &lt;div class=&#34;comments&#34;&gt;&lt;/div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">    &lt;a class=&#34;button&#34; type=&#34;more-comment&#34;&gt;加载更多&lt;/a&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">    &lt;p class=&#34;comment-nomore&#34; hide&gt;没有更多评论了&lt;/p&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">    `</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> moreEle <span style="color:#666">=</span> <span style="color:#a2f">document</span>.querySelector(<span style="color:#b44">&#39;#d-comment [type=more-comment]&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> formEle <span style="color:#666">=</span> <span style="color:#a2f">document</span>.querySelector(<span style="color:#b44">&#39;#d-comment form&#39;</span>);
+</span></span><span style="display:flex;"><span>    moreEle.addEventListener(<span style="color:#b44">&#39;click&#39;</span>, dcomGetMore);
+</span></span><span style="display:flex;"><span>    formEle.addEventListener(<span style="color:#b44">&#39;submit&#39;</span>, (event) =&gt; {
+</span></span><span style="display:flex;"><span>        event.preventDefault();
+</span></span><span style="display:flex;"><span>        dcomPost(<span style="color:#a2f;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> (<span style="color:#666">!</span>(dcomSite) <span style="color:#666">||</span> (<span style="color:#a2f">window</span>.location.origin <span style="color:#666">==</span> dcomSite)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> (dcomEle) {
+</span></span><span style="display:flex;"><span>            dcomGet();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> (dcomVCEle)  {
+</span></span><span style="display:flex;"><span>            dcomVC();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> dcomVCRender(count, timestamp) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> vcNode <span style="color:#666">=</span> <span style="color:#a2f">document</span>.getElementById(<span style="color:#b44">&#39;d-counter&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> date <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> <span style="color:#a2f">Date</span>(timestamp <span style="color:#666">*</span> <span style="color:#666">1000</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> dateString <span style="color:#666">=</span> date.toLocaleString();
+</span></span><span style="display:flex;"><span>    vcNode.innerHTML <span style="color:#666">=</span> <span style="color:#b44">`&lt;i class=&#34;far fa-eye fa-fw&#34; aria-hidden=&#34;true&#34;&gt;&lt;/i&gt; 浏览次数: </span><span style="color:#b68;font-weight:bold">${</span>count<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44"> 最后访问: </span><span style="color:#b68;font-weight:bold">${</span>dateString<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44">`</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> dcomRenderComment(commentDict) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> { comment, nickname, cid, timestamp, email } <span style="color:#666">=</span> commentDict;
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> date <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> <span style="color:#a2f">Date</span>(timestamp <span style="color:#666">*</span> <span style="color:#666">1000</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> dateString <span style="color:#666">=</span> date.toLocaleString();
+</span></span><span style="display:flex;"><span>    email <span style="color:#666">=</span> email <span style="color:#666">||</span> <span style="color:#b44">&#39;&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> html <span style="color:#666">=</span> <span style="color:#b44">`
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">      &lt;div class=&#34;comment&#34; data-cid=&#34;</span><span style="color:#b68;font-weight:bold">${</span>cid<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44">&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">        &lt;div class=&#34;comment-name&#34;&gt;</span><span style="color:#b68;font-weight:bold">${</span>nickname<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44">&lt;/div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">        &lt;div class=&#34;comment-info&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">          &lt;span class=&#34;comment-time&#34;&gt;</span><span style="color:#b68;font-weight:bold">${</span>dateString<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44">&lt;/span&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">          &lt;span class=&#34;comment-email&#34;&gt;</span><span style="color:#b68;font-weight:bold">${</span>email<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44">&lt;/span&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">        &lt;/div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">        &lt;div class=&#34;comment-body&#34;&gt;</span><span style="color:#b68;font-weight:bold">${</span>comment<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44">&lt;/div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">      &lt;/div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#b44">    `</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">return</span> html;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> dcomRenderCommentList(commentList, noMore<span style="color:#666">=</span>False) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> commentsEle <span style="color:#666">=</span> <span style="color:#a2f">document</span>.querySelector(<span style="color:#b44">&#39;#d-comment .comments&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> MoreEle <span style="color:#666">=</span> <span style="color:#a2f">document</span>.querySelector(<span style="color:#b44">&#39;#d-comment [type=more-comment]&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> noMoreEle <span style="color:#666">=</span> <span style="color:#a2f">document</span>.querySelector(<span style="color:#b44">&#39;#d-comment .comment-nomore&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> newEle <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">null</span>;
+</span></span><span style="display:flex;"><span>    commentList.forEach(c =&gt; {
+</span></span><span style="display:flex;"><span>        newEle <span style="color:#666">=</span> <span style="color:#a2f">document</span>.createElement(<span style="color:#b44">&#39;div&#39;</span>);
+</span></span><span style="display:flex;"><span>        newEle.innerHTML <span style="color:#666">=</span> dcomRenderComment(c);
+</span></span><span style="display:flex;"><span>        commentsEle.appendChild(newEle.children[<span style="color:#666">0</span>]);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> (noMore) {
+</span></span><span style="display:flex;"><span>        noMoreEle.removeAttribute(<span style="color:#b44">&#39;hide&#39;</span>);
+</span></span><span style="display:flex;"><span>        MoreEle.setAttribute(<span style="color:#b44">&#39;hide&#39;</span>, <span style="color:#b44">&#39;&#39;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> dcomGetMore() {
+</span></span><span style="display:flex;"><span>    <span style="color:#080;font-style:italic">// chatGPT: 写一个JS函数，从下面的.comments元素中，找到最小的data-cid值
+</span></span></span><span style="display:flex;"><span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">const</span> comments <span style="color:#666">=</span> <span style="color:#a2f">document</span>.querySelectorAll(<span style="color:#b44">&#39;#d-comment .comments .comment&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> minCid <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">Infinity</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">for</span> (<span style="color:#a2f;font-weight:bold">let</span> i <span style="color:#666">=</span> <span style="color:#666">0</span>; i <span style="color:#666">&lt;</span> comments.length; i<span style="color:#666">++</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">const</span> cid <span style="color:#666">=</span> <span style="color:#a2f">parseInt</span>(comments[i].getAttribute(<span style="color:#b44">&#39;data-cid&#39;</span>));
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> (<span style="color:#666">!</span><span style="color:#a2f">isNaN</span>(cid) <span style="color:#666">&amp;&amp;</span> cid <span style="color:#666">&lt;</span> minCid) {
+</span></span><span style="display:flex;"><span>            minCid <span style="color:#666">=</span> cid;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    minCid <span style="color:#666">=</span> (minCid <span style="color:#666">==</span> <span style="color:#a2f;font-weight:bold">Infinity</span>) <span style="color:#666">?</span> <span style="color:#a2f;font-weight:bold">null</span> <span style="color:#666">:</span> minCid;
+</span></span><span style="display:flex;"><span>    dcomGet(minCid);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> dcomGet(offset<span style="color:#666">=</span><span style="color:#a2f;font-weight:bold">null</span>, limit<span style="color:#666">=</span><span style="color:#666">10</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> xhr <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> XMLHttpRequest();
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> query <span style="color:#666">=</span> <span style="color:#b44">`?limit=</span><span style="color:#b68;font-weight:bold">${</span>limit<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44">`</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> (offset) {
+</span></span><span style="display:flex;"><span>        query <span style="color:#666">+=</span> <span style="color:#b44">`&amp;offset=</span><span style="color:#b68;font-weight:bold">${</span>offset<span style="color:#b68;font-weight:bold">}</span><span style="color:#b44">`</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    xhr.onload <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">function</span> () {
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> (xhr.status <span style="color:#666">===</span> <span style="color:#666">200</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a2f;font-weight:bold">let</span> commentList <span style="color:#666">=</span> JSON.parse(xhr.responseText);
+</span></span><span style="display:flex;"><span>            dcomRenderCommentList(commentList, (commentList.length <span style="color:#666">&lt;</span> limit));
+</span></span><span style="display:flex;"><span>        } <span style="color:#a2f;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            console.log(<span style="color:#b44">&#34;d-comment:&#34;</span>, xhr.responseText);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    xhr.open(<span style="color:#b44">&#34;GET&#34;</span>, dcomServer <span style="color:#666">+</span> query, <span style="color:#a2f;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>    xhr.setRequestHeader(<span style="color:#b44">&#34;x-referer-page&#34;</span>, dcomPage);
+</span></span><span style="display:flex;"><span>    xhr.send();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> dcomPost(doRefresh<span style="color:#666">=</span><span style="color:#a2f;font-weight:bold">false</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> xhr <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> XMLHttpRequest();
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> nickname <span style="color:#666">=</span> <span style="color:#a2f">document</span>.querySelector(<span style="color:#b44">&#34;#d-comment [name=nickname]&#34;</span>).value;
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> email <span style="color:#666">=</span> <span style="color:#a2f">document</span>.querySelector(<span style="color:#b44">&#34;#d-comment [name=email]&#34;</span>).value;
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> comment <span style="color:#666">=</span> <span style="color:#a2f">document</span>.querySelector(<span style="color:#b44">&#34;#d-comment [name=comment]&#34;</span>).value;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#080;font-style:italic">// 监听请求完成事件
+</span></span></span><span style="display:flex;"><span><span style="color:#080;font-style:italic"></span>    xhr.onload <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">function</span> () {
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> (xhr.status <span style="color:#666">===</span> <span style="color:#666">200</span>) {
+</span></span><span style="display:flex;"><span>            console.log(<span style="color:#b44">&#34;d-comment:&#34;</span>, xhr.responseText);
+</span></span><span style="display:flex;"><span>            <span style="color:#a2f;font-weight:bold">if</span> (doRefresh) { location.reload() }
+</span></span><span style="display:flex;"><span>        } <span style="color:#a2f;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            console.log(<span style="color:#b44">&#34;d-comment:&#34;</span>, xhr.responseText);
+</span></span><span style="display:flex;"><span>            alert(<span style="color:#b44">&#34;评论提交失败&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    xhr.open(<span style="color:#b44">&#34;POST&#34;</span>, dcomServer, <span style="color:#a2f;font-weight:bold">true</span>);
+</span></span><span style="display:flex;"><span>    xhr.setRequestHeader(<span style="color:#b44">&#34;x-referer-page&#34;</span>, dcomPage);
+</span></span><span style="display:flex;"><span>    xhr.send(JSON.stringify({ nickname, email, comment }));
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> dcomVC() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> cookieKey <span style="color:#666">=</span> <span style="color:#b44">&#39;dcom:visited:&#39;</span> <span style="color:#666">+</span> dcomPage;
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> currentTimeStamp <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> <span style="color:#a2f">Date</span>().getTime();
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> lastTimeStamp <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> <span style="color:#a2f">Number</span>(localStorage.getItem(cookieKey));
+</span></span><span style="display:flex;"><span>    localStorage.setItem(cookieKey, currentTimeStamp);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> doUpdate <span style="color:#666">=</span> <span style="color:#666">!</span>(lastTimeStamp <span style="color:#666">&amp;&amp;</span> ((currentTimeStamp <span style="color:#666">-</span> lastTimeStamp) <span style="color:#666">&lt;</span> <span style="color:#666">86400000</span>));
+</span></span><span style="display:flex;"><span>    dcomVCRequest(doUpdate);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> dcomVCRequest(doUpdate<span style="color:#666">=</span><span style="color:#a2f;font-weight:bold">false</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> xhr <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> XMLHttpRequest();
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">const</span> query <span style="color:#666">=</span> <span style="color:#b44">&#34;?action=&#34;</span> <span style="color:#666">+</span> (doUpdate <span style="color:#666">?</span> <span style="color:#b44">&#34;VCUpdate&#34;</span> <span style="color:#666">:</span> <span style="color:#b44">&#34;VCGet&#34;</span>);
+</span></span><span style="display:flex;"><span>    xhr.responseType <span style="color:#666">=</span> <span style="color:#b44">&#39;json&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    xhr.onload <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">function</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">let</span> { Counter, LastVisit } <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">this</span>.response
+</span></span><span style="display:flex;"><span>        dcomVCRender(Counter, LastVisit);
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    xhr.open(<span style="color:#b44">&#34;GET&#34;</span>, dcomServer <span style="color:#666">+</span> query);
+</span></span><span style="display:flex;"><span>    xhr.setRequestHeader(<span style="color:#b44">&#34;x-referer-page&#34;</span>, dcomPage);
+</span></span><span style="display:flex;"><span>    xhr.send();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="部署">部署</h2>
+<p>这里就用我使用的LoveIt模板举例。
+Hugo在读取主题之前优先读取根目录下的模板，因此把我们需要改造的文件复制到根目录下更改，不需要更改主题文件。</p>
+<p>这里先找到模板的<code>posts/single.html</code>模板文件，确认一下接下来需要把访客计数和评论分别添加到什么地方。<br>
+发现访客计数是做了模块化处理，因此只需新建一个<code>partials/comment.html</code>模板，把自己的评论的CSS、JS还有带ID的空元素写进去即可，然后把CSS和JS文件放在static里。</p>
+<pre tabindex="0"><code>{{- /* Comment */ -}}
+{{- partial &#34;comment.html&#34; . -}}
+</code></pre><p>但是，原模板没有做模块化的访客计数，只是把一个valine访客计数写死在模板里。
+这里就需要在<code>posts/single.html</code>文件里找到访客计数的合适的地方，把我们的访客计数的空元素加进去。
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="background-color:#dfdfdf"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span></span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid;"><code class="language-HTML" data-lang="HTML"><span style="display:flex;"><span>&lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;post-meta-line&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    {{- with .Site.Params.dateformat | default &#34;2006-01-02&#34; | .PublishDate.Format -}}
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#008000;font-weight:bold">i</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;far fa-calendar-alt fa-fw&#34;</span> <span style="color:#b44">aria-hidden</span><span style="color:#666">=</span><span style="color:#b44">&#34;true&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">i</span>&gt;<span style="color:#999;font-weight:bold">&amp;nbsp;</span>&lt;<span style="color:#008000;font-weight:bold">time</span> <span style="color:#b44">datetime</span><span style="color:#666">=</span><span style="color:#b44">&#34;{{ . }}&#34;</span>&gt;{{ . }}&lt;/<span style="color:#008000;font-weight:bold">time</span>&gt;<span style="color:#999;font-weight:bold">&amp;nbsp;</span>
+</span></span><span style="display:flex;"><span>    {{- end -}}
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#008000;font-weight:bold">i</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;fas fa-pencil-alt fa-fw&#34;</span> <span style="color:#b44">aria-hidden</span><span style="color:#666">=</span><span style="color:#b44">&#34;true&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">i</span>&gt;<span style="color:#999;font-weight:bold">&amp;nbsp;</span>{{ T &#34;wordCount&#34; .WordCount }}<span style="color:#999;font-weight:bold">&amp;nbsp;</span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#008000;font-weight:bold">i</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;far fa-clock fa-fw&#34;</span> <span style="color:#b44">aria-hidden</span><span style="color:#666">=</span><span style="color:#b44">&#34;true&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">i</span>&gt;<span style="color:#999;font-weight:bold">&amp;nbsp;</span>{{ T &#34;readingTime&#34; .ReadingTime }}<span style="color:#999;font-weight:bold">&amp;nbsp;</span>
+</span></span><span style="display:flex;"><span>    {{- $comment := .Scratch.Get &#34;comment&#34; | default dict -}}
+</span></span><span style="display:flex;"><span>    {{- if $comment.enable | and $comment.valine.enable | and $comment.valine.visitor -}}
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#008000;font-weight:bold">span</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;{{ .RelPermalink }}&#34;</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;leancloud_visitors&#34;</span> <span style="color:#b44">data-flag-title</span><span style="color:#666">=</span><span style="color:#b44">&#34;{{ .Title }}&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#008000;font-weight:bold">i</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">&#34;far fa-eye fa-fw&#34;</span> <span style="color:#b44">aria-hidden</span><span style="color:#666">=</span><span style="color:#b44">&#34;true&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">i</span>&gt;<span style="color:#999;font-weight:bold">&amp;nbsp;</span>&lt;<span style="color:#008000;font-weight:bold">span</span> <span style="color:#b44">class</span><span style="color:#666">=</span><span style="color:#b44">leancloud-visitors-count</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">span</span>&gt;<span style="color:#999;font-weight:bold">&amp;nbsp;</span>{{ T &#34;views&#34; }}
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#008000;font-weight:bold">span</span>&gt;<span style="color:#999;font-weight:bold">&amp;nbsp;</span>
+</span></span><span style="display:flex;"><span>    {{- end -}}
+</span></span><span style="display:flex; background-color:#dfdfdf"><span>    &lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;d-counter&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;</span></span></code></pre></td></tr></table>
+</div>
+</div></p>
+<p>最终，新添加的文件目录如下，重新生成站点就能看到效果了。</p>
+<pre tabindex="0"><code>DarkGoleBar.github.io/
+├── layouts/
+│   ├── partials
+│   │   └── comment.html
+│   └── posts
+│       └── single.html
+└── static
+    ├── css
+    |   └── comment.css
+    └── js
+        └── comment.js
+</code></pre></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-03-17&nbsp;<a class="git-hash" href="https://github.com/DarkGoldBar/DarkGoldBar.github.io/commit/ed97cce1cfcea5c4351d7465c6ce42552a029557" target="_blank" title="commit by Wudi_Sharenwang(hanetama@qq.com) ed97cce1cfcea5c4351d7465c6ce42552a029557: 更新 Dcomment">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>ed97cce</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/" data-title="制作一个无服务器博客评论系统" data-hashtags="javascript,Python,hugo"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/" data-hashtag="javascript"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/" data-title="制作一个无服务器博客评论系统"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/" data-title="制作一个无服务器博客评论系统"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/" data-title="制作一个无服务器博客评论系统"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/javascript/">javascript</a>,&nbsp;<a href="/tags/python/">Python</a>,&nbsp;<a href="/tags/hugo/">hugo</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/code/create-a-visitor-counter-with-aws/" class="prev" rel="prev" title="用AWS做一个免费的访客计数"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>用AWS做一个免费的访客计数</a></div>
+</div>
+<div id="comments">
+    <link rel="stylesheet" href="/css/comment.css" type="text/css">
+    <div id="d-comment"></div>
+    <script src="/js/comment.2.2.js"></script>
+    <noscript>
+        Please enable JavaScript to view the comments powered by DarkGoldBar D-comment</a>.
+    </noscript>
+</div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.111.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/DarkGoldBar" target="_blank">DarkGoldBar</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"data":{"id-1":"DarkGoldBar","id-2":"DarkGoldBar"},"lightgallery":true,"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

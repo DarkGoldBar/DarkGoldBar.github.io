@@ -72,7 +72,7 @@
 </header><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">目录</h2>
-            <div class="toc-content" id="toc-content-auto"></div>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">ffmpeg代码笔记</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/DarkGoldBar" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>DarkGoldBar</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>代码笔记</a></span></div>
             <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-15">2022-11-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 354 字&nbsp;
@@ -108,9 +108,9 @@
 <a href="https://ffmpeg.org/download.html" target="_blank" rel="noopener noreffer ">ffmpeg官网下载</a></p>
 <hr>
 <h3 id="常用命令">常用命令</h3>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -122,16 +122,16 @@
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#008000"># 基础格式转换</span>
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#080;font-style:italic"># 基础格式转换</span>
 </span></span><span style="display:flex;"><span>ffmpeg -i video.avi video.mp4
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#008000"># 图片转视频</span>
-</span></span><span style="display:flex;"><span>ffmpeg -r 10 -i image_%4d.jpg -vf eq=brightness=0.06:saturation=1 video.mp4 -y
+</span></span><span style="display:flex;"><span><span style="color:#080;font-style:italic"># 图片转视频</span>
+</span></span><span style="display:flex;"><span>ffmpeg -r <span style="color:#666">10</span> -i image_%4d.jpg -vf <span style="color:#b8860b">eq</span><span style="color:#666">=</span><span style="color:#b8860b">brightness</span><span style="color:#666">=</span>0.06:saturation<span style="color:#666">=</span><span style="color:#666">1</span> video.mp4 -y
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#008000"># 视频转gif</span>
-</span></span><span style="display:flex;"><span>ffmpeg -ss 00:00:01.00 -t 10 -i baiweibing.mp4 <span style="color:#a31515">\
-</span></span></span><span style="display:flex;"><span><span style="color:#a31515"></span>-vf <span style="color:#a31515">&#34;fps=16,scale=160:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=32:reserve_transparent=0[p];[s1][p]paletteuse&#34;</span> <span style="color:#a31515">\
-</span></span></span><span style="display:flex;"><span><span style="color:#a31515"></span>output.gif</span></span></code></pre></td></tr></table>
+</span></span><span style="display:flex;"><span><span style="color:#080;font-style:italic"># 视频转gif</span>
+</span></span><span style="display:flex;"><span>ffmpeg -ss 00:00:01.00 -t <span style="color:#666">10</span> -i baiweibing.mp4 <span style="color:#b62;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#b62;font-weight:bold"></span>-vf <span style="color:#b44">&#34;fps=16,scale=160:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=32:reserve_transparent=0[p];[s1][p]paletteuse&#34;</span> <span style="color:#b62;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#b62;font-weight:bold"></span>output.gif</span></span></code></pre></td></tr></table>
 </div>
 </div>
 <h3 id="参数">参数</h3>

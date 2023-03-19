@@ -16,7 +16,7 @@
 <meta name="application-name" content="My cool site">
 <meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://darkgoldbar.github.io/posts/code/create-a-visitor-counter-with-aws/" /><link rel="prev" href="https://darkgoldbar.github.io/posts/ljh/ljh018/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://darkgoldbar.github.io/posts/code/create-a-visitor-counter-with-aws/" /><link rel="prev" href="https://darkgoldbar.github.io/posts/ljh/ljh018/" /><link rel="next" href="https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
     {
@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/darkgoldbar.github.io\/posts\/code\/create-a-visitor-counter-with-aws\/"
-        },"genre": "posts","keywords": "javascript, Python, hugo","wordcount":  1912 ,
+        },"genre": "posts","keywords": "javascript, Python, hugo","wordcount":  1939 ,
         "url": "https:\/\/darkgoldbar.github.io\/posts\/code\/create-a-visitor-counter-with-aws\/","datePublished": "2023-03-01T15:48:45+08:00","dateModified": "2023-03-07T09:26:09+08:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
@@ -75,7 +75,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">用AWS做一个免费的访客计数</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/DarkGoldBar" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>DarkGoldBar</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>代码笔记</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-01">2023-03-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1912 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-01">2023-03-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1939 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;<div id="d-counter"></div>
             </div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -187,20 +187,39 @@
 <p>在函数页面，找到<strong>配置</strong>-&gt;<strong>权限</strong>，点执行角色的名字，转到IAM页面。</p>
 <p>在IAM里把这个执行角色的策略改成<code>AWSLambdaDynamoDBExecutionRole</code>，
 然后再添加一条自定义策略，增加查询、更新数据的权限。</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    &#34;Version&#34;: <span style="color:#a31515">&#34;2012-10-17&#34;</span>,
-</span></span><span style="display:flex;"><span>    &#34;Statement&#34;: [
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#008000;font-weight:bold">&#34;Version&#34;</span>: <span style="color:#b44">&#34;2012-10-17&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#008000;font-weight:bold">&#34;Statement&#34;</span>: [
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            &#34;Effect&#34;: <span style="color:#a31515">&#34;Allow&#34;</span>,
-</span></span><span style="display:flex;"><span>            &#34;Action&#34;: [
-</span></span><span style="display:flex;"><span>                <span style="color:#a31515">&#34;dynamodb:GetItem&#34;</span>,
-</span></span><span style="display:flex;"><span>                <span style="color:#a31515">&#34;dynamodb:UpdateItem&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#008000;font-weight:bold">&#34;Effect&#34;</span>: <span style="color:#b44">&#34;Allow&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#008000;font-weight:bold">&#34;Action&#34;</span>: [
+</span></span><span style="display:flex;"><span>                <span style="color:#b44">&#34;dynamodb:GetItem&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#b44">&#34;dynamodb:UpdateItem&#34;</span>
 </span></span><span style="display:flex;"><span>            ],
-</span></span><span style="display:flex;"><span>            &#34;Resource&#34;: <span style="color:#a31515">&#34;*&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#008000;font-weight:bold">&#34;Resource&#34;</span>: <span style="color:#b44">&#34;*&#34;</span>
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    ]
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="修改cros限制">修改CROS限制</h3>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="修改cros限制">修改CROS限制</h3>
 <p>在函数页面，找到<strong>配置</strong>-&gt;<strong>函数 URL</strong>。</p>
 <p>这里暂时先把CORS允许源设置为<code>*</code>，在测试完成后，再改成自己的域名。
 <figure><a class="lightgallery" href="/images/code/vc008.png" title="/images/code/vc008.png" data-thumbnail="/images/code/vc008.png" data-sub-html="<h2>CROS设置</h2>">
@@ -225,9 +244,9 @@
 <li><code>action == get</code>时，返回page页面的访问量和最后一个时间戳</li>
 <li><code>action == update</code>时，page页面访问量+1，更新时间戳，然后返回page页面的新的访问量和上一个时间戳</li>
 </ul>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -286,86 +305,112 @@
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#00f">import</span> json, boto3, time
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">json</span><span style="color:#666">,</span> <span style="color:#00f;font-weight:bold">boto3</span><span style="color:#666">,</span> <span style="color:#00f;font-weight:bold">time</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>client = boto3.client(<span style="color:#a31515">&#39;dynamodb&#39;</span>)
-</span></span><span style="display:flex;"><span>TableName = <span style="color:#a31515">&#39;visitor_counter&#39;</span>
+</span></span><span style="display:flex;"><span>client <span style="color:#666">=</span> boto3<span style="color:#666">.</span>client(<span style="color:#b44">&#39;dynamodb&#39;</span>)
+</span></span><span style="display:flex;"><span>TableName <span style="color:#666">=</span> <span style="color:#b44">&#39;visitor_counter&#39;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#00f">def</span> get_args(event):
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">if</span> <span style="color:#a31515">&#39;body&#39;</span> <span style="color:#00f">in</span> event:  <span style="color:#008000"># for HTTP request</span>
-</span></span><span style="display:flex;"><span>        args = json.loads(event[<span style="color:#a31515">&#39;body&#39;</span>])
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">else</span>:  <span style="color:#008000"># for test purpose</span>
-</span></span><span style="display:flex;"><span>        args = event
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">return</span> args
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">get_args</span>(event):
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#b44">&#39;body&#39;</span> <span style="color:#a2f;font-weight:bold">in</span> event:  <span style="color:#080;font-style:italic"># for HTTP request</span>
+</span></span><span style="display:flex;"><span>        args <span style="color:#666">=</span> json<span style="color:#666">.</span>loads(event[<span style="color:#b44">&#39;body&#39;</span>])
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">else</span>:  <span style="color:#080;font-style:italic"># for test purpose</span>
+</span></span><span style="display:flex;"><span>        args <span style="color:#666">=</span> event
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">return</span> args
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#00f">def</span> lambda_handler(event, context):
-</span></span><span style="display:flex;"><span>    EMPTY_RESP = {
-</span></span><span style="display:flex;"><span>        <span style="color:#a31515">&#39;last_visit&#39;</span>: {<span style="color:#a31515">&#39;N&#39;</span>: 0},
-</span></span><span style="display:flex;"><span>        <span style="color:#a31515">&#39;visit&#39;</span>: {<span style="color:#a31515">&#39;N&#39;</span>: 0},
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">lambda_handler</span>(event, context):
+</span></span><span style="display:flex;"><span>    EMPTY_RESP <span style="color:#666">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#b44">&#39;last_visit&#39;</span>: {<span style="color:#b44">&#39;N&#39;</span>: <span style="color:#666">0</span>},
+</span></span><span style="display:flex;"><span>        <span style="color:#b44">&#39;visit&#39;</span>: {<span style="color:#b44">&#39;N&#39;</span>: <span style="color:#666">0</span>},
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    print(<span style="color:#a31515">&#39;RECIVE&#39;</span>, dict(event))
-</span></span><span style="display:flex;"><span>    args = get_args(event)
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f">print</span>(<span style="color:#b44">&#39;RECIVE&#39;</span>, <span style="color:#a2f">dict</span>(event))
+</span></span><span style="display:flex;"><span>    args <span style="color:#666">=</span> get_args(event)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    key = {<span style="color:#a31515">&#39;page&#39;</span>: {<span style="color:#a31515">&#39;S&#39;</span>: args.get(<span style="color:#a31515">&#39;page&#39;</span>)}}
-</span></span><span style="display:flex;"><span>    action = args.get(<span style="color:#a31515">&#39;action&#39;</span>)
-</span></span><span style="display:flex;"><span>    data = {}
+</span></span><span style="display:flex;"><span>    key <span style="color:#666">=</span> {<span style="color:#b44">&#39;page&#39;</span>: {<span style="color:#b44">&#39;S&#39;</span>: args<span style="color:#666">.</span>get(<span style="color:#b44">&#39;page&#39;</span>)}}
+</span></span><span style="display:flex;"><span>    action <span style="color:#666">=</span> args<span style="color:#666">.</span>get(<span style="color:#b44">&#39;action&#39;</span>)
+</span></span><span style="display:flex;"><span>    data <span style="color:#666">=</span> {}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">if</span> action <span style="color:#00f">is</span> <span style="color:#00f">None</span>:
-</span></span><span style="display:flex;"><span>        <span style="color:#00f">return</span> {<span style="color:#a31515">&#39;error&#39;</span>: <span style="color:#a31515">&#39;Missing key: action&#39;</span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> action <span style="color:#a2f;font-weight:bold">is</span> <span style="color:#a2f;font-weight:bold">None</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">return</span> {<span style="color:#b44">&#39;error&#39;</span>: <span style="color:#b44">&#39;Missing key: action&#39;</span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">if</span> action == <span style="color:#a31515">&#39;get&#39;</span>:
-</span></span><span style="display:flex;"><span>        resp = client.get_item(
-</span></span><span style="display:flex;"><span>            TableName=TableName,
-</span></span><span style="display:flex;"><span>            Key=key
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> action <span style="color:#666">==</span> <span style="color:#b44">&#39;get&#39;</span>:
+</span></span><span style="display:flex;"><span>        resp <span style="color:#666">=</span> client<span style="color:#666">.</span>get_item(
+</span></span><span style="display:flex;"><span>            TableName<span style="color:#666">=</span>TableName,
+</span></span><span style="display:flex;"><span>            Key<span style="color:#666">=</span>key
 </span></span><span style="display:flex;"><span>        )
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        d = resp.get(<span style="color:#a31515">&#39;Item&#39;</span>, EMPTY_RESP)
-</span></span><span style="display:flex;"><span>        data = {
-</span></span><span style="display:flex;"><span>            <span style="color:#a31515">&#39;last&#39;</span>: d[<span style="color:#a31515">&#39;last_visit&#39;</span>][<span style="color:#a31515">&#39;N&#39;</span>],
-</span></span><span style="display:flex;"><span>            <span style="color:#a31515">&#39;visit&#39;</span>: d[<span style="color:#a31515">&#39;visit&#39;</span>][<span style="color:#a31515">&#39;N&#39;</span>],
+</span></span><span style="display:flex;"><span>        d <span style="color:#666">=</span> resp<span style="color:#666">.</span>get(<span style="color:#b44">&#39;Item&#39;</span>, EMPTY_RESP)
+</span></span><span style="display:flex;"><span>        data <span style="color:#666">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#39;last&#39;</span>: d[<span style="color:#b44">&#39;last_visit&#39;</span>][<span style="color:#b44">&#39;N&#39;</span>],
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#39;visit&#39;</span>: d[<span style="color:#b44">&#39;visit&#39;</span>][<span style="color:#b44">&#39;N&#39;</span>],
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">if</span> action == <span style="color:#a31515">&#39;update&#39;</span>:
-</span></span><span style="display:flex;"><span>        now = int(time.time())
-</span></span><span style="display:flex;"><span>        resp = client.update_item(
-</span></span><span style="display:flex;"><span>            TableName=TableName,
-</span></span><span style="display:flex;"><span>            Key=key,
-</span></span><span style="display:flex;"><span>            UpdateExpression = <span style="color:#a31515">&#39;SET last_visit = :time ADD visit :inc&#39;</span>,
-</span></span><span style="display:flex;"><span>            ExpressionAttributeValues = {<span style="color:#a31515">&#39;:inc&#39;</span> : {<span style="color:#a31515">&#39;N&#39;</span>: <span style="color:#a31515">&#39;1&#39;</span>}, <span style="color:#a31515">&#39;:time&#39;</span>: {<span style="color:#a31515">&#39;N&#39;</span>: str(now)}},
-</span></span><span style="display:flex;"><span>            ReturnValues=<span style="color:#a31515">&#34;UPDATED_OLD&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> action <span style="color:#666">==</span> <span style="color:#b44">&#39;update&#39;</span>:
+</span></span><span style="display:flex;"><span>        now <span style="color:#666">=</span> <span style="color:#a2f">int</span>(time<span style="color:#666">.</span>time())
+</span></span><span style="display:flex;"><span>        resp <span style="color:#666">=</span> client<span style="color:#666">.</span>update_item(
+</span></span><span style="display:flex;"><span>            TableName<span style="color:#666">=</span>TableName,
+</span></span><span style="display:flex;"><span>            Key<span style="color:#666">=</span>key,
+</span></span><span style="display:flex;"><span>            UpdateExpression <span style="color:#666">=</span> <span style="color:#b44">&#39;SET last_visit = :time ADD visit :inc&#39;</span>,
+</span></span><span style="display:flex;"><span>            ExpressionAttributeValues <span style="color:#666">=</span> {<span style="color:#b44">&#39;:inc&#39;</span> : {<span style="color:#b44">&#39;N&#39;</span>: <span style="color:#b44">&#39;1&#39;</span>}, <span style="color:#b44">&#39;:time&#39;</span>: {<span style="color:#b44">&#39;N&#39;</span>: <span style="color:#a2f">str</span>(now)}},
+</span></span><span style="display:flex;"><span>            ReturnValues<span style="color:#666">=</span><span style="color:#b44">&#34;UPDATED_OLD&#34;</span>
 </span></span><span style="display:flex;"><span>        )
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        d = resp.get(<span style="color:#a31515">&#39;Attributes&#39;</span>, EMPTY_RESP)
-</span></span><span style="display:flex;"><span>        data = {
-</span></span><span style="display:flex;"><span>            <span style="color:#a31515">&#39;last&#39;</span>: d[<span style="color:#a31515">&#39;last_visit&#39;</span>][<span style="color:#a31515">&#39;N&#39;</span>],
-</span></span><span style="display:flex;"><span>            <span style="color:#a31515">&#39;visit&#39;</span>: str(int(d[<span style="color:#a31515">&#39;visit&#39;</span>][<span style="color:#a31515">&#39;N&#39;</span>]) + 1),
+</span></span><span style="display:flex;"><span>        d <span style="color:#666">=</span> resp<span style="color:#666">.</span>get(<span style="color:#b44">&#39;Attributes&#39;</span>, EMPTY_RESP)
+</span></span><span style="display:flex;"><span>        data <span style="color:#666">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#39;last&#39;</span>: d[<span style="color:#b44">&#39;last_visit&#39;</span>][<span style="color:#b44">&#39;N&#39;</span>],
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#39;visit&#39;</span>: <span style="color:#a2f">str</span>(<span style="color:#a2f">int</span>(d[<span style="color:#b44">&#39;visit&#39;</span>][<span style="color:#b44">&#39;N&#39;</span>]) <span style="color:#666">+</span> <span style="color:#666">1</span>),
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    print(<span style="color:#a31515">&#39;SEND&#39;</span>, data)
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">return</span> data</span></span></code></pre></td></tr></table>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f">print</span>(<span style="color:#b44">&#39;SEND&#39;</span>, data)
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">return</span> data</span></span></code></pre></td></tr></table>
 </div>
 </div>
 <h3 id="测试">测试</h3>
 <p>用浏览器控制台简单测试一下aws-lambda是否正常工作</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#00f">var</span> xmlhttp = <span style="color:#00f">new</span> XMLHttpRequest();
-</span></span><span style="display:flex;"><span><span style="color:#00f">var</span> url = <span style="color:#a31515">&#34;https://xxxxxxxxxxx.lambda-url.ap-northeast-3.on.aws&#34;</span>;
-</span></span><span style="display:flex;"><span><span style="color:#00f">var</span> data = {page: <span style="color:#a31515">&#34;www.example.com&#34;</span>, action: <span style="color:#a31515">&#34;get&#34;</span>};
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> xmlhttp <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> XMLHttpRequest();
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> url <span style="color:#666">=</span> <span style="color:#b44">&#34;https://xxxxxxxxxxx.lambda-url.ap-northeast-3.on.aws&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> data <span style="color:#666">=</span> {page<span style="color:#666">:</span> <span style="color:#b44">&#34;www.example.com&#34;</span>, action<span style="color:#666">:</span> <span style="color:#b44">&#34;get&#34;</span>};
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>xmlhttp.onreadystatechange = <span style="color:#00f">function</span>() {
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">if</span> (<span style="color:#00f">this</span>.readyState == 4 &amp;&amp; <span style="color:#00f">this</span>.status == 200) {
-</span></span><span style="display:flex;"><span>        console.log(<span style="color:#00f">this</span>.responseText);
+</span></span><span style="display:flex;"><span>xmlhttp.onreadystatechange <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">function</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> (<span style="color:#a2f;font-weight:bold">this</span>.readyState <span style="color:#666">==</span> <span style="color:#666">4</span> <span style="color:#666">&amp;&amp;</span> <span style="color:#a2f;font-weight:bold">this</span>.status <span style="color:#666">==</span> <span style="color:#666">200</span>) {
+</span></span><span style="display:flex;"><span>        console.log(<span style="color:#a2f;font-weight:bold">this</span>.responseText);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>};
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>xmlhttp.open(<span style="color:#a31515">&#34;POST&#34;</span>, url);
+</span></span><span style="display:flex;"><span>xmlhttp.open(<span style="color:#b44">&#34;POST&#34;</span>, url);
 </span></span><span style="display:flex;"><span>xmlhttp.send(JSON.stringify(data));
-</span></span></code></pre></div><h2 id="hugo模板中插入代码片段">Hugo模板中插入代码片段</h2>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="hugo模板中插入代码片段">Hugo模板中插入代码片段</h2>
 <h3 id="创建partial模板">创建partial模板</h3>
 <p>新建一个partial模板，路径为<code>/layouts/partials/my_vc.html</code><br>
 简单写两行，内容都交给脚本</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-HTML" data-lang="HTML"><span style="display:flex;"><span>&lt;div id=<span style="color:#a31515">&#34;visitCount&#34;</span>&gt;&lt;/div&gt;
-</span></span><span style="display:flex;"><span>&lt;script src=<span style="color:#a31515">&#34;/js/visit_counter.js&#34;</span>&gt;&lt;/script&gt;
-</span></span></code></pre></div><h3 id="插入posts模板">插入posts模板</h3>
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-HTML" data-lang="HTML"><span style="display:flex;"><span>&lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;visitCount&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#008000;font-weight:bold">script</span> <span style="color:#b44">src</span><span style="color:#666">=</span><span style="color:#b44">&#34;/js/visit_counter.js&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">script</span>&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="插入posts模板">插入posts模板</h3>
 <p>找到需要插入访问计数的模板文件，我这里是使用了Loveit模板，路径为<code>themes/LoveIt/layouts/posts/single.html</code>，
 把这个文件复制到<code>layouts/posts/single.html</code>，然后在模板文件里找到合适的地方插入。
 这里我选择在<code>&lt;div class=&quot;post-meta-line&quot;&gt;</code>这个节点里面，插入代码片段<code>{{- partial &quot;my_vc.html&quot; . -}}</code>。</p>
@@ -380,9 +425,9 @@
 <code>vcServer</code>改为你的函数URL</div>
         </div>
     </div></p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -439,60 +484,60 @@
 </span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#00f">var</span> CurrentPage=window.location.origin + window.location.pathname;
-</span></span><span style="display:flex;"><span><span style="color:#00f">var</span> vcSite=<span style="color:#a31515">&#34;https://darkgoldbar.github.io&#34;</span>;
-</span></span><span style="display:flex;"><span><span style="color:#00f">var</span> vcServer=<span style="color:#a31515">&#34;https://xxxxxxxx.lambda-url.ap-northeast-3.on.aws/&#34;</span>;
-</span></span><span style="display:flex;"><span><span style="color:#00f">var</span> vcResponse=<span style="color:#00f">null</span>;
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> CurrentPage<span style="color:#666">=</span><span style="color:#a2f">window</span>.location.origin <span style="color:#666">+</span> <span style="color:#a2f">window</span>.location.pathname;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> vcSite<span style="color:#666">=</span><span style="color:#b44">&#34;https://darkgoldbar.github.io&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> vcServer<span style="color:#666">=</span><span style="color:#b44">&#34;https://xxxxxxxx.lambda-url.ap-northeast-3.on.aws/&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> vcResponse<span style="color:#666">=</span><span style="color:#a2f;font-weight:bold">null</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>window.addEventListener(<span style="color:#a31515">&#39;load&#39;</span>, vcOnLoad);
+</span></span><span style="display:flex;"><span><span style="color:#a2f">window</span>.addEventListener(<span style="color:#b44">&#39;load&#39;</span>, vcOnLoad);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#00f">function</span> vcOnLoad() {
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">if</span> (window.location.origin == vcSite){
-</span></span><span style="display:flex;"><span>        <span style="color:#00f">if</span> (vcCheck()) {
-</span></span><span style="display:flex;"><span>            vcRequest(<span style="color:#a31515">&#39;get&#39;</span>);
-</span></span><span style="display:flex;"><span>        } <span style="color:#00f">else</span> {
-</span></span><span style="display:flex;"><span>            vcRequest(<span style="color:#a31515">&#39;update&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> vcOnLoad() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> (<span style="color:#a2f">window</span>.location.origin <span style="color:#666">==</span> vcSite){
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> (vcCheck()) {
+</span></span><span style="display:flex;"><span>            vcRequest(<span style="color:#b44">&#39;get&#39;</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#a2f;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            vcRequest(<span style="color:#b44">&#39;update&#39;</span>);
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#00f">function</span> vcRequest(action) {
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">let</span> data = {page: CurrentPage, action: action};
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">let</span> xmlhttp = <span style="color:#00f">new</span> XMLHttpRequest();
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">let</span> resp_data = <span style="color:#00f">null</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> vcRequest(action) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> data <span style="color:#666">=</span> {page<span style="color:#666">:</span> CurrentPage, action<span style="color:#666">:</span> action};
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> xmlhttp <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> XMLHttpRequest();
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> resp_data <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">null</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    xmlhttp.onreadystatechange = <span style="color:#00f">function</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#00f">if</span> (<span style="color:#00f">this</span>.readyState == 4 &amp;&amp; <span style="color:#00f">this</span>.status == 200) {
-</span></span><span style="display:flex;"><span>            resp_data = JSON.parse(<span style="color:#00f">this</span>.responseText);
+</span></span><span style="display:flex;"><span>    xmlhttp.onreadystatechange <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">function</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> (<span style="color:#a2f;font-weight:bold">this</span>.readyState <span style="color:#666">==</span> <span style="color:#666">4</span> <span style="color:#666">&amp;&amp;</span> <span style="color:#a2f;font-weight:bold">this</span>.status <span style="color:#666">==</span> <span style="color:#666">200</span>) {
+</span></span><span style="display:flex;"><span>            resp_data <span style="color:#666">=</span> JSON.parse(<span style="color:#a2f;font-weight:bold">this</span>.responseText);
 </span></span><span style="display:flex;"><span>            vcRender(resp_data);
-</span></span><span style="display:flex;"><span>        } <span style="color:#00f">else</span> <span style="color:#00f">if</span> (<span style="color:#00f">this</span>.readyState == 4 &amp;&amp; <span style="color:#00f">this</span>.status != 200) {
-</span></span><span style="display:flex;"><span>            console.log(<span style="color:#a31515">&#39;visit counter API failed&#39;</span>);
-</span></span><span style="display:flex;"><span>            vcResponse = <span style="color:#00f">this</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#a2f;font-weight:bold">else</span> <span style="color:#a2f;font-weight:bold">if</span> (<span style="color:#a2f;font-weight:bold">this</span>.readyState <span style="color:#666">==</span> <span style="color:#666">4</span> <span style="color:#666">&amp;&amp;</span> <span style="color:#a2f;font-weight:bold">this</span>.status <span style="color:#666">!=</span> <span style="color:#666">200</span>) {
+</span></span><span style="display:flex;"><span>            console.log(<span style="color:#b44">&#39;visit counter API failed&#39;</span>);
+</span></span><span style="display:flex;"><span>            vcResponse <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">this</span>;
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    };
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    xmlhttp.open(<span style="color:#a31515">&#34;POST&#34;</span>, vcServer);
+</span></span><span style="display:flex;"><span>    xmlhttp.open(<span style="color:#b44">&#34;POST&#34;</span>, vcServer);
 </span></span><span style="display:flex;"><span>    xmlhttp.send(JSON.stringify(data));
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#00f">function</span> vcCheck(){
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">let</span> visited = <span style="color:#00f">false</span>;
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">let</span> cookie_key = <span style="color:#a31515">&#39;last_visit:&#39;</span> + CurrentPage;
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">let</span> currentTimeStamp = <span style="color:#00f">new</span> Date().getTime();
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">let</span> lastTimeStamp = <span style="color:#00f">new</span> Number(localStorage.getItem(cookie_key));
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">if</span> (lastTimeStamp &amp;&amp; ((currentTimeStamp - lastTimeStamp) &lt; 24 * 60 * 60 * 1000)) {
-</span></span><span style="display:flex;"><span>        visited = <span style="color:#00f">true</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> vcCheck(){
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> visited <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> cookie_key <span style="color:#666">=</span> <span style="color:#b44">&#39;last_visit:&#39;</span> <span style="color:#666">+</span> CurrentPage;
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> currentTimeStamp <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> <span style="color:#a2f">Date</span>().getTime();
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> lastTimeStamp <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> <span style="color:#a2f">Number</span>(localStorage.getItem(cookie_key));
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> (lastTimeStamp <span style="color:#666">&amp;&amp;</span> ((currentTimeStamp <span style="color:#666">-</span> lastTimeStamp) <span style="color:#666">&lt;</span> <span style="color:#666">24</span> <span style="color:#666">*</span> <span style="color:#666">60</span> <span style="color:#666">*</span> <span style="color:#666">60</span> <span style="color:#666">*</span> <span style="color:#666">1000</span>)) {
+</span></span><span style="display:flex;"><span>        visited <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">true</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    localStorage.setItem(cookie_key, currentTimeStamp);
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">return</span> visited
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">return</span> visited
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#00f">function</span> vcRender(data) {
-</span></span><span style="display:flex;"><span>    <span style="color:#008000">// data = {last:&#34;1675853136&#34;, visit:&#34;6&#34;}
-</span></span></span><span style="display:flex;"><span><span style="color:#008000"></span>    <span style="color:#00f">let</span> vcnode = document.getElementById(<span style="color:#a31515">&#39;visitCount&#39;</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#00f">let</span> d = <span style="color:#00f">new</span> Date();
-</span></span><span style="display:flex;"><span>    d.setTime(Number(data.last + <span style="color:#a31515">&#34;000&#34;</span>));
-</span></span><span style="display:flex;"><span>    vcnode.innerHTML = <span style="color:#a31515">&#39;浏览次数: &lt;span&gt;&#39;</span> +data.visit+ <span style="color:#a31515">&#39;&lt;/span&gt; 最后访问: &lt;span&gt;&#39;</span> +d.toISOString()+ <span style="color:#a31515">&#39;&lt;/span&gt;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> vcRender(data) {
+</span></span><span style="display:flex;"><span>    <span style="color:#080;font-style:italic">// data = {last:&#34;1675853136&#34;, visit:&#34;6&#34;}
+</span></span></span><span style="display:flex;"><span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">let</span> vcnode <span style="color:#666">=</span> <span style="color:#a2f">document</span>.getElementById(<span style="color:#b44">&#39;visitCount&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> d <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> <span style="color:#a2f">Date</span>();
+</span></span><span style="display:flex;"><span>    d.setTime(<span style="color:#a2f">Number</span>(data.last <span style="color:#666">+</span> <span style="color:#b44">&#34;000&#34;</span>));
+</span></span><span style="display:flex;"><span>    vcnode.innerHTML <span style="color:#666">=</span> <span style="color:#b44">&#39;浏览次数: &lt;span&gt;&#39;</span> <span style="color:#666">+</span>data.visit<span style="color:#666">+</span> <span style="color:#b44">&#39;&lt;/span&gt; 最后访问: &lt;span&gt;&#39;</span> <span style="color:#666">+</span>d.toISOString()<span style="color:#666">+</span> <span style="color:#b44">&#39;&lt;/span&gt;&#39;</span>
 </span></span><span style="display:flex;"><span>}</span></span></code></pre></td></tr></table>
 </div>
 </div></div><div class="post-footer" id="post-footer">
@@ -517,7 +562,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/ljh/ljh018/" class="prev" rel="prev" title="CCTV央视历史文献纪录片《渭华起义》共三集"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>CCTV央视历史文献纪录片《渭华起义》共三集</a></div>
+    <div class="post-nav"><a href="/posts/ljh/ljh018/" class="prev" rel="prev" title="CCTV央视历史文献纪录片《渭华起义》共三集"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>CCTV央视历史文献纪录片《渭华起义》共三集</a>
+            <a href="/posts/code/create-a-severless-blog-comment-system/" class="next" rel="next" title="制作一个无服务器博客评论系统">制作一个无服务器博客评论系统<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
 <div id="comments">
     <link rel="stylesheet" href="/css/comment.css" type="text/css">
