@@ -5,7 +5,7 @@
 }
 
 /* 设置整个页面的字体和颜色 */
-body {
+#codenames {
     font-family: Arial, sans-serif;
     font-size: medium;
     color: #333;
@@ -27,9 +27,10 @@ section#section-welcome h1 {
 /* 设置form元素的样式 */
 section#section-welcome form {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 10px;
 }
 
 /* 设置label元素的字体大小和margin */
@@ -84,15 +85,15 @@ section#section-welcome form input[type="number"] {
     margin: 0 0.5rem;
 }
 
-.btn:hover {
+#codenames .btn:hover {
     background-color: #3af
 }
 
-.btn[disabled] {
+#codenames .btn[disabled] {
     background-color: #bbb;
 }
 
-.container-score {
+#codenames .container-score {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -102,15 +103,15 @@ section#section-welcome form input[type="number"] {
     font-size: 1.2rem;
 }
 
-.container-score-title {
+#codenames .container-score-title {
     font-weight: bold;
 }
 
-.container-score-content {
+#codenames .container-score-content {
     display: flex;
 }
 
-.team-score {
+#codenames .team-score {
     margin: 0 1.2rem;
     padding: 5px;
     border-radius: 5px;
@@ -133,7 +134,7 @@ section#section-welcome form input[type="number"] {
     justify-content: space-between;
 }
 
-.placeholder {
+#codenames .placeholder {
     flex-basis: 20%;
     height: auto;
     aspect-ratio: 3/2;
@@ -141,7 +142,7 @@ section#section-welcome form input[type="number"] {
     flex-direction: column
 }
 
-.card {
+#codenames .card {
     background-color: wheat;
     border: 3px solid darksalmon;
     border-radius: 0.5rem;
@@ -154,40 +155,41 @@ section#section-welcome form input[type="number"] {
     align-items: center;
 }
 
-.card p {
+#codenames .card p {
     margin: 0;
     width: 100%;
     text-align: center;
 }
 
-.card-blue {
+#codenames .card-blue {
     background: #99f;
 }
 
-.card-red {
+#codenames .card-red {
     background: #f99;
 }
 
-.card-gray {
+#codenames .card-gray {
     background: #bbb;
 }
 
-.card-black {
+#codenames .card-black {
     background: #000;
     color: #fff;
 }
 
-.card:not([disabled]):hover {
+#codenames .card:not([disabled]):hover {
     transform: translateY(-5px);
     cursor: pointer;
 }
 
-.card[disabled] {
+#codenames .card[disabled] {
     position: relative;
     overflow: hidden;
+    /* filter: saturate(60%) brightness(130%); */
 }
 
-.card[disabled]::before {
+#codenames .card[disabled]::before {
     content: "";
     position: absolute;
     z-index: 1;
@@ -200,13 +202,13 @@ section#section-welcome form input[type="number"] {
 }
 
 /* rainbow */
-.card-rainbow {
+#codenames .card-rainbow {
     position: relative;
     z-index: 0;
     overflow: hidden;
 }
 
-.card-rainbow::before {
+#codenames .card-rainbow::before {
     content: "";
     position: absolute;
     z-index: -2;
@@ -223,7 +225,7 @@ section#section-welcome form input[type="number"] {
     animation: rotate 4s linear infinite;
 }
 
-.card-rainbow::after {
+#codenames .card-rainbow::after {
     content: "";
     position: absolute;
     z-index: -1;

@@ -45,10 +45,14 @@ function cnameInit() {
     };
 
     if ((cnameNo) && (cnameRole)){
-        document.getElementById('game-echo-role').innerText = capitalizeFirstLetter(cnameColor) + capitalizeFirstLetter(cnameRole);
+        document.getElementById('game-echo').innerText = capitalizeFirstLetter(cnameColor) + capitalizeFirstLetter(cnameRole) + cnameNo;
     }
 
-    document.getElementById('game-create').addEventListener("click", () => {
+    document.getElementById('game-create').addEventListener("click", function () {
+        if (this.hasAttribute('disabled')) {
+            return false
+        }
+        this.toggleAttribute('disabled', true);
         cnameCreate();
     });
 
