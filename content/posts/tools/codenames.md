@@ -6,7 +6,7 @@ lastmod: 2023-03-25T11:10:00+08:00
 draft: false
 author: ""
 authorLink: ""
-description: ""
+description: "行动代号助手"
 license: ""
 images: []
 
@@ -19,15 +19,15 @@ featuredImagePreview: ""
 hiddenFromHomePage: false
 hiddenFromSearch: false
 twemoji: false
-lightgallery: true
-ruby: true
-fraction: true
-fontawesome: true
-linkToMarkdown: true
+lightgallery: false
+ruby: false
+fraction: false
+fontawesome: false
+linkToMarkdown: false
 rssFullText: false
 
 toc:
-  enable: true
+  enable: false
   auto: true
 code:
   copy: true
@@ -47,7 +47,7 @@ library:
 seo:
   images: []
 ---
-
+<!--more-->
 <!-- 正文 -->
 
 {{< codenames >}}
