@@ -1,0 +1,248 @@
+@charset "UTF-8";
+
+[hidden] {
+    display: none;
+}
+
+/* 设置整个页面的字体和颜色 */
+body {
+    font-family: Arial, sans-serif;
+    font-size: medium;
+    color: #333;
+}
+
+/* 设置section元素的背景和padding */
+section#section-welcome {
+    background-color: #f5f5f5;
+    padding: 1.2rem;
+}
+
+/* 设置h1元素的字体大小和居中 */
+section#section-welcome h1 {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 1.6rem;
+}
+
+/* 设置form元素的样式 */
+section#section-welcome form {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 设置label元素的字体大小和margin */
+section#section-welcome form label {
+    font-size: 1rem;
+    margin-right: 0.6rem;
+}
+
+/* 设置input元素的border, padding和margin */
+section#section-welcome form input {
+    border: 2px solid #ccc;
+    padding: 0.6rem;
+    margin-right: 0.6rem;
+}
+
+/* 设置input[type="number"]的宽度 */
+section#section-welcome form input[type="number"] {
+    width: 100px;
+}
+
+#game-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFEFD5;
+    border: 2px solid #DAA520;
+    padding: 1rem;
+    font-size: 1rem;
+    flex-direction: column;
+    word-break: break-all;
+}
+
+#game-link a {
+    margin: 0 0.6rem;
+}
+
+#container-control {
+    margin: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+#section-welcome .btn,
+#section-gaming .btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: none;
+    text-decoration: none;
+    font-size: 1rem;
+    margin: 0 0.5rem;
+}
+
+.btn:hover {
+    background-color: #3af
+}
+
+.btn[disabled] {
+    background-color: #bbb;
+}
+
+.container-score {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F5F5F5;
+    border: 2px solid #CCCCCC;
+    padding: 0.6rem;
+    font-size: 1.2rem;
+}
+
+.container-score-title {
+    font-weight: bold;
+}
+
+.container-score-content {
+    display: flex;
+}
+
+.team-score {
+    margin: 0 1.2rem;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+#red-score {
+    background-color: #FFCDD2;
+    color: red;
+}
+
+#blue-score {
+    background-color: #BBDEFB;
+    color: blue;
+}
+
+
+#container-card {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.placeholder {
+    flex-basis: 20%;
+    height: auto;
+    aspect-ratio: 3/2;
+    display: flex;
+    flex-direction: column
+}
+
+.card {
+    background-color: wheat;
+    border: 3px solid darksalmon;
+    border-radius: 0.5rem;
+    padding: .7vw;
+    margin: .7vw;
+    height: inherit;
+    transition: transform 0.3s ease;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.card p {
+    margin: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.card-blue {
+    background: #99f;
+}
+
+.card-red {
+    background: #f99;
+}
+
+.card-gray {
+    background: #bbb;
+}
+
+.card-black {
+    background: #000;
+    color: #fff;
+}
+
+.card:not([disabled]):hover {
+    transform: translateY(-5px);
+    cursor: pointer;
+}
+
+.card[disabled] {
+    position: relative;
+    overflow: hidden;
+}
+
+.card[disabled]::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    left: -20%;
+    top: -20%;
+    width: 150%;
+    height: 150%;
+    background: linear-gradient(45deg, #0004 25%, #fff4 0, #fff4 50%, #0004 0, #0004 75%, #fff4 0);
+    background-size: 40px 40px;
+}
+
+/* rainbow */
+.card-rainbow {
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.card-rainbow::before {
+    content: "";
+    position: absolute;
+    z-index: -2;
+    left: -50%;
+    top: -50%;
+    width: 200%;
+    height: 200%;
+    background-color: #399953;
+    background-repeat: no-repeat;
+    background-size: 50% 50%, 50% 50%;
+    background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+    background-image: linear-gradient(#399953, #399953), linear-gradient(#fbb300, #fbb300), linear-gradient(#d53e33, #d53e33), linear-gradient(#377af5, #377af5);
+    -webkit-animation: rotate 4s linear infinite;
+    animation: rotate 4s linear infinite;
+}
+
+.card-rainbow::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 6px;
+    top: 6px;
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+    background: inherit;
+    border-radius: 5px;
+}
+
+@-webkit-keyframes rotate {
+    100% {
+        transform: rotate(1turn);
+    }
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(1turn);
+    }
+}

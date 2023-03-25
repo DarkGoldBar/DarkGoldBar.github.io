@@ -4,7 +4,15 @@
         <link>https://darkgoldbar.github.io/posts/</link>
         <description>所有文章 | DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
-            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Sun, 19 Mar 2023 14:02:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Sat, 25 Mar 2023 11:10:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>行动代号助手</title>
+    <link>https://darkgoldbar.github.io/posts/tools/codenames/</link>
+    <pubDate>Sat, 25 Mar 2023 11:10:00 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://darkgoldbar.github.io/posts/tools/codenames/</guid>
+    <description><![CDATA[行动代号助手 游戏号: 创建游戏 复制链接 蓝色队长: 红色队长: 蓝色队员: 红色队员: 更新 选这张 换个词 ROLE+COLOR No.1 No.2 No.3 No.4 No.5 No.6 No.7 No.8 No.9 No.10 No.11 No.12 No.13 No.14 No.15 No.16 No.17 No.18 No.19 No.20 No.21 No.22 No.23]]></description>
+</item>
+<item>
     <title>制作一个无服务器博客评论系统</title>
     <link>https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/</link>
     <pubDate>Sun, 19 Mar 2023 14:02:00 &#43;0800</pubDate>
@@ -79,14 +87,6 @@
     <author>DarkGoldBar</author>
     <guid>https://darkgoldbar.github.io/posts/ljh/ljh014/</guid>
     <description><![CDATA[本文图片都是2018年夏天，我在陕西省渭南市临渭区固市镇上的固市中学校园内拍摄的。 在临渭区故市镇东的固市中学内，渭阳楼坐北朝南，楼檐下的“渭]]></description>
-</item>
-<item>
-    <title>《渭南日报》之渭南党史上的今天5月7日</title>
-    <link>https://darkgoldbar.github.io/posts/ljh/ljh012/</link>
-    <pubDate>Wed, 25 Jan 2023 18:30:00 &#43;0800</pubDate>
-    <author>DarkGoldBar</author>
-    <guid>https://darkgoldbar.github.io/posts/ljh/ljh012/</guid>
-    <description><![CDATA[《渭南日报》之渭南党史上的今天5月7日 1927年5月7日?五一县农民协会成立 1927年5月7日?五一县（县治所在固市镇，辖渭南县渭河以北地区]]></description>
 </item>
 </channel>
 </rss>
