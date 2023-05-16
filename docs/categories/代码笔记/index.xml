@@ -4,7 +4,15 @@
         <link>https://darkgoldbar.github.io/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/</link>
         <description>代码笔记 - 分类 - DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
-            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Sun, 19 Mar 2023 14:02:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Mon, 17 Apr 2023 18:00:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/" rel="self" type="application/rss+xml" /><item>
+    <title>python数据结构笔记</title>
+    <link>https://darkgoldbar.github.io/posts/code/learn-note-python-data-structure/</link>
+    <pubDate>Mon, 17 Apr 2023 18:00:00 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://darkgoldbar.github.io/posts/code/learn-note-python-data-structure/</guid>
+    <description><![CDATA[<p>记录一些自己用的代码片段</p>]]></description>
+</item>
+<item>
     <title>制作一个无服务器博客评论系统</title>
     <link>https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/</link>
     <pubDate>Sun, 19 Mar 2023 14:02:00 &#43;0800</pubDate>
@@ -38,7 +46,7 @@
     <pubDate>Wed, 18 Jan 2023 13:54:00 &#43;0800</pubDate>
     <author>作者</author>
     <guid>https://darkgoldbar.github.io/posts/code/learn-note-python-spider/</guid>
-    <description><![CDATA[import环境 import requests from pandas import DataFrame from bs4 import BeautifulSoup # pip install beautifulsoup4 获取数据 这里是用的本地http服务器代理，爬nist的数据 可以用v2ray把其他类型的代理变成一]]></description>
+    <description><![CDATA[import环境 import requests from pandas import DataFrame from bs4 import BeautifulSoup # pip install beautifulsoup4 链接设置 这里是用的本地http服务器代理，爬nist的数据 可以用v2ray把其他类型的代理变成一]]></description>
 </item>
 <item>
     <title>去除网页版飞书水印</title>
