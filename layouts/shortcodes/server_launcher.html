@@ -1,0 +1,35 @@
+  <div>
+    <h1>VPN Launcher</h1>
+    <h2>Secrets</h2>
+    <label for="access-key">Access Key:</label>
+    <input type="text" id="access-key"><br><br>
+    <label for="secret-key">Secret Key:</label>
+    <input type="text" id="secret-key"><br><br>
+    <label for="region">Region:</label>
+    <input type="text" id="region"><br><br>
+    <label for="config">Config:</label>
+    <textarea type="text" id="config"></textarea><br><br>
+    <h2>Control Panel</h2>
+    <div id="control-panel">
+      <button onclick="startService()">Start Service</button>
+      <button onclick="queryService()">Query Service</button>
+      <button onclick="saveCredential()">Save Secrets</button>
+    </div>
+    <table id="table-out">
+      <thead>
+        <tr>
+          <th>instanceID</th>
+          <th>publicIP</th>
+          <th>control</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <h2>Outputs</h2>
+    <div id="time-out"></div>
+    <div id="text-out"></div>
+  </div>
+  <!-- <script src="https://sdk.amazonaws.com/js/aws-sdk-2.933.0.min.js"></script>
+  <script src="ray.js"></script> -->
+

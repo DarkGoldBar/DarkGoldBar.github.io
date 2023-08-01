@@ -4,7 +4,15 @@
         <link>https://darkgoldbar.github.io/categories/%E5%B7%A5%E5%85%B7/</link>
         <description>工具 - 分类 - DarkGoldBar的主页</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hanetama@qq.com (DarkGoldBar)</managingEditor>
-            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Sat, 25 Mar 2023 11:10:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/categories/%E5%B7%A5%E5%85%B7/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>hanetama@qq.com (DarkGoldBar)</webMaster><lastBuildDate>Tue, 01 Aug 2023 11:10:00 &#43;0800</lastBuildDate><atom:link href="https://darkgoldbar.github.io/categories/%E5%B7%A5%E5%85%B7/" rel="self" type="application/rss+xml" /><item>
+    <title>Server Launcher</title>
+    <link>https://darkgoldbar.github.io/posts/tools/server_launcher/</link>
+    <pubDate>Tue, 01 Aug 2023 11:10:00 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://darkgoldbar.github.io/posts/tools/server_launcher/</guid>
+    <description><![CDATA[Server Launcher]]></description>
+</item>
+<item>
     <title>行动代号助手</title>
     <link>https://darkgoldbar.github.io/posts/tools/codenames/</link>
     <pubDate>Sat, 25 Mar 2023 11:10:00 &#43;0800</pubDate>
