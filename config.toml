@@ -1,5 +1,5 @@
 baseURL = "https://darkgoldbar.github.io"
-publishDir = 'docs'
+publishDir = 'public'
 
 # 设置默认的语言 ["en", "zh-cn", "fr", "pl", ...]
 defaultContentLanguage = "zh-cn"
