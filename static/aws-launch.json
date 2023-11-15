@@ -1,0 +1,18 @@
+{
+  "MaxCount": 1,
+  "MinCount": 1,
+  "ImageId": "ami-0d7bfdca2fa8d3cc4",
+  "InstanceType": "t2.nano",
+  "KeyName": "%KEY%",
+  "UserData": "%USERDATA%",
+  "EbsOptimized": false,
+  "NetworkInterfaces": [
+    {
+      "DeviceIndex": 0,
+      "AssociatePublicIpAddress": true,
+      "Groups": [
+        "%SECGROUP%"
+      ]
+    }
+  ]
+}
