@@ -1,8 +1,8 @@
 {
   "MaxCount": 1,
   "MinCount": 1,
-  "ImageId": "ami-0d7bfdca2fa8d3cc4",
-  "InstanceType": "t2.nano",
+  "ImageId": "%ImageId%",
+  "InstanceType": "t3.nano",
   "KeyName": "%KEY%",
   "UserData": "%USERDATA%",
   "EbsOptimized": false,
