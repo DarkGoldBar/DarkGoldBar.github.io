@@ -53,7 +53,7 @@ seo:
 但是各个配置的填写没有说明，这次就写一个说明文档兼教程。  
 
 先上链接:
-[简易代理启动器]({{< ref "posts/tools/server_launcher.md" >}})
+[简易代理服务管理器]({{< ref "posts/tools/server_launcher.md" >}})
 
 
 需要准备的东西：
@@ -152,12 +152,18 @@ Groups: sg-012dc6909c278654d
 ```
 
 ## 初始化脚本 (UserData)
-接下来制作启动脚本，我的脚本模版贴在下面，稍微改动即可。
-- 把 `XRAYPORT` 的值5678改成在安全组中设置的端口号
-- 把 `XRAYUUID` 的值改成一个自己生成的新的UUID
-- {{< raw >}}<button onclick="document.getElementById('myuuid').innerText=crypto.randomUUID();">生成UUID</button> <span id='myuuid'></span>{{< /raw >}}
-- 把改好的脚本转码为base64
+接下来制作启动脚本，这个初始化脚本会以root身份使用screen命令在后台启动一个xray进程。配置中只有一个inbound，使用vmess协议，端口和UUID为用户在脚本中指定的值。  
+我的脚本模版贴在下面，稍微改动即可。  
+1. 把 `XRAYPORT` 的值5678改成在安全组中设置的端口号
+2. 把 `XRAYUUID` 的值改成一个自己生成的新的UUID
+3. 把改好的脚本转码为base64
+  
+### UUID生成按钮
+{{< raw >}}
+<button onclick="document.getElementById('myuuid').innerText=crypto.randomUUID();">点击生成UUID</button> <span id='myuuid'></span>
+{{< /raw >}}
 
+### 启动脚本
 ```bash
 #!/bin/bash
 XRAYPORT=5678
@@ -186,9 +192,19 @@ screen -dmS xray $WD/bin/xray -c $WD/config.json
 </div>
 {{< /raw >}}
 
-## 完成启动设置
-最后，把我们上边的配置合并，就得到了最终的ec2启动配置。
+```yaml
+UserData: IyEvYmluL2Jhc2gKWFJBWVBPUlQ9NTY3OApYUkFZVVVJRD1iMTkwYjZmZi0wZ...
+```
 
+
+
+## 完成启动设置
+最后，把我们上边的配置写到下面的json里对应的项目上，就得到了最终的ec2启动配置。  
+将得到的ec2启动配置和AK/SK/region填进代理服务管理器即可开机
+
+{{< admonition warning "" true>}}
+`Name: MyXrayServer` 是重要的标签，在代理服务管理器中，将只会显示满足`tag:Name='MyXrayServer*'`条件过滤的服务器。
+{{< /admonition >}}
 
 ``` json
 {
@@ -197,14 +213,24 @@ screen -dmS xray $WD/bin/xray -c $WD/config.json
   "ImageId": "ami-035322b237ca6d47a",
   "InstanceType": "t3a.nano",
   "KeyName": "mykey1",
-  "UserData": "IyEvYmluL2Jhc2gKWFJBWVBPUlQ9NTY3OApYUkFZVVVJRD1iMTkwYjZmZi0wZDM1LTQ3ZDAtYjY0NC03ZmY1MmYwNWRiMzMKWFJBWUpTT049J2h0dHBzOi8vRGFya0dvbGRCYXIuZ2l0aHViLmlvL2F3cy14cmF5Lmpzb24nClhSQVlaSVA9J2h0dHBzOi8vZ2l0aHViLmNvbS9YVExTL1hyYXktY29yZS9yZWxlYXNlcy9kb3dubG9hZC92MS43LjUvWHJheS1saW51eC02NC56aXAnCldEPScveHJheScKCnl1bSBpbnN0YWxsIC15IHdnZXQgY3VybCB1bnppcCBzY3JlZW4KbWtkaXIgJFdECndnZXQgJFhSQVlaSVAgLU8gJFdEL1hyYXkuemlwCmN1cmwgJFhSQVlKU09OIHwgc2VkIC1lICJzLyVQT1JUJS8kWFJBWVBPUlQvIiAtZSAicy8lVVVJRCUvJFhSQVlVVUlELyIgPiAkV0QvY29uZmlnLmpzb24KdW56aXAgJFdEL1hyYXkuemlwIC1kICRXRC9iaW4Kc2NyZWVuIC1kbVMgeHJheSAkV0QvYmluL3hyYXkgLWMgJFdEL2NvbmZpZy5qc29u",
-  "EbsOptimized": false,
+  "UserData": "IyEvYmluL2Jhc.....",
   "NetworkInterfaces": [
     {
       "DeviceIndex": 0,
       "AssociatePublicIpAddress": true,
       "Groups": ["sg-012dc6909c278654d"]
     }
-  ]
+  ],
+  "TagSpecifications": [
+    {
+      "ResourceType": "instance",
+      "Tags": [
+        {
+          "Key": "Name",
+          "Value": "MyXrayServer"
+        }
+      ]
+    }
+  ],
 }
 ```
