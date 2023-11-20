@@ -131,4 +131,6 @@ function stopService(instanceID) {
 
 echo_time();
 loadCredential();
-queryService();
+if (accessKey.value.length > 0){
+  queryService();
+}
