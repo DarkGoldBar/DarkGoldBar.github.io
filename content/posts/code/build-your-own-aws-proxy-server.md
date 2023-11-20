@@ -3,7 +3,7 @@ title: "建立自己的AWS代理服务器"
 subtitle: "Build Your Own Aws Proxy Server"
 date: 2023-11-14T14:36:46+08:00
 lastmod: 2023-11-14T14:36:46+08:00
-draft: true
+draft: false
 author: ""
 authorLink: ""
 description: ""
