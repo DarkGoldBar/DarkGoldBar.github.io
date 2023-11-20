@@ -53,7 +53,8 @@ seo:
 但是各个配置的填写没有说明，这次就写一个说明文档兼教程。  
 
 先上链接:
-简易代理启动器 {{< ref "posts/tools/server_launcher.md" >}}
+[简易代理启动器]({{< ref "posts/tools/server_launcher.md" >}})
+
 
 需要准备的东西：
 - AWS国际账号
@@ -73,7 +74,7 @@ https://console.aws.amazon.com/iam/home#/users
 2. 权限策略 -> 搜索"EC2Full" -> 勾选 "AmazonEC2FullAccess"
 
 第三步查看和创建的例子，确认没有问题即可创建用户。  
-![创建用户检查](images/sl01.png)
+{{< image src="/images/code/sl01.png" caption="创建用户检查">}}
 
 ### 生成秘钥
 点刚才创建的用户名，在用户控制界面，点创建访问密钥。  
@@ -81,7 +82,14 @@ https://console.aws.amazon.com/iam/home#/users
 2. "描述标签值"，随便写，没有实际用途。
 3. 生成秘钥之后保存好SK的值，它只会在这里显示一次。
 
-![生成秘钥](images/sl02.png)
+{{< image src="/images/code/sl02.png" caption="生成秘钥">}}
+
+
+```yaml
+AK: AKIAXFxxxxxx
+SK: xxxxxxxxxxxxxxxxxxxx
+```
+
 
 ## 实例类型/区域 (InstanceType)
 EC2的价格/区域表 https://aws.amazon.com/cn/ec2/pricing/on-demand/  
@@ -100,7 +108,7 @@ InstanceType: t3a.nano
 
 选定区域之后，就要点控制台右上角的改区了。不同区域的子网、安全组、秘钥对是不互通的，所以要确保后面的操作都在同一个区域。  
 控制台 https://console.aws.amazon.com/ec2/  
-![改区域](images/sl04.png)
+{{< image src="/images/code/sl04.png" caption="改区域">}}
 
 ## 镜像号 (ImageId)
 镜像列表 https://console.aws.amazon.com/ec2/home?#AMICatalog
@@ -108,7 +116,7 @@ InstanceType: t3a.nano
 镜像，不做过多介绍了。
 这里就选列表第一个 Amazon Linux 2023 AMI (64-bit (x86))，今天的最新版本镜像号是`ami-035322b237ca6d47a`，这个号码随着镜像更新会变化，但是一两年内用同一个也没什么问题。
 
-![镜像选择](images/sl03.png)
+{{< image src="/images/code/sl03.png" caption="镜像选择">}}
 
 ```yaml
 ImageId: ami-035322b237ca6d47a
@@ -120,7 +128,7 @@ ImageId: ami-035322b237ca6d47a
 秘钥对，用来ssh远程登录服务器，仅在配置出错时排查问题使用，正确配置的情况下并不需要ssh。  
 以默认选项创建密钥对即可，记住这个密钥对的名字，后面要用这个名字来填写启动参数。
 
-![秘钥对](images/sl05.png)
+{{< image src="/images/code/sl05.png" caption="秘钥对">}}
 
 ```yaml
 KeyName: mykey1
@@ -134,7 +142,8 @@ KeyName: mykey1
 这里我们需要把ssh端口和代理端口的入站打开。
 代理端口就自己随便填一个，和后面的代理配置写成一样的即可，建议在2000-9999之间。
 
-![安全组](images/sl06.png)
+{{< image src="/images/code/sl06.png" caption="安全组">}}
+
 
 创建完成后，在安全组控制台找到刚才新建的安全组ID，以'sg-'开头。
 
@@ -143,10 +152,11 @@ Groups: sg-012dc6909c278654d
 ```
 
 ## 初始化脚本 (UserData)
-接下来制作启动脚本，我的脚本模版贴在下面。稍微改动即可，然后把这个改好的脚本转码为base64即可。
+接下来制作启动脚本，我的脚本模版贴在下面，稍微改动即可。
 - 把 `XRAYPORT` 的值5678改成在安全组中设置的端口号
 - 把 `XRAYUUID` 的值改成一个自己生成的新的UUID
-- <button onclick='alert(crypto.randomUUID());'>生成UUID</button>
+- {{< raw >}}<button onclick="document.getElementById('myuuid').innerText=crypto.randomUUID();">生成UUID</button> <span id='myuuid'></span>{{< /raw >}}
+- 把改好的脚本转码为base64
 
 ```bash
 #!/bin/bash
@@ -164,3 +174,37 @@ unzip $WD/Xray.zip -d $WD/bin
 screen -dmS xray $WD/bin/xray -c $WD/config.json
 ```
 
+### base64转码器
+{{< raw >}}
+<div style="display: flex;">
+  <textarea id="stringInput" placeholder="原始字符串"></textarea>
+  <div style="display: inline-flex; flex-direction: column;margin: 10px;">
+    <button onclick="document.getElementById('base64Input').value = btoa(document.getElementById('stringInput').value)">→</button>
+    <button onclick="document.getElementById('stringInput').value = atob(document.getElementById('base64Input').value)">←</button> 
+  </div>
+  <textarea id="base64Input" placeholder="base64字符串"></textarea>
+</div>
+{{< /raw >}}
+
+## 完成启动设置
+最后，把我们上边的配置合并，就得到了最终的ec2启动配置。
+
+
+``` json
+{
+  "MaxCount": 1,
+  "MinCount": 1,
+  "ImageId": "ami-035322b237ca6d47a",
+  "InstanceType": "t3a.nano",
+  "KeyName": "mykey1",
+  "UserData": "IyEvYmluL2Jhc2gKWFJBWVBPUlQ9NTY3OApYUkFZVVVJRD1iMTkwYjZmZi0wZDM1LTQ3ZDAtYjY0NC03ZmY1MmYwNWRiMzMKWFJBWUpTT049J2h0dHBzOi8vRGFya0dvbGRCYXIuZ2l0aHViLmlvL2F3cy14cmF5Lmpzb24nClhSQVlaSVA9J2h0dHBzOi8vZ2l0aHViLmNvbS9YVExTL1hyYXktY29yZS9yZWxlYXNlcy9kb3dubG9hZC92MS43LjUvWHJheS1saW51eC02NC56aXAnCldEPScveHJheScKCnl1bSBpbnN0YWxsIC15IHdnZXQgY3VybCB1bnppcCBzY3JlZW4KbWtkaXIgJFdECndnZXQgJFhSQVlaSVAgLU8gJFdEL1hyYXkuemlwCmN1cmwgJFhSQVlKU09OIHwgc2VkIC1lICJzLyVQT1JUJS8kWFJBWVBPUlQvIiAtZSAicy8lVVVJRCUvJFhSQVlVVUlELyIgPiAkV0QvY29uZmlnLmpzb24KdW56aXAgJFdEL1hyYXkuemlwIC1kICRXRC9iaW4Kc2NyZWVuIC1kbVMgeHJheSAkV0QvYmluL3hyYXkgLWMgJFdEL2NvbmZpZy5qc29u",
+  "EbsOptimized": false,
+  "NetworkInterfaces": [
+    {
+      "DeviceIndex": 0,
+      "AssociatePublicIpAddress": true,
+      "Groups": ["sg-012dc6909c278654d"]
+    }
+  ]
+}
+```
