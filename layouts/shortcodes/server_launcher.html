@@ -1,5 +1,5 @@
   <div>
-    <h1>VPN Launcher</h1>
+    <h1>Server Launcher</h1>
     <h2>Secrets</h2>
     <label for="access-key">Access Key:</label>
     <input type="text" id="access-key"><br><br>
@@ -11,15 +11,15 @@
     <textarea type="text" id="config"></textarea><br><br>
     <h2>Control Panel</h2>
     <div id="control-panel">
-      <button onclick="startService()">Start Service</button>
-      <button onclick="queryService()">Query Service</button>
+      <button onclick="startService()">Start</button>
+      <button onclick="queryService()">Query</button>
       <button onclick="saveCredential()">Save Secrets</button>
     </div>
     <table id="table-out">
       <thead>
         <tr>
-          <th>instanceID</th>
-          <th>publicIP</th>
+          <th>Status</th>
+          <th>PublicIP</th>
           <th>control</th>
         </tr>
       </thead>
