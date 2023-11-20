@@ -23,7 +23,7 @@ hugo new posts/1.md
 
 开启本地预览
 ```
-hugo serve
+hugo serve -D
 ```
 
 ## 文档编辑
@@ -35,9 +35,10 @@ hugo serve
 
 ### 插图
 静态图片复制到`static/images/`目录下，然后在MD中引用  
-```
-![雪山](/images/270px-梅里雪山.jpg)
-```
+`![雪山](/images/270px-梅里雪山.jpg)`  
+或者  
+`{{< image src="/images/270px-梅里雪山.jpg" caption="雪山">}}`  
+
 ![雪山](/images/270px-梅里雪山.jpg)
 
 ----------------------------------------
@@ -49,5 +50,5 @@ hugo serve
 ### config.toml 站点设置
 ```
 baseURL = "https://darkgoldbar.github.io"
-publishDir = 'docs'
+publishDir = 'public'
 ```
