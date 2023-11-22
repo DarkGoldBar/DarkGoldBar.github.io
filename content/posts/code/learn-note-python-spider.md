@@ -14,14 +14,7 @@ tags: ['Python']
 categories: ['代码笔记']
 ---
 
-### import环境
-```
-import requests
-from pandas import DataFrame  
-from bs4 import BeautifulSoup  # pip install beautifulsoup4
-```
-
-### 链接设置
+## 链接设置
 这里是用的本地http服务器代理，爬nist的数据  
 可以用v2ray把其他类型的代理变成一个本地http代理  
 
@@ -29,6 +22,10 @@ from bs4 import BeautifulSoup  # pip install beautifulsoup4
 `user_agent` 指定UA
 
 ``` python
+import requests
+from pandas import DataFrame  
+from bs4 import BeautifulSoup  # pip install beautifulsoup4
+
 proxies_pool = [
     {},
     {'http': '172.19.0.11:8118','https': '172.19.0.11:8118'}
@@ -52,7 +49,7 @@ headers = {
 }
 ```
 
-### 获取网页
+## 获取网页
 ``` python
 import requests
 from requests.exceptions import Timeout, RequestException
@@ -82,7 +79,7 @@ def getPage(url, timeout=30, retry_count=2):
     return soup
 ```
 
-### 常用方法和参数
+## 常用方法和参数
 
 
 |BS4查询方法|功能|

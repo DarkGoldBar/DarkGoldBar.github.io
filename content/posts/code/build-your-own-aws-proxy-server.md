@@ -11,7 +11,7 @@ license: ""
 images: []
 
 tags: []
-categories: []
+categories: ['代码笔记']
 
 featuredImage: ""
 featuredImagePreview: ""
