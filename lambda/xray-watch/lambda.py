@@ -3,9 +3,10 @@ import boto3
 from datetime import datetime, timedelta
 
 # Variables
-INTERVAL = int(os.environ.get('INTERVAL', '60'))
+INTERVAL = int(os.environ.get('INTERVAL', '30'))
 TAGNAME = os.environ.get('TAGNAME', 'MyXrayServer*')
 
+# 帮我写一个def lambda_handler(event, context)函数
 def lambda_handler(event, context):
     ec2 = boto3.resource('ec2')
     cloudwatch = boto3.client('cloudwatch')
@@ -48,29 +49,10 @@ def lambda_handler(event, context):
             if max_network_out < 1e6:
                 ec2.instances.filter(InstanceIds=[instance_id]).terminate()
                 terminated.append(instance_id)
-    
+
     if terminated:
         print('Instance terminated: ' + ','.join(terminated))
     else:
         raise Exception('No instance to terminate.')
 
-
-# Role
-"""
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "ec2:DescribeInstances",
-                "ec2:TerminateInstances",
-                "cloudwatch:GetMetricStatistics",
-                "cloudwatch:ListMetrics"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-"""
+# 执行这个函数的lambda执行者角色需要哪些权限，帮我写出权限描述文件

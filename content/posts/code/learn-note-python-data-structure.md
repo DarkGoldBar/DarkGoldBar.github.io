@@ -18,7 +18,7 @@ categories: ['代码笔记']
 
 <!--more-->
 
-## 构造Enum枚举类型
+## 从字典构造Enum枚举类型
 
 ``` python
 DATA = {'alice': {}, 'bob': {}}
@@ -48,7 +48,6 @@ MyEnumClass = MyEnum('MyEnumClass', {k: k for k in DATA})
 
 ## 构造namedtuple类型
 
-
 ``` python
 class Gems(namedtuple('Gems', list('rgbwd'), defaults=[0, 0, 0, 0, 0])):
     def __add__(self, other):
@@ -64,7 +63,8 @@ class Gems(namedtuple('Gems', list('rgbwd'), defaults=[0, 0, 0, 0, 0])):
 ```
 
 
-## 命令行接口
+## 命令行接口模块
+使用`click`库。读取当前目录的所有文件作为子命令。
 
 ``` python
 @click.group()

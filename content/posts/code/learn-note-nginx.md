@@ -14,8 +14,6 @@ tags: ['Shell']
 categories: ['代码笔记']
 ---
 
-
-
 <!--more-->
 
 ## 常用命令

@@ -117,6 +117,13 @@ enableEmoji = false
       name = "分类"
       url = "/categories/"
       title = ""
+    [[languages.zh-cn.menu.main]]
+      weight = 4
+      identifier = "tools"
+      post = "<i class='fa fa-wrench'></i>"
+      name = "工具"
+      url = "/categories/工具/"
+      title = ""
 
 [params]
   # 网站默认主题 ["auto", "light", "dark"]
