@@ -1,6 +1,6 @@
-const dcomPage = window.location.pathname;
-const dcomSite = "https://DarkGoldbar.github.io";
-const dcomServer="https://27n4glpsqowyvyndhv4tltfoby0ovlty.lambda-url.ap-northeast-3.on.aws/";
+var dcomPage = window.location.pathname;
+var dcomSite = "https://darkgoldbar.github.io";
+var dcomServer="https://27n4glpsqowyvyndhv4tltfoby0ovlty.lambda-url.ap-northeast-3.on.aws/";
 
 
 window.addEventListener('load', dcomInit);
@@ -12,16 +12,16 @@ function dcomInit() {
     dcomEle.innerHTML = `
     <form action="#">
         <div class="flex">
-            <input type="text" name="nickname" placeholder="昵称" required>
-            <input type="email" name="email" placeholder="邮箱">
+            <input type="text" name="nickname" placeholder="昵称(必填)" required>
+            <input type="email" name="email" placeholder="邮箱(选填)">
         </div>
         <div class="flex">
-            <textarea name="comment" rows="5" placeholder="请输入评论" required></textarea>
+            <textarea name="comment" rows="5" placeholder="请输入评论..." required></textarea>
         </div>
         <div>
             <input class="button" type="submit" value="提交评论">
         </div>
-        <sub>Powered by <a href="https://github.com/DarkGoldBar">D-comment</a></sub>
+        <sub>Powered by <a href="https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/">D-comment</a></sub>
     </form>
     <hr>
     <div class="comments"></div>
@@ -50,7 +50,7 @@ function dcomVCRender(count, timestamp) {
     const vcNode = document.getElementById('d-counter');
     const date = new Date(timestamp * 1000);
     const dateString = date.toLocaleString();
-    vcNode.innerHTML = `浏览次数: ${count} 最后访问: ${dateString}`
+    vcNode.innerHTML = `<i class="far fa-eye fa-fw" aria-hidden="true"></i> 浏览次数: ${count} 最后访问: ${dateString}`;
 }
 
 function dcomRenderComment(commentDict) {
@@ -103,7 +103,7 @@ function dcomGetMore() {
     dcomGet(minCid);
 }
 
-function dcomGet(offset=null, limit=10, page=dcomPage) {
+function dcomGet(offset=null, limit=10) {
     const xhr = new XMLHttpRequest();
     let query = `?limit=${limit}`;
     if (offset) {
@@ -120,11 +120,11 @@ function dcomGet(offset=null, limit=10, page=dcomPage) {
     };
 
     xhr.open("GET", dcomServer + query, true);
-    xhr.setRequestHeader("x-referer-page", page);
+    xhr.setRequestHeader("x-referer-page", dcomPage);
     xhr.send();
 }
 
-function dcomPost(doRefresh=false, page=dcomPage) {
+function dcomPost(doRefresh=false) {
     const xhr = new XMLHttpRequest();
     const nickname = document.querySelector("#d-comment [name=nickname]").value;
     const email = document.querySelector("#d-comment [name=email]").value;
@@ -142,12 +142,12 @@ function dcomPost(doRefresh=false, page=dcomPage) {
     };
 
     xhr.open("POST", dcomServer, true);
-    xhr.setRequestHeader("x-referer-page", page);
+    xhr.setRequestHeader("x-referer-page", dcomPage);
     xhr.send(JSON.stringify({ nickname, email, comment }));
 }
 
 function dcomVC() {
-    const cookieKey = 'dcom:visited:' + CurrentPage;
+    const cookieKey = 'dcom:visited:' + dcomPage;
     const currentTimeStamp = new Date().getTime();
     const lastTimeStamp = new Number(localStorage.getItem(cookieKey));
     localStorage.setItem(cookieKey, currentTimeStamp);
@@ -156,7 +156,7 @@ function dcomVC() {
     dcomVCRequest(doUpdate);
 }
 
-function dcomVCRequest(doUpdate=false, page=dcomPage) {
+function dcomVCRequest(doUpdate=false) {
     const xhr = new XMLHttpRequest();
     const query = "?action=" + (doUpdate ? "VCUpdate" : "VCGet");
     xhr.responseType = 'json';
@@ -167,6 +167,6 @@ function dcomVCRequest(doUpdate=false, page=dcomPage) {
     };
 
     xhr.open("GET", dcomServer + query);
-    xhr.setRequestHeader("x-referer-page", page);
+    xhr.setRequestHeader("x-referer-page", dcomPage);
     xhr.send();
 }
