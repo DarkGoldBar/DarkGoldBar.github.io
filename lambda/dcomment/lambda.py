@@ -56,7 +56,7 @@ class DComment:
             elif action == self.VC_RANKING:
                 return self.get_visitor_ranking(**query)
             elif action == self.VC_UPDATE:
-                return self.update_visitor_counter(page, **query)
+                return self.update_visitor_counter(page)
             else:
                 return self.list_comments(page, **query)
         elif method == "POST":
