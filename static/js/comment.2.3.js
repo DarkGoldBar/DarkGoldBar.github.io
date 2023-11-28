@@ -21,7 +21,7 @@ function dcomInit() {
         <div>
             <input class="button" type="submit" value="提交评论">
         </div>
-        <sub>Powered by <a href="https://github.com/DarkGoldBar">D-comment</a></sub>
+        <sub>Powered by <a href="https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/">D-comment</a></sub>
     </form>
     <hr>
     <div class="comments"></div>
