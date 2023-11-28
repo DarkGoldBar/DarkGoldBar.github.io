@@ -1,13 +1,21 @@
-var dcomServer="https://27n4glpsqowyvyndhv4tltfoby0ovlty.lambda-url.ap-northeast-3.on.aws/";
-var data_example = [{"Counter": 4, "page": "https://darkgoldbar.github.io/posts/ljh/ljh004/"}, 
-                    {"Counter": 6, "page": "https://darkgoldbar.github.io/posts/ljh/ljh030/"}];
+const data_example = [{"Counter": 4, "page": "https://darkgoldbar.github.io/posts/tools/qrcode/"}, 
+                      {"Counter": 6, "page": "https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/"}];
+const dcomServer = "https://27n4glpsqowyvyndhv4tltfoby0ovlty.lambda-url.ap-northeast-3.on.aws/";
+const dcomSite = "https://darkgoldbar.github.io";
 
-function ranking_request(origin) {
-    const xhr = new XMLHttpRequest();
-    let query = "?action=" + "VCRanking"
-    if (origin != null) {
-        query += "&origin=" + origin;
+window.addEventListener('load', ranking_init);
+
+function ranking_init() {
+    if (!(dcomSite) || (window.location.origin == dcomSite)) {
+        ranking_request();
+    } else {
+        ranking_render(data_example);
     }
+}
+
+function ranking_request() {
+    const xhr = new XMLHttpRequest();
+    const query = "?action=" + "VCRanking"
     xhr.open("GET", dcomServer + query, true);
     xhr.send();
     xhr.onreadystatechange = function () {
@@ -20,7 +28,7 @@ function ranking_request(origin) {
 
 function ranking_render(data) {
     // render ranking table in "ranking-table" element
-    let ranking = document.getElementById("ranking-table");
+    let ranking = document.getElementById("ranking");
     let table = document.createElement("table");
     table.setAttribute("class", "table table-striped table-bordered table-hover");
     let thead = document.createElement("thead");

@@ -77,7 +77,9 @@ class DComment:
             ProjectionExpression='#p, #c',
             ExpressionAttributeNames={'#p': 'page', '#c': 'Counter'}
         )
-        return [_decimal_to_int(x) for x in response['Items']]
+        data = [_decimal_to_int(x) for x in response['Items']]
+        data.sort(key=lambda x:x.get('Counter', 0), reverse=True)
+        return data
 
     def update_visitor_counter(self, page: str) -> dict:
         response = self.table.update_item(
