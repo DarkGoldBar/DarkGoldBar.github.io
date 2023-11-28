@@ -8,7 +8,7 @@ from boto3.dynamodb.types import Decimal
 from boto3.dynamodb.conditions import Key
 
 _DEFAULT_RESOURCE = boto3.resource('dynamodb')
-_DEFAULT_TABLENAME = os.environ['TableName']
+_DEFAULT_TABLENAME = os.environ.get('TableName', 'd-comment')
 
 
 def lambda_handler(event, context):
@@ -16,9 +16,11 @@ def lambda_handler(event, context):
     method = event['requestContext']['http']['method']
     origin = event['headers']['origin']
     x_page = event['headers']['x-referer-page']
+    page = origin + x_page
     query = event.get('queryStringParameters', {})
     body = json.loads(event.get('body', '{}'))
-    page = origin + x_page
+    if 'origin' not in query:
+        query['origin'] = origin
     obj = DComment()
     result = obj.handler(method, page, query, body)
     print('SEND', result)
@@ -37,6 +39,7 @@ class DComment:
     COMMENT_META_CID = 0
     VC_GET = 'VCGet'
     VC_UPDATE = 'VCUpdate'
+    VC_RANKING = 'VCRanking'
     VC_CID = -1
     VC_EMPTY = {'LastVisit': 0, 'Counter': 0}
 
@@ -50,8 +53,10 @@ class DComment:
         if method == "GET":
             if action == self.VC_GET:
                 return self.get_visitor_counter(page)
+            elif action == self.VC_RANKING:
+                return self.get_visitor_ranking(**query)
             elif action == self.VC_UPDATE:
-                return self.update_visitor_counter(page)
+                return self.update_visitor_counter(page, **query)
             else:
                 return self.list_comments(page, **query)
         elif method == "POST":
@@ -63,6 +68,16 @@ class DComment:
         response = self.table.get_item(Key={'page': page, 'cid': self.VC_CID})
         resp = response.get('Item', self.VC_EMPTY)
         return _decimal_to_int(resp)
+
+    def get_visitor_ranking(self, origin: str, **kwargs) -> dict:
+        # 从self.table中获取所有的'page'的值以site开头的访问量, page是这个表的主键
+        response = self.table.scan(
+            FilterExpression=Key('page').begins_with(origin) & Key('Counter').gt(0),
+            Select='SPECIFIC_ATTRIBUTES',
+            ProjectionExpression='#p, #c',
+            ExpressionAttributeNames={'#p': 'page', '#c': 'Counter'}
+        )
+        return [_decimal_to_int(x) for x in response['Items']]
 
     def update_visitor_counter(self, page: str) -> dict:
         response = self.table.update_item(
