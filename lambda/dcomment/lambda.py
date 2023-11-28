@@ -15,7 +15,7 @@ def lambda_handler(event, context):
     print('RECIVE', dict(event))
     method = event['requestContext']['http']['method']
     origin = event['headers']['origin']
-    x_page = event['headers']['x-referer-page']
+    x_page = event['headers'].get('x-referer-page', '/')
     page = origin + x_page
     query = event.get('queryStringParameters', {})
     body = json.loads(event.get('body', '{}'))

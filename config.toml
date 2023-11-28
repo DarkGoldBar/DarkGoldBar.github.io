@@ -241,6 +241,8 @@ enableEmoji = false
       copy = true
       # 默认展开显示的代码行数
       maxShownLines = 50
+    [params.page.comment]
+      enable = true
 
 [markup]
   [markup.highlight]
