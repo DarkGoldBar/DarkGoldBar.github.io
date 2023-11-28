@@ -7,8 +7,7 @@ window.addEventListener('load', ranking_init);
 
 function ranking_init() {
     if (!(dcomSite) || (window.location.origin == dcomSite)) {
-        let data = ranking_request();
-        ranking_render(data);
+        ranking_request();
     } else {
         ranking_render(data_example);
     }
