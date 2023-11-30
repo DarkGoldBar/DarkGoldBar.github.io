@@ -2,7 +2,7 @@
 title: "二维码生成器"
 subtitle: ""
 date: 2023-01-28T18:07:41+08:00
-lastmod: 2023-02-14T00:11:41+08:00
+lastmod: 2023-11-22T00:12:00+08:00
 draft: false
 author: ""
 authorLink: ""
@@ -43,7 +43,7 @@ library:
   css:
     # someCSS = "some.css" (for static/some.css) or "https://cdn.example.com/some.css"
   js:
-    qrcode: "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"
+    qrcode: "https://cdn.jsdelivr.us/npm/qrcodejs@1.0.0/qrcode.min.js"
 seo:
   images: []
 ---
