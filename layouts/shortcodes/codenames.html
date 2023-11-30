@@ -1,0 +1,75 @@
+<div id="codenames">
+    <section id="section-welcome">
+        <h1>行动代号助手</h1>
+        <div>
+            <form onsubmit="event.preventDefault();cnameJoin();">
+                <div>
+                    <a href="#" class="btn" id="game-create">创建游戏</a>
+                </div>
+                <div>
+                    <input type="submit" class="btn" id="game-join" value="加入游戏">
+                </div>
+                <div>
+                    <label for="game-number">游戏号:</label>
+                    <input type="number" id="game-number" name="game-number" min="1000" value="1000">
+                </div>
+            </form>
+        </div>
+        <br>
+        <div hidden>
+            <div id="game-link">
+                <button>复制链接</button>
+                <p data-query="role=leader&c=blue">蓝色队长: <a href=""></a></p>
+                <p data-query="role=leader&c=red">红色队长: <a href=""></a></p>
+                <p data-query="role=member&c=blue">蓝色队员: <a href=""></a></p>
+                <p data-query="role=member&c=red">红色队员: <a href=""></a></p>
+            </div>
+        </div>
+    </section>
+    <section id="section-gaming" hidden>
+        <div id="container-control">
+            <div>
+                <a href="#" class="btn" id="game-update">更新</a>
+                <a href="#" class="btn" id="game-pick">选这张</a>
+                <a href="#" class="btn" id="game-change">换个词</a>
+            </div>
+            <div>
+                <span id="game-echo">ROLE+COLOR+1000</span>
+            </div>
+        </div>
+        <div id="container-card" data-card="">
+            <div class="placeholder"><div class="card" data-card="1"><p>No.1</p></div></div>
+            <div class="placeholder"><div class="card" data-card="2"><p>No.2</p></div></div>
+            <div class="placeholder"><div class="card" data-card="3"><p>No.3</p></div></div>
+            <div class="placeholder"><div class="card" data-card="4"><p>No.4</p></div></div>
+            <div class="placeholder"><div class="card" data-card="5"><p>No.5</p></div></div>
+            <div class="placeholder"><div class="card" data-card="6"><p>No.6</p></div></div>
+            <div class="placeholder"><div class="card" data-card="7"><p>No.7</p></div></div>
+            <div class="placeholder"><div class="card" data-card="8"><p>No.8</p></div></div>
+            <div class="placeholder"><div class="card" data-card="9"><p>No.9</p></div></div>
+            <div class="placeholder"><div class="card" data-card="10"><p>No.10</p></div></div>
+            <div class="placeholder"><div class="card" data-card="11"><p>No.11</p></div></div>
+            <div class="placeholder"><div class="card" data-card="12"><p>No.12</p></div></div>
+            <div class="placeholder"><div class="card" data-card="13"><p>No.13</p></div></div>
+            <div class="placeholder"><div class="card" data-card="14"><p>No.14</p></div></div>
+            <div class="placeholder"><div class="card" data-card="15"><p>No.15</p></div></div>
+            <div class="placeholder"><div class="card" data-card="16"><p>No.16</p></div></div>
+            <div class="placeholder"><div class="card" data-card="17"><p>No.17</p></div></div>
+            <div class="placeholder"><div class="card" data-card="18"><p>No.18</p></div></div>
+            <div class="placeholder"><div class="card" data-card="19"><p>No.19</p></div></div>
+            <div class="placeholder"><div class="card" data-card="20"><p>No.20</p></div></div>
+            <div class="placeholder"><div class="card" data-card="21"><p>No.21</p></div></div>
+            <div class="placeholder"><div class="card" data-card="22"><p>No.22</p></div></div>
+            <div class="placeholder"><div class="card" data-card="23"><p>No.23</p></div></div>
+            <div class="placeholder"><div class="card" data-card="24"><p>No.24</p></div></div>
+            <div class="placeholder"><div class="card" data-card="25"><p>No.25</p></div></div>
+        </div>
+        <div class="container-score">
+            <div class="container-score-title">剩余</div>
+            <div class="container-score-content">
+                <div class="team-score" id="red-score">红: <span></span></div>
+                <div class="team-score" id="blue-score">蓝: <span></span></div>
+            </div>
+            </div>
+    </section>
+</div>

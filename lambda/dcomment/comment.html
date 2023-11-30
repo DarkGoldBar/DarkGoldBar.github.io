@@ -1,0 +1,17 @@
+{{- $cdn := .Scratch.Get "cdn" | default dict -}}
+{{- $fingerprint := .Scratch.Get "fingerprint" -}}
+{{- $comment := .Scratch.Get "comment" | default dict -}}
+{{- $commentConfig := dict -}}
+
+{{- if $comment.enable -}}
+<div id="comments">
+    <link rel="stylesheet" href="/css/comment.css" type="text/css">
+    <div id="d-comment"></div>
+    <script src="/js/comment.2.3.js"></script>
+    <noscript>
+        Please enable JavaScript to view the comments powered by DarkGoldBar D-comment</a>.
+    </noscript>
+</div>
+{{- end -}}
+
+{{- dict "comment" $commentConfig | dict "config" | merge (.Scratch.Get "this") | .Scratch.Set "this" -}}
