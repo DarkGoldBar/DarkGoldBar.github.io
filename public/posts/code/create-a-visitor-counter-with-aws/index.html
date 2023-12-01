@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>用AWS做一个免费的访客计数 - DarkGoldBar的主页</title><meta name="Description" content="DarkGoldBar的主页"><meta property="og:title" content="用AWS做一个免费的访客计数" />
+<meta property="og:description" content="介绍如何在在自己的静态网站中从头制作一个访客计数器，最后插入到Hugo模板中，使每个博客页面都获得计数功能。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://darkgoldbar.github.io/posts/code/create-a-visitor-counter-with-aws/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-03-01T15:48:45+08:00" />
+<meta property="article:modified_time" content="2023-03-07T09:26:09+08:00" /><meta property="og:site_name" content="DarkGoldBar的主页" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="用AWS做一个免费的访客计数"/>
+<meta name="twitter:description" content="介绍如何在在自己的静态网站中从头制作一个访客计数器，最后插入到Hugo模板中，使每个博客页面都获得计数功能。"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://darkgoldbar.github.io/posts/code/create-a-visitor-counter-with-aws/" /><link rel="prev" href="https://darkgoldbar.github.io/posts/ljh/ljh018/" /><link rel="next" href="https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "用AWS做一个免费的访客计数",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/darkgoldbar.github.io\/posts\/code\/create-a-visitor-counter-with-aws\/"
+        },"genre": "posts","keywords": "javascript, Python, hugo","wordcount":  1939 ,
+        "url": "https:\/\/darkgoldbar.github.io\/posts\/code\/create-a-visitor-counter-with-aws\/","datePublished": "2023-03-01T15:48:45+08:00","dateModified": "2023-03-07T09:26:09+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "DarkGoldBar"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="DarkGoldBar的主页"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"><i class='fa fa-tags'></i> 标签 </a><a class="menu-item" href="/categories/"><i class='fa fa-bars'></i> 分类 </a><a class="menu-item" href="/categories/%E5%B7%A5%E5%85%B7/"><i class='fa fa-wrench'></i> 工具 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/code/create-a-visitor-counter-with-aws/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="DarkGoldBar的主页"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title=""><i class='fa fa-tags'></i>标签</a><a class="menu-item" href="/categories/" title=""><i class='fa fa-bars'></i>分类</a><a class="menu-item" href="/categories/%E5%B7%A5%E5%85%B7/" title=""><i class='fa fa-wrench'></i>工具</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/code/create-a-visitor-counter-with-aws/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">用AWS做一个免费的访客计数</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/DarkGoldBar" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>DarkGoldBar</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>代码笔记</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-01">2023-03-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1939 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;<div id="d-counter"></div>
+            </div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#结构设计">结构设计</a></li>
+    <li><a href="#数据库">数据库</a></li>
+    <li><a href="#lambda">Lambda</a>
+      <ul>
+        <li><a href="#修改lambda权限">修改Lambda权限</a></li>
+        <li><a href="#修改cros限制">修改CROS限制</a></li>
+        <li><a href="#代码">代码</a></li>
+        <li><a href="#测试">测试</a></li>
+      </ul>
+    </li>
+    <li><a href="#hugo模板中插入代码片段">Hugo模板中插入代码片段</a>
+      <ul>
+        <li><a href="#创建partial模板">创建partial模板</a></li>
+        <li><a href="#插入posts模板">插入posts模板</a></li>
+        <li><a href="#js代码">JS代码</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>介绍如何在在自己的静态网站中从头制作一个访客计数器，最后插入到Hugo模板中，使每个博客页面都获得计数功能。</p>
+<h2 id="结构设计">结构设计</h2>
+<a class="lightgallery" href="/images/code/vc005.png" title="流程图" data-thumbnail="/images/code/vc005.png">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/code/vc005.png"
+            data-srcset="/images/code/vc005.png, /images/code/vc005.png 1.5x, /images/code/vc005.png 2x"
+            data-sizes="auto"
+            alt="/images/code/vc005.png" width="450" />
+    </a>
+<ol>
+<li>用户访问静态站点(Gitpage)</li>
+<li>静态站点服务返回预渲染页面和JS脚本</li>
+<li>计数统计的脚本向AWS Lambda发送计数请求</li>
+<li>Lambda收到请求后，发起数据库请求</li>
+<li>数据库返回结果到Lambda</li>
+<li>Lambda把结果返回给用户。最后页面JS收到计数结果，渲染到网页上。</li>
+</ol>
+<p>在这个流程中，DynamoDB提供了数据存储的功能，负责存储每个页面的地址和访问量。
+但是数据库的访问需要用户验证以及特定的接口。因此为了处理匿名用户的HTTP请求，添加了一个Lambda函数做中转。</p>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>Tip<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">这里用到的Lambda服务和DynamoDB服务，在个人小用量的情况下都是能免费使用的。
+具体额度可以在AWS官网上查到
+<a href="https://aws.amazon.com/cn/free/?nc2=h_ql_pr_ft&amp;all-free-tier.sort-by=item.additionalFields.SortRank&amp;all-free-tier.sort-order=asc&amp;awsf.Free%20Tier%20Types=*all&amp;awsf.Free%20Tier%20Categories=*all" target="_blank" rel="noopener noreffer ">aws计算&amp;数据库免费额度</a></div>
+        </div>
+    </div>
+<hr>
+<h2 id="数据库">数据库</h2>
+<p>在AWS控制台找到DynamoDB页面，简单创建一个新表，起个名字，表的主键设置为字符串型数据page，排序键不需要，其他都按默认设置即可。</p>
+<figure><a class="lightgallery" href="/images/code/vc001.png" title="/images/code/vc001.png" data-thumbnail="/images/code/vc001.png" data-sub-html="<h2>创建表</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/code/vc001.png"
+            data-srcset="/images/code/vc001.png, /images/code/vc001.png 1.5x, /images/code/vc001.png 2x"
+            data-sizes="auto"
+            alt="/images/code/vc001.png" />
+    </a><figcaption class="image-caption">创建表</figcaption>
+    </figure>
+<p>我们希望每个页面作为表的一行数据，url作为主键，保存访问量以及最后访问时间。<br>
+手动添加一行样例数据，这个网页版添加数据的操作很不友好，所以截图说明一下应该写成这个样子。
+添加完成后可以在 <em>表</em> -&gt; <em>浏览项目</em> 里确认自己的数据已经写入数据表</p>
+<figure><a class="lightgallery" href="/images/code/vc002.png" title="/images/code/vc002.png" data-thumbnail="/images/code/vc002.png" data-sub-html="<h2>添加样例行</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/code/vc002.png"
+            data-srcset="/images/code/vc002.png, /images/code/vc002.png 1.5x, /images/code/vc002.png 2x"
+            data-sizes="auto"
+            alt="/images/code/vc002.png" />
+    </a><figcaption class="image-caption">添加样例行</figcaption>
+    </figure>
+<h2 id="lambda">Lambda</h2>
+<p>在AWS控制台找到Lambda页面，创建一个新函数，使用Python语言，架构选arm64更便宜，执行角色暂且选基本权限。在高级设置里选启用URL，不需要授权，开启CORS。具体如图</p>
+<p><figure><a class="lightgallery" href="/images/code/vc006.png" title="/images/code/vc006.png" data-thumbnail="/images/code/vc006.png" data-sub-html="<h2>Lambda设置1</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/code/vc006.png"
+            data-srcset="/images/code/vc006.png, /images/code/vc006.png 1.5x, /images/code/vc006.png 2x"
+            data-sizes="auto"
+            alt="/images/code/vc006.png" />
+    </a><figcaption class="image-caption">Lambda设置1</figcaption>
+    </figure>
+<figure><a class="lightgallery" href="/images/code/vc007.png" title="/images/code/vc007.png" data-thumbnail="/images/code/vc007.png" data-sub-html="<h2>Lambda设置2</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/code/vc007.png"
+            data-srcset="/images/code/vc007.png, /images/code/vc007.png 1.5x, /images/code/vc007.png 2x"
+            data-sizes="auto"
+            alt="/images/code/vc007.png" />
+    </a><figcaption class="image-caption">Lambda设置2</figcaption>
+    </figure></p>
+<h3 id="修改lambda权限">修改Lambda权限</h3>
+<p>在函数页面，找到<strong>配置</strong>-&gt;<strong>权限</strong>，点执行角色的名字，转到IAM页面。</p>
+<p>在IAM里把这个执行角色的策略改成<code>AWSLambdaDynamoDBExecutionRole</code>，
+然后再添加一条自定义策略，增加查询、更新数据的权限。</p>
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#008000;font-weight:bold">&#34;Version&#34;</span>: <span style="color:#b44">&#34;2012-10-17&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#008000;font-weight:bold">&#34;Statement&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#008000;font-weight:bold">&#34;Effect&#34;</span>: <span style="color:#b44">&#34;Allow&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#008000;font-weight:bold">&#34;Action&#34;</span>: [
+</span></span><span style="display:flex;"><span>                <span style="color:#b44">&#34;dynamodb:GetItem&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#b44">&#34;dynamodb:UpdateItem&#34;</span>
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#008000;font-weight:bold">&#34;Resource&#34;</span>: <span style="color:#b44">&#34;*&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="修改cros限制">修改CROS限制</h3>
+<p>在函数页面，找到<strong>配置</strong>-&gt;<strong>函数 URL</strong>。</p>
+<p>这里暂时先把CORS允许源设置为<code>*</code>，在测试完成后，再改成自己的域名。
+<figure><a class="lightgallery" href="/images/code/vc008.png" title="/images/code/vc008.png" data-thumbnail="/images/code/vc008.png" data-sub-html="<h2>CROS设置</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/images/code/vc008.png"
+            data-srcset="/images/code/vc008.png, /images/code/vc008.png 1.5x, /images/code/vc008.png 2x"
+            data-sizes="auto"
+            alt="/images/code/vc008.png" />
+    </a><figcaption class="image-caption">CROS设置</figcaption>
+    </figure></p>
+<h3 id="代码">代码</h3>
+<p>把写好的lambda函数代码贴进去保存，然后部署。</p>
+<p><code>get_args</code>函数:</p>
+<ul>
+<li>输入预处理，可对应HTTP请求和一般socket</li>
+</ul>
+<p><code>lambda_handler</code> 函数:</p>
+<ul>
+<li>接受一个字典数据<code>{'page': xxx, 'action': [get|update]}</code></li>
+<li><code>action == get</code>时，返回page页面的访问量和最后一个时间戳</li>
+<li><code>action == update</code>时，page页面访问量+1，更新时间戳，然后返回page页面的新的访问量和上一个时间戳</li>
+</ul>
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">json</span><span style="color:#666">,</span> <span style="color:#00f;font-weight:bold">boto3</span><span style="color:#666">,</span> <span style="color:#00f;font-weight:bold">time</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>client <span style="color:#666">=</span> boto3<span style="color:#666">.</span>client(<span style="color:#b44">&#39;dynamodb&#39;</span>)
+</span></span><span style="display:flex;"><span>TableName <span style="color:#666">=</span> <span style="color:#b44">&#39;visitor_counter&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">get_args</span>(event):
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> <span style="color:#b44">&#39;body&#39;</span> <span style="color:#a2f;font-weight:bold">in</span> event:  <span style="color:#080;font-style:italic"># for HTTP request</span>
+</span></span><span style="display:flex;"><span>        args <span style="color:#666">=</span> json<span style="color:#666">.</span>loads(event[<span style="color:#b44">&#39;body&#39;</span>])
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">else</span>:  <span style="color:#080;font-style:italic"># for test purpose</span>
+</span></span><span style="display:flex;"><span>        args <span style="color:#666">=</span> event
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">return</span> args
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">def</span> <span style="color:#00a000">lambda_handler</span>(event, context):
+</span></span><span style="display:flex;"><span>    EMPTY_RESP <span style="color:#666">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#b44">&#39;last_visit&#39;</span>: {<span style="color:#b44">&#39;N&#39;</span>: <span style="color:#666">0</span>},
+</span></span><span style="display:flex;"><span>        <span style="color:#b44">&#39;visit&#39;</span>: {<span style="color:#b44">&#39;N&#39;</span>: <span style="color:#666">0</span>},
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f">print</span>(<span style="color:#b44">&#39;RECIVE&#39;</span>, <span style="color:#a2f">dict</span>(event))
+</span></span><span style="display:flex;"><span>    args <span style="color:#666">=</span> get_args(event)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    key <span style="color:#666">=</span> {<span style="color:#b44">&#39;page&#39;</span>: {<span style="color:#b44">&#39;S&#39;</span>: args<span style="color:#666">.</span>get(<span style="color:#b44">&#39;page&#39;</span>)}}
+</span></span><span style="display:flex;"><span>    action <span style="color:#666">=</span> args<span style="color:#666">.</span>get(<span style="color:#b44">&#39;action&#39;</span>)
+</span></span><span style="display:flex;"><span>    data <span style="color:#666">=</span> {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> action <span style="color:#a2f;font-weight:bold">is</span> <span style="color:#a2f;font-weight:bold">None</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">return</span> {<span style="color:#b44">&#39;error&#39;</span>: <span style="color:#b44">&#39;Missing key: action&#39;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> action <span style="color:#666">==</span> <span style="color:#b44">&#39;get&#39;</span>:
+</span></span><span style="display:flex;"><span>        resp <span style="color:#666">=</span> client<span style="color:#666">.</span>get_item(
+</span></span><span style="display:flex;"><span>            TableName<span style="color:#666">=</span>TableName,
+</span></span><span style="display:flex;"><span>            Key<span style="color:#666">=</span>key
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        d <span style="color:#666">=</span> resp<span style="color:#666">.</span>get(<span style="color:#b44">&#39;Item&#39;</span>, EMPTY_RESP)
+</span></span><span style="display:flex;"><span>        data <span style="color:#666">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#39;last&#39;</span>: d[<span style="color:#b44">&#39;last_visit&#39;</span>][<span style="color:#b44">&#39;N&#39;</span>],
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#39;visit&#39;</span>: d[<span style="color:#b44">&#39;visit&#39;</span>][<span style="color:#b44">&#39;N&#39;</span>],
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> action <span style="color:#666">==</span> <span style="color:#b44">&#39;update&#39;</span>:
+</span></span><span style="display:flex;"><span>        now <span style="color:#666">=</span> <span style="color:#a2f">int</span>(time<span style="color:#666">.</span>time())
+</span></span><span style="display:flex;"><span>        resp <span style="color:#666">=</span> client<span style="color:#666">.</span>update_item(
+</span></span><span style="display:flex;"><span>            TableName<span style="color:#666">=</span>TableName,
+</span></span><span style="display:flex;"><span>            Key<span style="color:#666">=</span>key,
+</span></span><span style="display:flex;"><span>            UpdateExpression <span style="color:#666">=</span> <span style="color:#b44">&#39;SET last_visit = :time ADD visit :inc&#39;</span>,
+</span></span><span style="display:flex;"><span>            ExpressionAttributeValues <span style="color:#666">=</span> {<span style="color:#b44">&#39;:inc&#39;</span> : {<span style="color:#b44">&#39;N&#39;</span>: <span style="color:#b44">&#39;1&#39;</span>}, <span style="color:#b44">&#39;:time&#39;</span>: {<span style="color:#b44">&#39;N&#39;</span>: <span style="color:#a2f">str</span>(now)}},
+</span></span><span style="display:flex;"><span>            ReturnValues<span style="color:#666">=</span><span style="color:#b44">&#34;UPDATED_OLD&#34;</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        d <span style="color:#666">=</span> resp<span style="color:#666">.</span>get(<span style="color:#b44">&#39;Attributes&#39;</span>, EMPTY_RESP)
+</span></span><span style="display:flex;"><span>        data <span style="color:#666">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#39;last&#39;</span>: d[<span style="color:#b44">&#39;last_visit&#39;</span>][<span style="color:#b44">&#39;N&#39;</span>],
+</span></span><span style="display:flex;"><span>            <span style="color:#b44">&#39;visit&#39;</span>: <span style="color:#a2f">str</span>(<span style="color:#a2f">int</span>(d[<span style="color:#b44">&#39;visit&#39;</span>][<span style="color:#b44">&#39;N&#39;</span>]) <span style="color:#666">+</span> <span style="color:#666">1</span>),
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f">print</span>(<span style="color:#b44">&#39;SEND&#39;</span>, data)
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">return</span> data</span></span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="测试">测试</h3>
+<p>用浏览器控制台简单测试一下aws-lambda是否正常工作</p>
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> xmlhttp <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> XMLHttpRequest();
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> url <span style="color:#666">=</span> <span style="color:#b44">&#34;https://xxxxxxxxxxx.lambda-url.ap-northeast-3.on.aws&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> data <span style="color:#666">=</span> {page<span style="color:#666">:</span> <span style="color:#b44">&#34;www.example.com&#34;</span>, action<span style="color:#666">:</span> <span style="color:#b44">&#34;get&#34;</span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>xmlhttp.onreadystatechange <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">function</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> (<span style="color:#a2f;font-weight:bold">this</span>.readyState <span style="color:#666">==</span> <span style="color:#666">4</span> <span style="color:#666">&amp;&amp;</span> <span style="color:#a2f;font-weight:bold">this</span>.status <span style="color:#666">==</span> <span style="color:#666">200</span>) {
+</span></span><span style="display:flex;"><span>        console.log(<span style="color:#a2f;font-weight:bold">this</span>.responseText);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>xmlhttp.open(<span style="color:#b44">&#34;POST&#34;</span>, url);
+</span></span><span style="display:flex;"><span>xmlhttp.send(JSON.stringify(data));
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="hugo模板中插入代码片段">Hugo模板中插入代码片段</h2>
+<h3 id="创建partial模板">创建partial模板</h3>
+<p>新建一个partial模板，路径为<code>/layouts/partials/my_vc.html</code><br>
+简单写两行，内容都交给脚本</p>
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-HTML" data-lang="HTML"><span style="display:flex;"><span>&lt;<span style="color:#008000;font-weight:bold">div</span> <span style="color:#b44">id</span><span style="color:#666">=</span><span style="color:#b44">&#34;visitCount&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#008000;font-weight:bold">script</span> <span style="color:#b44">src</span><span style="color:#666">=</span><span style="color:#b44">&#34;/js/visit_counter.js&#34;</span>&gt;&lt;/<span style="color:#008000;font-weight:bold">script</span>&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="插入posts模板">插入posts模板</h3>
+<p>找到需要插入访问计数的模板文件，我这里是使用了Loveit模板，路径为<code>themes/LoveIt/layouts/posts/single.html</code>，
+把这个文件复制到<code>layouts/posts/single.html</code>，然后在模板文件里找到合适的地方插入。
+这里我选择在<code>&lt;div class=&quot;post-meta-line&quot;&gt;</code>这个节点里面，插入代码片段<code>{{- partial &quot;my_vc.html&quot; . -}}</code>。</p>
+<h3 id="js代码">JS代码</h3>
+<p>根据partial模板中写的脚本对应的目录就是<code>/static/js/visit_counter.js</code>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>Tip<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><code>vcSite</code>改为你的域名<br>
+<code>vcServer</code>改为你的函数URL</div>
+        </div>
+    </div></p>
+<div class="highlight"><div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> CurrentPage<span style="color:#666">=</span><span style="color:#a2f">window</span>.location.origin <span style="color:#666">+</span> <span style="color:#a2f">window</span>.location.pathname;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> vcSite<span style="color:#666">=</span><span style="color:#b44">&#34;https://darkgoldbar.github.io&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> vcServer<span style="color:#666">=</span><span style="color:#b44">&#34;https://xxxxxxxx.lambda-url.ap-northeast-3.on.aws/&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">var</span> vcResponse<span style="color:#666">=</span><span style="color:#a2f;font-weight:bold">null</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f">window</span>.addEventListener(<span style="color:#b44">&#39;load&#39;</span>, vcOnLoad);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> vcOnLoad() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> (<span style="color:#a2f">window</span>.location.origin <span style="color:#666">==</span> vcSite){
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> (vcCheck()) {
+</span></span><span style="display:flex;"><span>            vcRequest(<span style="color:#b44">&#39;get&#39;</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#a2f;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            vcRequest(<span style="color:#b44">&#39;update&#39;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> vcRequest(action) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> data <span style="color:#666">=</span> {page<span style="color:#666">:</span> CurrentPage, action<span style="color:#666">:</span> action};
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> xmlhttp <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> XMLHttpRequest();
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> resp_data <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">null</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    xmlhttp.onreadystatechange <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">function</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#a2f;font-weight:bold">if</span> (<span style="color:#a2f;font-weight:bold">this</span>.readyState <span style="color:#666">==</span> <span style="color:#666">4</span> <span style="color:#666">&amp;&amp;</span> <span style="color:#a2f;font-weight:bold">this</span>.status <span style="color:#666">==</span> <span style="color:#666">200</span>) {
+</span></span><span style="display:flex;"><span>            resp_data <span style="color:#666">=</span> JSON.parse(<span style="color:#a2f;font-weight:bold">this</span>.responseText);
+</span></span><span style="display:flex;"><span>            vcRender(resp_data);
+</span></span><span style="display:flex;"><span>        } <span style="color:#a2f;font-weight:bold">else</span> <span style="color:#a2f;font-weight:bold">if</span> (<span style="color:#a2f;font-weight:bold">this</span>.readyState <span style="color:#666">==</span> <span style="color:#666">4</span> <span style="color:#666">&amp;&amp;</span> <span style="color:#a2f;font-weight:bold">this</span>.status <span style="color:#666">!=</span> <span style="color:#666">200</span>) {
+</span></span><span style="display:flex;"><span>            console.log(<span style="color:#b44">&#39;visit counter API failed&#39;</span>);
+</span></span><span style="display:flex;"><span>            vcResponse <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">this</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    xmlhttp.open(<span style="color:#b44">&#34;POST&#34;</span>, vcServer);
+</span></span><span style="display:flex;"><span>    xmlhttp.send(JSON.stringify(data));
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> vcCheck(){
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> visited <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">false</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> cookie_key <span style="color:#666">=</span> <span style="color:#b44">&#39;last_visit:&#39;</span> <span style="color:#666">+</span> CurrentPage;
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> currentTimeStamp <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> <span style="color:#a2f">Date</span>().getTime();
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> lastTimeStamp <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> <span style="color:#a2f">Number</span>(localStorage.getItem(cookie_key));
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">if</span> (lastTimeStamp <span style="color:#666">&amp;&amp;</span> ((currentTimeStamp <span style="color:#666">-</span> lastTimeStamp) <span style="color:#666">&lt;</span> <span style="color:#666">24</span> <span style="color:#666">*</span> <span style="color:#666">60</span> <span style="color:#666">*</span> <span style="color:#666">60</span> <span style="color:#666">*</span> <span style="color:#666">1000</span>)) {
+</span></span><span style="display:flex;"><span>        visited <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">true</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    localStorage.setItem(cookie_key, currentTimeStamp);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">return</span> visited
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a2f;font-weight:bold">function</span> vcRender(data) {
+</span></span><span style="display:flex;"><span>    <span style="color:#080;font-style:italic">// data = {last:&#34;1675853136&#34;, visit:&#34;6&#34;}
+</span></span></span><span style="display:flex;"><span><span style="color:#080;font-style:italic"></span>    <span style="color:#a2f;font-weight:bold">let</span> vcnode <span style="color:#666">=</span> <span style="color:#a2f">document</span>.getElementById(<span style="color:#b44">&#39;visitCount&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a2f;font-weight:bold">let</span> d <span style="color:#666">=</span> <span style="color:#a2f;font-weight:bold">new</span> <span style="color:#a2f">Date</span>();
+</span></span><span style="display:flex;"><span>    d.setTime(<span style="color:#a2f">Number</span>(data.last <span style="color:#666">+</span> <span style="color:#b44">&#34;000&#34;</span>));
+</span></span><span style="display:flex;"><span>    vcnode.innerHTML <span style="color:#666">=</span> <span style="color:#b44">&#39;浏览次数: &lt;span&gt;&#39;</span> <span style="color:#666">+</span>data.visit<span style="color:#666">+</span> <span style="color:#b44">&#39;&lt;/span&gt; 最后访问: &lt;span&gt;&#39;</span> <span style="color:#666">+</span>d.toISOString()<span style="color:#666">+</span> <span style="color:#b44">&#39;&lt;/span&gt;&#39;</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-03-07&nbsp;<a class="git-hash" href="https://github.com/DarkGoldBar/DarkGoldBar.github.io/commit/30c5e0b17c8120620ac1f0e0df32c16dfe059eb5" target="_blank" title="commit by bochen.li(bochen.li@xtalpi.com) 30c5e0b17c8120620ac1f0e0df32c16dfe059eb5: 用AWS做一个免费的访客计数">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>30c5e0b</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://darkgoldbar.github.io/posts/code/create-a-visitor-counter-with-aws/" data-title="用AWS做一个免费的访客计数" data-hashtags="javascript,Python,hugo"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://darkgoldbar.github.io/posts/code/create-a-visitor-counter-with-aws/" data-hashtag="javascript"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://darkgoldbar.github.io/posts/code/create-a-visitor-counter-with-aws/" data-title="用AWS做一个免费的访客计数"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://darkgoldbar.github.io/posts/code/create-a-visitor-counter-with-aws/" data-title="用AWS做一个免费的访客计数"><i data-svg-src="https://cdnjs.cloudflare.com/ajax/libs/simple-icons/7.3.0/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://darkgoldbar.github.io/posts/code/create-a-visitor-counter-with-aws/" data-title="用AWS做一个免费的访客计数"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/javascript/">javascript</a>,&nbsp;<a href="/tags/python/">Python</a>,&nbsp;<a href="/tags/hugo/">hugo</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/ljh/ljh018/" class="prev" rel="prev" title="CCTV央视历史文献纪录片《渭华起义》共三集"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>CCTV央视历史文献纪录片《渭华起义》共三集</a>
+            <a href="/posts/code/create-a-severless-blog-comment-system/" class="next" rel="next" title="制作一个无服务器博客评论系统">制作一个无服务器博客评论系统<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments">
+    <link rel="stylesheet" href="/css/comment.css" type="text/css">
+    <div id="d-comment"></div>
+    <script src="/js/comment.2.3.js"></script>
+    <noscript>
+        Please enable JavaScript to view the comments powered by DarkGoldBar D-comment</a>.
+    </noscript>
+</div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.106.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/DarkGoldBar" target="_blank">DarkGoldBar</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.5.0/css/lightgallery-bundle.min.css"><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sharer.js/0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeit/8.6.0/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"data":{"id-1":"DarkGoldBar","id-2":"DarkGoldBar"},"lightgallery":true,"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>去除网页版飞书水印 - DarkGoldBar的主页</title><meta name="Description" content="DarkGoldBar的主页"><meta property="og:title" content="去除网页版飞书水印" />
+<meta property="og:description" content="F12调控制台，把JS代码粘贴进去运行 去掉水印之后，网页会卡住在一个白色屏幕，失去所有交互。 但是如果提前打开准备截图的聊天界面，往下拉还是可" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-12-16T09:59:51+08:00" />
+<meta property="article:modified_time" content="2023-01-28T11:52:55+08:00" /><meta property="og:site_name" content="DarkGoldBar的主页" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="去除网页版飞书水印"/>
+<meta name="twitter:description" content="F12调控制台，把JS代码粘贴进去运行 去掉水印之后，网页会卡住在一个白色屏幕，失去所有交互。 但是如果提前打开准备截图的聊天界面，往下拉还是可"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/" /><link rel="prev" href="https://darkgoldbar.github.io/posts/code/learn-note-ffmpeg/" /><link rel="next" href="https://darkgoldbar.github.io/posts/code/learn-note-python-spider/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "去除网页版飞书水印",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/darkgoldbar.github.io\/posts\/code\/remove-lark-watermark-on-browser\/"
+        },"genre": "posts","keywords": "javascript","wordcount":  93 ,
+        "url": "https:\/\/darkgoldbar.github.io\/posts\/code\/remove-lark-watermark-on-browser\/","datePublished": "2022-12-16T09:59:51+08:00","dateModified": "2023-01-28T11:52:55+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "DarkGoldBar"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="DarkGoldBar的主页"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"><i class='fa fa-tags'></i> 标签 </a><a class="menu-item" href="/categories/"><i class='fa fa-bars'></i> 分类 </a><a class="menu-item" href="/categories/%E5%B7%A5%E5%85%B7/"><i class='fa fa-wrench'></i> 工具 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/posts/code/remove-lark-watermark-on-browser/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="DarkGoldBar的主页"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title=""><i class='fa fa-tags'></i>标签</a><a class="menu-item" href="/categories/" title=""><i class='fa fa-bars'></i>分类</a><a class="menu-item" href="/categories/%E5%B7%A5%E5%85%B7/" title=""><i class='fa fa-wrench'></i>工具</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/posts/code/remove-lark-watermark-on-browser/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">去除网页版飞书水印</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/DarkGoldBar" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>DarkGoldBar</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E4%BB%A3%E7%A0%81%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>代码笔记</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-12-16">2022-12-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 93 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 1 分钟&nbsp;<div id="d-counter"></div>
+            </div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>F12调控制台，把JS代码粘贴进去运行
+去掉水印之后，网页会卡住在一个白色屏幕，失去所有交互。<br>
+但是如果提前打开准备截图的聊天界面，往下拉还是可以看到已经加载的聊天内容。</p>
+<pre tabindex="0"><code>regex = /data\:image\/svg\+xml;base64,[a-zA-Z0-9+\=]+/g;
+body = document.getElementsByTagName(&#39;body&#39;)[0];
+body.innerHTML = body.innerHTML.replace(regex, &#39;AAA&#39;);
+</code></pre></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-01-28&nbsp;<a class="git-hash" href="https://github.com/DarkGoldBar/DarkGoldBar.github.io/commit/e68a2a482161af7f56324235bdbdd8df4ec385f3" target="_blank" title="commit by bochen.li(bochen.li@xtalpi.com) e68a2a482161af7f56324235bdbdd8df4ec385f3: 更新网站配置">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>e68a2a4</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/" data-title="去除网页版飞书水印" data-hashtags="javascript"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/" data-hashtag="javascript"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/" data-title="去除网页版飞书水印"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/" data-title="去除网页版飞书水印"><i data-svg-src="https://cdnjs.cloudflare.com/ajax/libs/simple-icons/7.3.0/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://darkgoldbar.github.io/posts/code/remove-lark-watermark-on-browser/" data-title="去除网页版飞书水印"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/javascript/">javascript</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/code/learn-note-ffmpeg/" class="prev" rel="prev" title="ffmpeg代码笔记"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>ffmpeg代码笔记</a>
+            <a href="/posts/code/learn-note-python-spider/" class="next" rel="next" title="python爬虫代码笔记">python爬虫代码笔记<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments">
+    <link rel="stylesheet" href="/css/comment.css" type="text/css">
+    <div id="d-comment"></div>
+    <script src="/js/comment.2.3.js"></script>
+    <noscript>
+        Please enable JavaScript to view the comments powered by DarkGoldBar D-comment</a>.
+    </noscript>
+</div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.106.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/DarkGoldBar" target="_blank">DarkGoldBar</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sharer.js/0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeit/8.6.0/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"data":{"id-1":"DarkGoldBar","id-2":"DarkGoldBar"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
