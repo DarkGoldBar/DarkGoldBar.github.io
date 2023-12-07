@@ -1,0 +1,97 @@
+<!-- 一个简单的聊天室网页，包含消息界面，输入框，发送按钮 -->
+<div id="dchat">
+    <div id="dchat-msgs"></div>
+    <div id="dchat-input">
+        <input type="text" id="dchat-input-text" />
+        <button id="dchat-input-btn">发送</button>
+    </div>
+</div>
+<style>
+    #dchat {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    #dchat-msgs {
+        flex: 1;
+        overflow-y: auto;
+    }
+    #dchat-msgs p.self {
+        color: darkgreen;
+    }
+    #dchat-input {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    #dchat-input-text {
+        flex: 1;
+    }
+    #dchat-input-btn {
+        flex: 0;
+    }
+</style>
+<script>
+    // 一个简单的聊天室网页，包含消息界面，输入框，发送按钮
+    // 通过websocket连接到服务器，发送消息，接收消息
+    const server = "ws://localhost:8080";
+    const msgs = document.getElementById("dchat-msgs");
+    const input = document.getElementById("dchat-input-text");
+    const btn = document.getElementById("dchat-input-btn");
+
+    var ws = null;
+
+    function connect() {
+        ws = new WebSocket(server);
+        ws.onopen = function() {
+            ws.send(JSON.stringify({
+                action: "fetch"
+            }));
+        };
+
+        ws.onmessage = function(e) {
+            var msg = JSON.parse(e.data);
+            switch (msg.type) {
+                // 普通消息
+                case "msg":
+                    msgs.innerHTML += "<p>" + msg.username + ": " + msg.text + "</p>";
+                    break;
+                // 用户列表
+                case "users":
+                    msgs.innerHTML += "<p>当前在线用户: " + msg.users.join(", ") + "</p>";
+                    break;
+            }
+        };
+
+        ws.onclose = function() {
+            msgs.innerHTML += "<p>连接已关闭</p>";
+        };
+
+        ws.onerror = function() {
+            msgs.innerHTML += "<p>连接错误</p>";
+        };
+    }
+
+    function send() {
+        if (ws) {
+            ws.send(JSON.stringify({
+                action: "sendMessage",
+                text: input.value
+            }));
+            msgs.innerHTML += "<p class='self'>" + input.value + "</p>"
+            input.value = "";
+        }
+    }
+
+    // 添加事件监听
+    btn.addEventListener("click", send);
+    input.addEventListener("keydown", function(e) {
+        if (e.keyCode == 13) {
+            send();
+        }
+    });
+
+    // 连接到服务器
+    connect();
+</script>

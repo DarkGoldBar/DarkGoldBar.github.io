@@ -1,6 +1,10 @@
+## Architecture
+
+![Architecture](image.png)
+
 ## Context Examples
 
-### 1. CONNECT
+### 1. $connect
 ```python
 {'headers': {'Host': 'aabbccdd.execute-api.ap-northeast-1.amazonaws.com',
   'Sec-WebSocket-Extensions': 'permessage-deflate; client_max_window_bits',
@@ -27,7 +31,7 @@
  'isBase64Encoded': False}
 ```
 
-### 2. Message
+### 2. routeKey (sendMessage)
 ```python
 {'requestContext': {'routeKey': 'sendMessage',
   'messageId': 'PJqCFfHyKRcCHlw=',
@@ -40,20 +44,40 @@
   'requestTimeEpoch': 1701245043417,
   'identity': {'sourceIp': '123.45.123.45'},
   'requestId': 'PJqCFEqHqRcFd0w=',
-  'domainName': 'aabbccdd.execute-api.ap-northeast-3.amazonaws.com',
+  'domainName': 'aabbccdd.execute-api.ap-northeast-1.amazonaws.com',
   'connectionId': 'PJqB0fHsqRcCHlw=',
   'apiId': 'aabbccdd'},
  'body': '{"action":"sendMessage", body:"hello"}',
  'isBase64Encoded': False}
 ```
 
-### 3. Disconnect
+### 3. $default
 ```python
-{'headers': {'Host': 'aabbccdd.execute-api.ap-northeast-3.amazonaws.com',
+{'requestContext': {'routeKey': '$default',
+  'messageId': 'PJpDXchdqRcCJCA=',
+  'eventType': 'MESSAGE',
+  'extendedRequestId': 'PJpDXEc6KRcFiJQ=',
+  'requestTime': '29/Nov/2023:07:57:22 +0000',
+  'messageDirection': 'IN',
+  'stage': 'production',
+  'connectedAt': 1701244639136,
+  'requestTimeEpoch': 1701244642032,
+  'identity': {'sourceIp': '123.45.123.45'},
+  'requestId': 'PJpDXEc6KRcFiJQ=',
+  'domainName': 'aabbccdd.execute-api.ap-northeast-1.amazonaws.com',
+  'connectionId': 'PJpC6chVKRcCJCA=',
+  'apiId': 'aabbccdd'},
+ 'body': 'hello',
+ 'isBase64Encoded': False}
+```
+
+### 4. $disconnect
+```python
+{'headers': {'Host': 'aabbccdd.execute-api.ap-northeast-1.amazonaws.com',
   'x-api-key': '',
   'X-Forwarded-For': '',
   'x-restapi': ''},
- 'multiValueHeaders': {'Host': ['aabbccdd.execute-api.ap-northeast-3.amazonaws.com'],
+ 'multiValueHeaders': {'Host': ['aabbccdd.execute-api.ap-northeast-1.amazonaws.com'],
   'x-api-key': [''],
   'X-Forwarded-For': [''],
   'x-restapi': ['']},
@@ -69,8 +93,11 @@
   'requestTimeEpoch': 1701245044314,
   'identity': {'sourceIp': '123.45.123.45'},
   'requestId': 'PJqCOG4zqRcFcPw=',
-  'domainName': 'aabbccdd.execute-api.ap-northeast-3.amazonaws.com',
+  'domainName': 'aabbccdd.execute-api.ap-northeast-1.amazonaws.com',
   'connectionId': 'PJqB0fHsqRcCHlw=',
   'apiId': 'aabbccdd'},
  'isBase64Encoded': False}
 ```
+
+## connect
+`wscat -c wss://aabbccddee.execute-api.ap-northeast-1.amazonaws.com/production/`
