@@ -13,8 +13,8 @@ images: []
 tags: []
 categories: ['代码笔记']
 
-featuredImage: ""
-featuredImagePreview: ""
+featuredImage: '/images/code/vmess_aws.png'
+featuredImagePreview: '/images/code/vmess_aws.png'
 
 hiddenFromHomePage: false
 hiddenFromSearch: false
@@ -48,13 +48,8 @@ seo:
   images: []
 ---
 <!-- 正文 -->
-为了自己平时使用代理方便，写了一个简单的aws开机关机查询页面。
-隐私信息都用本地的cookie做了持久化，不需要每次输入。
-但是各个配置的填写没有说明，这次就写一个说明文档兼教程。
-
-先上链接:
-[简易代理服务管理器]({{< ref "posts/tools/server_launcher.md" >}})
-
+为了自己平时使用代理方便，我写了一个简单的aws开机关机查询页面。[简易代理服务管理器]({{< ref "posts/tools/server_launcher.md" >}})  
+隐私信息都用本地的cookie做了持久化，不需要每次输入。但是各个配置的填写没有说明，这次就写一个说明文档兼教程。
 
 需要准备的东西：
 - AWS国际账号
