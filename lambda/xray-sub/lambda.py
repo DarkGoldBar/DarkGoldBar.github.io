@@ -91,7 +91,9 @@ def create_server():
 
 
 def auth(headers: dict) -> bool:
-    return 'v2ray' in headers.get('user-agent', '')
+    if 'v2ray' not in headers.get('user-agent', ''):
+        return False
+    return True
 
 
 def lambda_handler(event, context):
