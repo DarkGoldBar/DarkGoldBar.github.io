@@ -1,8 +1,8 @@
 ---
-title: "建立新的Hugo工作环境"
+title: "Windows下建立新的Hugo工作环境"
 subtitle: ""
 date: 2023-01-27T22:19:02+08:00
-lastmod: 2023-01-28T11:30:00+08:00
+lastmod: 2023-12-22T11:30:00+08:00
 draft: false
 author: ""
 authorLink: ""
