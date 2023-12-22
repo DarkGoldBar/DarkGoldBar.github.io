@@ -140,7 +140,7 @@ enableEmoji = false
   title = "DarkGoldBar的主页"
 
   # 网站描述, 用于 RSS, SEO, Open Graph 和 Twitter Cards
-  description = "DarkGoldBar的主页"
+  description = "DarkGoldBar的主页,代码笔记,陕北抗战历史,在线工具"
 
   # 网站图片, 用于 Open Graph 和 Twitter Cards
   # images = ["/logo.png"]
