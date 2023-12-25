@@ -1,5 +1,5 @@
 ---
-title: "Nginx学习笔记"
+title: "Nginx简易本地服务器"
 subtitle: ""
 date: 2023-07-18T16:53:00+08:00
 lastmod: 2023-07-18T16:53:00+08:00
@@ -16,8 +16,7 @@ categories: ['代码笔记']
 keywords:
     - nginx
     - nginx教程
-    - nginx学习笔记
-    - 本地服务
+    - 本地服务器
 ---
 
 使用nginx，经过简单的配置，给本地服务制作一个功能目录
