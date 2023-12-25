@@ -9,8 +9,13 @@ authorLink: ""
 description: ""
 license: ""
 images: []
+keywords:
+  - aws
+  - ec2
+  - xray
+  - 代理服务器
 
-tags: []
+tags: ['aws', 'xray']
 categories: ['代码笔记']
 
 featuredImage: '/images/code/vmess_aws.png'
@@ -34,27 +39,22 @@ code:
   maxShownLines: 50
 math:
   enable: false
-mapbox:
 share:
   enable: true
 comment:
   enable: true
-library:
-  css:
-    # someCSS = "some.css" (for static/some.css) or "https://cdn.example.com/some.css"
-  js:
-    # someJS = "some.js" (for static/some.js) or "https://cdn.example.com/some.js"
 seo:
   images: []
 ---
 <!-- 正文 -->
-为了自己平时使用代理方便，我写了一个简单的aws开机关机查询页面。[简易代理服务管理器]({{< ref "posts/tools/server_launcher.md" >}})  
-隐私信息都用本地的cookie做了持久化，不需要每次输入。但是各个配置的填写没有说明，这次就写一个说明文档兼教程。
+为了个人使用代理方便，写了一个简单的aws-ec2的启动、查询、销毁网页工具。[简易代理服务管理器]({{< ref "posts/tools/server_launcher.md" >}})  
+这个工具里的隐私信息使用了本地的cookie做持久化，不需要每次输入。里面的4项配置的构造方法没有说明，这次就写一个说明教程。
+
+<!--more-->
 
 需要准备的东西：
 - AWS国际账号
 
-<!--more-->
 ---
 ## 1. AK/SK
 
@@ -157,7 +157,7 @@ EC2的价格/区域表 https://aws.amazon.com/cn/ec2/pricing/on-demand/
 - UserData = IyEvYmluL2Jhc2gKWFJBWVBPUlQ9NTY3OApYUkFZVVVJRD1iMTkwYjZmZi0wZ...
 {{< /admonition >}}
 
-接下来制作启动脚本，这个初始化脚本会以root身份使用screen命令在后台启动一个xray进程。配置中只有一个inbound，使用vmess协议，端口和UUID为用户在脚本中指定的值。  
+接下来制作启动脚本，这个初始化脚本会以root身份使用screen命令在后台启动一个xray进程。配置中只有一个inbound，使用vmess协议，端口和UUID为用户在脚本中指定的值。对vmess协议不熟悉的话需要先学习一下projectV中对入站协议的教程。  
 我的脚本模版贴在下面，稍微改动即可。  
 1. 把 `XRAYPORT` 的值5678改成在安全组中设置的端口号
 2. 把 `XRAYUUID` 的值改成一个自己生成的新的UUID
