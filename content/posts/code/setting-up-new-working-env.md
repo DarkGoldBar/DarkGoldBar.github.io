@@ -6,7 +6,7 @@ lastmod: 2023-12-22T11:30:00+08:00
 draft: false
 author: ""
 authorLink: ""
-description: ""
+description: "Windows下建立新的Hugo工作环境"
 license: ""
 images: []
 
