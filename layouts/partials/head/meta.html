@@ -2,6 +2,7 @@
 
 <meta name="Description" content="{{ $params.description | default .Site.Params.description }}">
 <meta name="keywords" content="{{ delimit .Keywords ", " }}">
+<meta name="x-api-key" content="{{ .Site.Params.xapikey }}">
 
 {{- template "_internal/opengraph.html" . -}}
 {{- template "_internal/twitter_cards.html" . -}}
