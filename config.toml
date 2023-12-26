@@ -138,6 +138,9 @@ enableEmoji = false
       title = ""
 
 [params]
+  # AWS Gateway API Key
+  xapikey = "dummy"
+
   # 网站默认主题 ["auto", "light", "dark"]
   defaultTheme = "auto"
 
