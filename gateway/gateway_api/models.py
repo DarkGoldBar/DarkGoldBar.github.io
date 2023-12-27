@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from typing import Union
 
 class Comment(BaseModel):
@@ -6,7 +6,7 @@ class Comment(BaseModel):
     timestamp: int = 0
     content: str
     nickname: str
-    email: Union[EmailStr, None] = None
+    email: Union[str, None] = None
 
 
 class VisitCount(BaseModel):
