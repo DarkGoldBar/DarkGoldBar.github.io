@@ -8,9 +8,9 @@ setup(
     author_email='',
     install_requires=[
         "fastapi",
-        "pydantic",
         "uvicorn",
         "boto3",
+        "pydantic[email]",
     ],
     packages=find_packages()
 )
