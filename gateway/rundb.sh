@@ -8,4 +8,5 @@ else
     cd DynamoDBLocal
 fi
 
-java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
+# jre >= 11.x
+java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb -port 8000

@@ -5,8 +5,9 @@ from boto3.dynamodb.conditions import Key
 from models import VisitCount, Comment
 
 TABLENAME = os.environ.get('TABLENAME', 'd-comment')
+ENDPOINT_URL = os.environ.get('ENDPOINT_URL', None)
 
-db = boto3.resource('dynamodb', endpoint_url='http://localhost:8000')
+db = boto3.resource('dynamodb', endpoint_url=ENDPOINT_URL)
 
 
 class DynamoOperationFailed(Exception):

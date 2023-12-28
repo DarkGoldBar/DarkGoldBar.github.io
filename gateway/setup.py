@@ -11,6 +11,7 @@ setup(
         "uvicorn",
         "boto3",
         "pydantic[email]",
+        "mangum"
     ],
     packages=find_packages()
 )

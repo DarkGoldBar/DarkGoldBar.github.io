@@ -1,20 +1,19 @@
 from typing import Annotated, TypeAlias
 from fastapi import FastAPI, Header, HTTPException
-from fastapi.responses import RedirectResponse
+from mangum import Mangum
 
 from models import VisitCount, Comment
 from db import DynamoOperation, DynamoOperationFailed
 
-app = FastAPI()
-op = DynamoOperation()
-
-
 HeaderType: TypeAlias = Annotated[str | None, Header()]
+
+app = FastAPI(title='Blog Backend API')
+op = DynamoOperation()
 
 
 @app.get("/")
 def index():
-    return RedirectResponse(url="/docs")
+    return {"message": "running"}
 
 
 @app.get("/visitcount", response_model=VisitCount)
@@ -62,3 +61,4 @@ def new_comment(x_referer_page: HeaderType,
     return {'status': 'ok'}
 
 
+handler = Mangum(app, lifespan="off")

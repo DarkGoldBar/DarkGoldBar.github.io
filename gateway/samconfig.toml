@@ -1,0 +1,10 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "dgb-backend"
+resolve_s3 = true
+s3_prefix = "dgb-backend"
+region = "ap-northeast-3"
+profile = "pang"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
