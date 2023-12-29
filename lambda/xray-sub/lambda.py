@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 import boto3
 import json
 import base64
@@ -6,6 +7,9 @@ import base64
 TAGNAME = os.environ.get('TAGNAME', 'MyXrayServer*')
 XRAYPORT = os.environ.get('XRAYPORT', '80')
 XRAYID = os.environ.get('XRAYID', '00000000-0000-0000-0000-000000000000')
+
+# python -c 'import os; print(os.urandom(16).hex())'
+AUTH = []
 
 USERDATA_TEMPLATE = """#!/bin/bash
 XRAYPORT={0}
@@ -67,11 +71,11 @@ VMESSDATA = {
 }
 
 EC2_STATE_MAP = {
-    'running': '运行中',
-    'terminated': '已终止',
-    'stopped': '已停止',
-    'stopping': '正在停止',
     'pending': '正在启动',
+    'running': '运行中',
+    'shutting-down': '正在关闭',
+    'stopped': '已停止',
+    'terminated': '已终止'
 }
 
 def base64_encode(string:str):
@@ -90,15 +94,24 @@ def create_server():
     print('CREATE ' + str(response))
 
 
-def auth(headers: dict) -> bool:
+def auth(headers: "dict|None", querys: "dict|None") -> bool:
+    if not headers:
+        return False
+    if not querys:
+        return False
     if 'v2ray' not in headers.get('user-agent', ''):
+        return False
+    if 'token' not in querys:
+        return False
+    if querys['token'] not in AUTH:
         return False
     return True
 
 
 def lambda_handler(event, context):
     print('RECIVE ' + str(event))
-    if not auth(event.get('headers', {})):
+    
+    if not auth(event.get('headers'), event.get('queryStringParameters')):
         return {"statusCode": 401}
     ec2 = boto3.resource('ec2')
     assert XRAYID
@@ -109,14 +122,22 @@ def lambda_handler(event, context):
 
     # https://github.com/2dust/v2rayN/wiki/%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E(ver-2)
     vmess_list = []
-    vmess_link_list = []
     for instance in instances:
         vmess = VMESSDATA.copy()
         vmess['ps'] = set_ps(instance.state['Name'], instance.id)
-        vmess['add'] = instance.public_ip_address
         vmess['port'] = XRAYPORT
         vmess['id'] = XRAYID
+        if instance.public_ip_address:
+            vmess['add'] = instance.public_ip_address
+        vmess_list.append(vmess)
+
+    if not vmess_list:
+        vmess = VMESSDATA.copy()
+        vmess['ps'] = '无可用节点'
         vmess_list = [vmess]
+
+    vmess_link_list = []
+    for vmess in vmess_list:
         vmess_link = 'vmess://' + base64_encode(json.dumps(vmess))
         vmess_link_list.append(vmess_link)
 

@@ -79,15 +79,29 @@ enableEmoji = false
       name = "标签"
       url = "/tags/"
       title = ""
-    [[languages.zh-cn.menu.main]]
-      weight = 3
-      identifier = "categories"
-      pre = "<i class='fa fa-bars'></i>"
-      name = "分类"
-      url = "/categories/"
-      title = ""
+    # [[languages.zh-cn.menu.main]]
+    #   weight = 3
+    #   identifier = "categories"
+    #   pre = "<i class='fa fa-bars'></i>"
+    #   name = "分类"
+    #   url = "/categories/"
+    #   title = ""
     [[languages.zh-cn.menu.main]]
       weight = 4
+      identifier = "history"
+      pre = "<i class='fa fa-graduation-cap'></i>"
+      name = "历史"
+      url = "/categories/渭北英豪刘建侯/"
+      title = ""
+    [[languages.zh-cn.menu.main]]
+      weight = 5
+      identifier = "code"
+      pre = "<i class='fa fa-terminal'></i>"
+      name = "代码"
+      url = "/categories/代码笔记/"
+      title = ""
+    [[languages.zh-cn.menu.main]]
+      weight = 6
       identifier = "tools"
       pre = "<i class='fa fa-wrench'></i>"
       name = "工具"
@@ -124,6 +138,9 @@ enableEmoji = false
       title = ""
 
 [params]
+  # AWS Gateway API Key
+  xapikey = "dummy"
+
   # 网站默认主题 ["auto", "light", "dark"]
   defaultTheme = "auto"
 
@@ -140,7 +157,7 @@ enableEmoji = false
   title = "DarkGoldBar的主页"
 
   # 网站描述, 用于 RSS, SEO, Open Graph 和 Twitter Cards
-  description = "DarkGoldBar的主页"
+  description = "DarkGoldBar的主页,代码笔记,陕北抗战历史,在线工具"
 
   # 网站图片, 用于 Open Graph 和 Twitter Cards
   # images = ["/logo.png"]
@@ -215,7 +232,7 @@ enableEmoji = false
   # List (目录或标签) 页面配置
   [params.list]
     # list 页面每页显示文章数量
-    paginate = 20
+    paginate = 30
     # 日期格式 (月和日)
     dateFormat = "01-02"
     # RSS 文章数目

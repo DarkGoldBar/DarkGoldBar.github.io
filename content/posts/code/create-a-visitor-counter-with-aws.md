@@ -10,7 +10,7 @@ description: ""
 license: ""
 images: []
 
-tags: ['javascript', 'Python', 'hugo']
+tags: ['javascript', 'python', 'hugo', 'aws']
 categories: ['代码笔记']
 
 featuredImage: ""
