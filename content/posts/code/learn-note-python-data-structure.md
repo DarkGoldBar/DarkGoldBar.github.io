@@ -10,11 +10,11 @@ description: ""
 license: ""
 images: []
 
-tags: ['Python']
+tags: ['python']
 categories: ['代码笔记']
 ---
 
-记录一些自己用的代码片段
+记录一些方便使用的python代码片段
 
 <!--more-->
 

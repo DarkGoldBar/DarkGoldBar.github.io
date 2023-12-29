@@ -6,11 +6,11 @@ lastmod: 2023-05-16T16:53:00+08:00
 draft: false
 author: ""
 authorLink: ""
-description: ""
+description: "python爬虫代码笔记"
 license: ""
 images: []
 
-tags: ['Python']
+tags: ['python']
 categories: ['代码笔记']
 ---
 

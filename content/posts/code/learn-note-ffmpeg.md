@@ -6,11 +6,11 @@ lastmod: 2023-03-07T17:24:00+08:00
 draft: false
 author: ""
 authorLink: ""
-description: ""
+description: "常用ffmpeg命令，和部分命令的参数解释"
 license: ""
 images: []
 
-tags: ['shell']
+tags: ['ffmpeg']
 categories: ['代码笔记']
 
 summary: "常用命令, 参数, 滤镜 的简单记录"
@@ -90,3 +90,7 @@ output.gif
 - `fps=16` : fps
 - `scale=160:-1:flags=lanczos`: 缩放
 - `split...paletteuse` : gif调色盘, gif加上就对了
+
+
+## ffmpeg.wasm
+- [Example code](https://codepen.io/jeromewu/pen/NWWaMeY)
