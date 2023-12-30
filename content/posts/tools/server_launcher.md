@@ -41,12 +41,11 @@ comment:
   enable: true
 library:
   js:
-    ray: '<script src="/js/ray.3.js"></script>'
+    ray: 'js/ray.js'
     aws-js-sdk: 'https://sdk.amazonaws.com/js/aws-sdk-2.933.0.min.js'
 seo:
   images: []
 ---
-<!--more-->
 <!-- 正文 -->
 管理满足`tag:Name='MyXrayServer*'`条件的服务器。
 
