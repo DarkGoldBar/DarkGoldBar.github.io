@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  DarkGoldBar`s Blog Backend API
+
+  fastapi-mangum-lambda-gateway
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Handler: main.handler
+    MemorySize: 256
+    Architectures:
+      - arm64
+    Environment:
+      Variables:
+        TABLENAME: dgb-table
+
+  Api:
+    EndpointConfiguration: REGIONAL
+    Cors: "'DarkGoldBar.github.io'"
+    Auth:
+      ApiKeyRequired: true
+
+  SimpleTable:
+    SSESpecification:
+      SSEEnabled: false
+
+Resources:
+  DgbBackendFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: DgbBackend
+      CodeUri: gateway_api/
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        ProxyApiRoot:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+  DgbBackendTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: dgb-table
+      PrimaryKey:
+        Name: page
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+Outputs:
+  DgbBackendApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  DgbBackendTable:
+    Description: "DynamoDB Table ARN"
+    Value: !Ref DgbBackendTable
+  DgbBackendFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt DgbBackendFunction.Arn
