@@ -27,9 +27,9 @@ comment:
   enable: false
 library:
   css:
-    # someCSS = "some.css" (for static/some.css) or "https://cdn.example.com/some.css"
+    # someCSS = "some.css" (for assets/some.css) or "https://cdn.example.com/some.css"
   js:
-    ray: '<script src="/js/ranking.1.js"></script>'
+    ray: 'js/ranking.1.js'
 seo:
   images: []
 ---
