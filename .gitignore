@@ -2,6 +2,7 @@ docs/
 public/
 DynamoDBLocal/
 .aws-sam/
+*.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

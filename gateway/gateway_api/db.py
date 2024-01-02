@@ -2,12 +2,20 @@ import os
 import time
 import boto3
 from boto3.dynamodb.conditions import Key
-from models import VisitCount, Comment
+from .models import VisitCount, Comment
 
 TABLENAME = os.environ.get('TABLENAME', 'd-comment')
 ENDPOINT_URL = os.environ.get('ENDPOINT_URL', None)
 
-db = boto3.resource('dynamodb', endpoint_url=ENDPOINT_URL)
+
+class DynamoClient():
+    _db = None
+
+    @classmethod
+    def getdb(cls):
+        if cls._db is None:
+            cls._db = boto3.resource('dynamodb', endpoint_url=ENDPOINT_URL)
+        return cls._db
 
 
 class DynamoOperationFailed(Exception):
@@ -20,8 +28,9 @@ class DynamoOperation:
     COMMENT_CID_MIN = 1000
     COMMENT_CID_MAX = 9999
     def __init__(self, table_name: str = TABLENAME):
+
         self.table_name = table_name
-        self.table = db.Table(table_name)
+        self.table = DynamoClient.getdb().Table(table_name)
 
     def vc_get(self, page: str):
         resp = self.table.get_item(

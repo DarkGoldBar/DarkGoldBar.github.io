@@ -2,8 +2,8 @@ from typing import Annotated, TypeAlias
 from fastapi import FastAPI, Header, HTTPException
 from mangum import Mangum
 
-from models import VisitCount, Comment
-from db import DynamoOperation, DynamoOperationFailed
+from .models import VisitCount, Comment
+from .db import DynamoOperation, DynamoOperationFailed
 
 HeaderType: TypeAlias = Annotated[str | None, Header()]
 
