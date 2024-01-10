@@ -65,4 +65,11 @@ def new_comment(x_referer_page: HeaderType,
     return {'status': 'ok'}
 
 
-handler = Mangum(app, lifespan="off")
+def handler(event, context):
+    print(f'RECIVED {event}')
+
+    asgi_handler = Mangum(app, api_gateway_base_path='/comment')
+    response = asgi_handler(event, context)
+
+    print(f'SEND {response}')
+    return response
