@@ -23,8 +23,8 @@ class DynamoOperationFailed(Exception):
 
 
 class DynamoOperation:
-    VC_CID = 1
-    COMMENT_LAST_CID = 2
+    VC_CID = -1
+    COMMENT_LAST_CID = -2
     COMMENT_CID_MIN = 1000
     COMMENT_CID_MAX = 9999
     def __init__(self, table_name: str = TABLENAME):
@@ -37,7 +37,7 @@ class DynamoOperation:
             Key={"page": page, "cid": self.VC_CID}
         )
         if 'Item' in resp:
-            return VisitCount(page=page, **resp['Item'])
+            return VisitCount(**resp['Item'])
         else:
             return VisitCount(page=page)
 
@@ -49,7 +49,11 @@ class DynamoOperation:
             ExpressionAttributeNames={"#ts": "timestamp", "#cnt": "count"},
             ExpressionAttributeValues={':t': timestamp, ':inc': 1},
             ReturnValues='UPDATED_OLD')
-        return VisitCount(page=page, **resp['Attributes'])
+        attr = resp['Attributes']
+        return VisitCount(
+            page=page,
+            count=attr.get('count', 0) + 1,
+            timestamp=attr.get('timestamp', 0))
 
     def vc_scan(self, site: str):
         resp = self.table.scan(
@@ -67,7 +71,7 @@ class DynamoOperation:
             KeyConditionExpression='page = :p AND cid > :o',
             ExpressionAttributeValues={
                 ':p': page,
-                ':o': offset + self.COMMENT_CID_MIN
+                ':o': offset
             },
             Limit=limit,
             ScanIndexForward=False
@@ -100,6 +104,7 @@ def create_table(table_name: str = TABLENAME):
         hash key: {type: str, name: page}}
         range key: {type: int, name: cid}}
     """
+    db = DynamoClient.getdb()
     resp = db.list_tables()
     if table_name in resp['TableNames']:
         print(f'{table_name} already exists')

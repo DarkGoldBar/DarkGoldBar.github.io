@@ -4,7 +4,7 @@ from typing import Union
 class Comment(BaseModel):
     cid: int = None
     timestamp: int = 0
-    content: str
+    comment: str
     nickname: str
     email: Union[str, None] = None
 
