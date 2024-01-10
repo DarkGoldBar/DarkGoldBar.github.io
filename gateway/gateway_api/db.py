@@ -23,8 +23,8 @@ class DynamoOperationFailed(Exception):
 
 
 class DynamoOperation:
-    VC_CID = 1
-    COMMENT_LAST_CID = 2
+    VC_CID = -1
+    COMMENT_LAST_CID = -2
     COMMENT_CID_MIN = 1000
     COMMENT_CID_MAX = 9999
     def __init__(self, table_name: str = TABLENAME):
@@ -37,7 +37,7 @@ class DynamoOperation:
             Key={"page": page, "cid": self.VC_CID}
         )
         if 'Item' in resp:
-            return VisitCount(page=page, **resp['Item'])
+            return VisitCount(**resp['Item'])
         else:
             return VisitCount(page=page)
 

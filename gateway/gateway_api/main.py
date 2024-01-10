@@ -20,6 +20,7 @@ def index():
 def get_visit_count(x_referer_page: HeaderType,
                     x_referer_site: HeaderType = 'http://localhost'):
     page = x_referer_site.strip('/') + '/' + x_referer_page.strip('/')
+    page = page.strip('/')
     vc = op.vc_get(page)
     return vc
 
@@ -28,6 +29,7 @@ def get_visit_count(x_referer_page: HeaderType,
 def update_visit_count(x_referer_page: HeaderType,
                        x_referer_site: HeaderType = 'http://localhost'):
     page = x_referer_site.strip('/') + '/' + x_referer_page.strip('/')
+    page = page.strip('/')
     vc = op.vc_update(page)
     return vc
 
@@ -45,6 +47,7 @@ def get_comments(x_referer_page: HeaderType,
                  count: int = 10,
                  offset: int = 0):
     page = x_referer_site.strip('/') + '/' + x_referer_page.strip('/')
+    page = page.strip('/')
     data = op.comment_get(page, offset, count)
     return data
 
@@ -54,6 +57,7 @@ def new_comment(x_referer_page: HeaderType,
                 comment: Comment,
                 x_referer_site: HeaderType = 'http://localhost'):
     page = x_referer_site.strip('/') + '/' + x_referer_page.strip('/')
+    page = page.strip('/')
     try:
         op.comment_new(page, comment)
     except DynamoOperationFailed as e:
