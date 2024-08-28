@@ -52,7 +52,7 @@ Xray服务器，每月仅1美元！！
 <!--more-->
 ## 架构图
 
-![架构图](/static/images/code/V2Ray-on-AWS-UML.png)
+{{< image src="images/code/V2Ray-on-AWS-UML.png" caption="架构图">}}
 
 可用性：95%
 - 有可能正好给实例分配了一个被ban掉的IP，导致服务无法使用，且不会开启新实例。这个时候只能使用那个手搓的控制台再开一个实例，然后关掉被ban的实例。
