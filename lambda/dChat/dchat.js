@@ -11,6 +11,13 @@ console.log('Nickname:', currentUser.nickname);
 
 socket.onopen = function(event) {
     console.log("Connected to WebSocket API");
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            action: 'full_data_request',
+            page_path: pagePath,
+            room_id: roomId,
+        }));
+    }
 };
 
 socket.onmessage = function(event) {
@@ -29,6 +36,9 @@ socket.onmessage = function(event) {
             break;
         case 'disconnect':
             handleDisconnectMessage(messageData);
+            break;
+        case 'fullDataResponse':
+            handleFullDataResponse(messageData);
             break;
         default:
             console.warn('Unknown message type:', messageData.type);
@@ -91,9 +101,38 @@ function handleJoinMessage(messageData) {
 // 处理文本消息
 // {type: 'text', uuid: '627d7a3c-0953-4dd8-87b5-9fe99238380a', nickname: '627d7a3c', message: 'asdf', timestamp: 1725279574}
 function handleTextMessage(messageData) {
-    displayMessage(messageData.message, messageData.nickname, messageData.timestamp);
+    displayMessage(
+        messageData.message, 
+        messageData.nickname, 
+        messageData.timestamp, 
+        messageData.uuid === currentUser.uuid
+    );
 }
 
+// 处理文本消息
+// {'type': 'fullDataResponse', 'users': [{'uuid': conn['UUID'], 'nickname': conn['Nickname']}], 'messages': msessages}
+function handleFullDataResponse(data) {
+    // 更新用户列表
+    users = data.users;
+    updateUserList();
+
+    // 更新消息界面
+    const maxTimestamp = getMaxTimestamp();
+    const messages = data.messages;
+    messages.forEach(messageJson => {
+        messageData = JSON.parse(messageJson)
+        if (messageData.timestamp > maxTimestamp) {
+            displayMessage(
+                messageData.message, 
+                messageData.nickname, 
+                messageData.timestamp, 
+                messageData.uuid === currentUser.uuid
+            );
+        }
+    });
+}
+
+// 服务器断开连接
 // {'type': 'disconnect', 'reason': 'Duplicate UUID detected'}
 function handleDisconnectMessage(messageData) {
     const overlay = document.createElement('div');
@@ -136,7 +175,6 @@ function sendMessage() {
             room_id: roomId
         }));
         messageInput.value = '';
-        displayMessage(message, currentUser.nickname, true);
     }
 }
 
@@ -222,4 +260,21 @@ function updateUserList() {
             userList.appendChild(userItem);
         }
     });
+}
+
+
+function getMaxTimestamp() {
+    const messagesDiv = document.getElementById('messages');
+    const messageContainers = messagesDiv.getElementsByClassName('message');
+    
+    let maxTimestamp = -Infinity; // 初始化为负无穷，确保可以找到最大的值
+    
+    for (const messageContainer of messageContainers) {
+        const timestamp = parseInt(messageContainer.getAttribute('data-timestamp'), 10);
+        if (timestamp > maxTimestamp) {
+            maxTimestamp = timestamp;
+        }
+    }
+
+    return maxTimestamp;
 }

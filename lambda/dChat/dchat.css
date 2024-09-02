@@ -16,6 +16,13 @@
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
+#messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #F7F7F7;
+}
+
 /* 容器用于显示每条消息 */
 .message {
     margin: 10px 0;

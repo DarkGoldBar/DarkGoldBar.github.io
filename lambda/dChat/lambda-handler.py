@@ -10,11 +10,12 @@ YOUR_REGION = os.environ.get('REGION', 'ap-northeast-1')
 TABLE_NAME = os.environ.get('TABLE_NAME', 'dChat')
 LIVETIME = int(os.environ.get('LIVETIME', '86400'))
 ENDPOINT_URL = f'https://{YOUR_API_ID}.execute-api.{YOUR_REGION}.amazonaws.com/Prod'
+ITEMLIMIT = 1000
 
 class PublicObjects:
     _table = None
     _apigateway = None
-    
+
     @property
     def table(self):
         if self._table is None:
@@ -52,26 +53,23 @@ def lambda_handler(event, context):
             print(f"CALL handle_disconnect({connection_id})")
             response = handle_disconnect(connection_id)
 
-        elif route_key == 'before_disconnect':
-            body = json.loads(event['body'])
-            page_path = body.get('page_path')
-            room_id = body.get('room_id')
-            print(f"CALL handle_before_disconnect({connection_id}, {page_path}, {room_id})")
-            response = handle_before_disconnect(connection_id, page_path, room_id)
-
-        elif route_key == 'full_data_request':
-            print(f"CALL handle_full_data_request({connection_id}, {page_path}, {room_id})")
-            response = handle_full_data_request(connection_id, page_path, room_id)
-
         elif route_key == '$default':
             body = json.loads(event['body'])
-            message = body.get('message', '')
+            action = body.get('action')
             page_path = body.get('page_path')
             room_id = body.get('room_id')
             assert page_path, f'{page_path=}'
             assert room_id, f'{room_id=}'
-            print(f"CALL handle_default({connection_id}, {page_path}, {room_id}, {message})")
-            response = handle_default(connection_id, page_path, room_id, message)
+            if action == 'before_disconnect':
+                print(f"CALL handle_before_disconnect({connection_id}, {page_path}, {room_id})")
+                response = handle_before_disconnect(connection_id, page_path, room_id)
+            elif action == 'full_data_request':
+                print(f"CALL handle_full_data_request({connection_id}, {page_path}, {room_id})")
+                response = handle_full_data_request(connection_id, page_path, room_id)
+            else:
+                message = body.get('message', '')
+                print(f"CALL handle_default({connection_id}, {page_path}, {room_id}, {message}) {action=}")
+                response = handle_default(connection_id, page_path, room_id, message)
     except Exception as e:
         response = {
             'statusCode': 400,
@@ -86,7 +84,10 @@ def handle_connect(connection_id, uuid, nickname, page_path, room_id):
     table = PO.table
     pk = page_path
     sk = room_id
-    
+
+    if connection_limit():
+        raise Exception('Max Connection Reached')
+
     response = table.query(
         KeyConditionExpression=Key('PK').eq(pk),
         Limit=1
@@ -348,3 +349,10 @@ def kick_same_uuid(connections, uuid):
             conn['Online'] = 0
         except Exception as e:
             print(f"Failed to disconnect {conn['ConnectionId']}: {str(e)}")
+
+
+def connection_limit():
+    client = boto3.client('dynamodb')
+    response = client.describe_table(TableName=TABLE_NAME)
+    item_count = response['Table']['ItemCount']
+    return item_count > ITEMLIMIT

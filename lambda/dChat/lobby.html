@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Lobby</title>
+    <link rel="stylesheet" href="lobby.css">
+</head>
+<body>
+
+<div id="lobby-container">
+    <div id="seat-container">
+        <!-- 座位将通过JS动态生成 -->
+    </div>
+
+    <div id="controls">
+        <div id="nickname-container" style="display: none;">
+            <label for="nicknameInput">Change Name:</label>
+            <input type="text" id="nicknameInput" placeholder="Enter your name">
+        </div>
+        <div id="player-count-container">
+            <label for="playerCount">Player Count:</label>
+            <select id="playerCount">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script src="lobby.js"></script>
+</body>
+</html>

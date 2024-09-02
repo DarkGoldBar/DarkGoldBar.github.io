@@ -1,0 +1,63 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#lobby-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+    width: 300px;
+}
+
+#seat-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.seat {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #007BFF;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.seat.occupied {
+    background-color: #007BFF;
+    color: white;
+    cursor: not-allowed;
+}
+
+#controls {
+    margin-top: 20px;
+}
+
+#nickname-container input {
+    margin-top: 10px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+#player-count-container {
+    margin-top: 10px;
+}
+
+#player-count-container select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
