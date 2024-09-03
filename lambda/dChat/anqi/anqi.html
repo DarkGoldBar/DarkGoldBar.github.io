@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暗棋游戏</title>
+    <link rel="stylesheet" href="anqi.css">
+</head>
+<body>
+    <div id="chat-container">
+        <div id="status">
+            <div id="turn-player">0</div>
+            <div id="gameover"></div>
+        </div>
+        <div id="board">
+            <!-- Generate squares for the board -->
+        </div>
+        <div id="user-list-section">
+            <div id="user-list"></div>
+        </div>
+    </div>
+
+<script>
+    document.querySelectorAll('.square').forEach(square => {
+        square.addEventListener('click', function() {
+            if (this.classList.contains('back')) {
+                this.classList.remove('back');
+                // This is just a placeholder logic for flipping the piece
+                this.textContent = Math.random() > 0.5 ? '兵' : '卒';
+                this.classList.add(Math.random() > 0.5 ? 'red-piece' : 'black-piece');
+            } else {
+                // Handle piece movement or other interactions here
+            }
+        });
+    });
+</script>
+s
+</body>
+</html>

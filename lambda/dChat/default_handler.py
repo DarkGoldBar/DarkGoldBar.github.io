@@ -39,15 +39,13 @@ def lambda_handler(event, context):
     try:
         if route_key == '$connect':
             query_params = event['queryStringParameters']
-            uuid = query_params.get('uuid')
+            uuid = query_params['uuid']
             nickname = query_params.get('nickname', uuid[:4])
-            page_path = query_params.get('page_path')
-            room_id = query_params.get('room_id')
-            assert uuid, f'{uuid=}'
-            assert page_path, f'{page_path=}'
-            assert room_id, f'{room_id=}'
-            print(f"CALL handle_connect({connection_id}, {uuid}, {nickname}, {page_path}, {room_id})")
-            response = handle_connect(connection_id, uuid, nickname, page_path, room_id)
+            page_path = query_params['page_path']
+            room_id = query_params['room_id']
+            position = query_params.get('position', 0)
+            print(f"CALL handle_connect({connection_id}, {uuid}, {nickname}, {page_path}, {room_id}, {position})")
+            response = handle_connect(connection_id, uuid, nickname, page_path, room_id, position)
 
         elif route_key == '$disconnect':
             print(f"CALL handle_disconnect({connection_id})")
@@ -56,10 +54,8 @@ def lambda_handler(event, context):
         elif route_key == '$default':
             body = json.loads(event['body'])
             action = body.get('action')
-            page_path = body.get('page_path')
-            room_id = body.get('room_id')
-            assert page_path, f'{page_path=}'
-            assert room_id, f'{room_id=}'
+            page_path = body['page_path']
+            room_id = body['room_id']
             if action == 'before_disconnect':
                 print(f"CALL handle_before_disconnect({connection_id}, {page_path}, {room_id})")
                 response = handle_before_disconnect(connection_id, page_path, room_id)
@@ -80,7 +76,7 @@ def lambda_handler(event, context):
     return response
 
 
-def handle_connect(connection_id, uuid, nickname, page_path, room_id):
+def handle_connect(connection_id, uuid, nickname, page_path, room_id, position):
     table = PO.table
     pk = page_path
     sk = room_id
@@ -107,6 +103,7 @@ def handle_connect(connection_id, uuid, nickname, page_path, room_id):
         'UUID': uuid,
         'Nickname': nickname,
         'Online': 1,
+        'Position': int(position)
     }
 
     if not item:
