@@ -1,10 +1,9 @@
 const apiURL = "wss://fxyfyu1ivj.execute-api.ap-northeast-1.amazonaws.com/Prod";
 const pagePath = "chatroom";
 const roomId = "123";
-const userList = document.getElementById('user-list');
 const currentUser = getIdentify();
 const socket = new WebSocket(`${apiURL}?uuid=${currentUser.uuid}&page_path=${pagePath}&room_id=${roomId}&nickname=${currentUser.nickname}`);
-let users = [];
+var users = [];
 
 console.log('UUID:', currentUser.uuid);
 console.log('Nickname:', currentUser.nickname);
@@ -241,6 +240,7 @@ function getIdentify() {
 }
 
 function updateUserList() {
+    const userList = document.getElementById('user-list');
     userList.innerHTML = '';
     
     if (currentUser) {

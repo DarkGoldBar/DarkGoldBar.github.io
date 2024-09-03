@@ -5,35 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>暗棋游戏</title>
     <link rel="stylesheet" href="anqi.css">
+    <link rel="stylesheet" href="dchat.css">
 </head>
 <body>
     <div id="chat-container">
-        <div id="status">
-            <div id="turn-player">0</div>
-            <div id="gameover"></div>
-        </div>
-        <div id="board">
-            <!-- Generate squares for the board -->
+        <div id="board-section">
+            <div id="board-header">
+                <div id="turn-player">当前行动玩家：<span>0</span></div>
+                <div id="gameover">gameover</div>
+                <div id="board-control">
+                    <button id="cancel-button">取消</button>
+                </div>
+            </div>
+            <div id="board">
+                <!-- Generate squares for the board -->
+                {{/*  <div data-id="14" class="chess-container"><div class="square back"></div></div>   */}}
+            </div>
         </div>
         <div id="user-list-section">
-            <div id="user-list"></div>
+            <div id="user-list">
+                <div class="user-item self" title="11111111-xxxx-xxxx-xxxx-ffa1b98ac271" data-position="1"><span class="position">1</span>11111111</div>
+                <div class="user-item" title="22222222-xxxx-xxxx-xxxx-ffa1b98ac271" data-position="2"><span class="position">2</span>22222222</div>
+                <div class="user-item" title="33333333-xxxx-xxxx-xxxx-ffa1b98ac271" data-position="0">33333333</div>
+            </div>
         </div>
     </div>
 
-<script>
-    document.querySelectorAll('.square').forEach(square => {
-        square.addEventListener('click', function() {
-            if (this.classList.contains('back')) {
-                this.classList.remove('back');
-                // This is just a placeholder logic for flipping the piece
-                this.textContent = Math.random() > 0.5 ? '兵' : '卒';
-                this.classList.add(Math.random() > 0.5 ? 'red-piece' : 'black-piece');
-            } else {
-                // Handle piece movement or other interactions here
-            }
-        });
-    });
-</script>
-s
+<script src="anqi.js" defer></script>
 </body>
 </html>

@@ -164,32 +164,32 @@ def process_move(game_state, message):
         board[start_pos][1] = 1
         return {'valid': True}
 
-    start_piece = board[start_pos]
-    if (start_piece[0] == -1) or (start_piece[1] == 0):
+    sp, sf = board[start_pos]  # start_piece, start_fliped
+    if (sp == -1) or (sf == 0):
         return {'valid': False, 'reason': '起点没有棋子或棋子未翻开'}
 
-    if not is_own(start_piece[0], turn_position):
+    if not is_own(sp, turn_position):
         return {'valid': False, 'reason': '起点不是自己的棋子'}
 
-    end_piece = board[end_pos]
-    if is_pao(start_piece[0]):
+    ep, ef = board[end_pos]  # end_piece, end_fliped
+    if is_pao(sp):
         if (start_pos // 8 != end_pos // 8) and (start_pos % 8 != end_pos % 8):
             return {'valid': False, 'reason': '不合理的移动'}
-        if ((start_pos - end_pos) in [1, -1, 8, -8]) and (end_piece[0] != -1):
+        if ((start_pos - end_pos) in [1, -1, 8, -8]) and (ef != -1):
             return {'valid': False, 'reason': '不合理的移动'}
     else:
         if (start_pos - end_pos) not in [1, -1, 8, -8]:
             return {'valid': False, 'reason': '不合理的移动'}
-        if end_piece[0] >= 0:
-            if end_piece[1] == 0:
-                return {'valid': False, 'reason': '不能移动到未翻开的位置，除非是炮'}
-            if is_own(end_piece[0], turn_position):
+        if ef == 0:
+            return {'valid': False, 'reason': '不能移动到未翻开的位置，除非是炮'}
+        if ef > 0:
+            if is_own(ep, turn_position):
                 return {'valid': False, 'reason': '不能移动到被自己棋子占据的位置'}
-            if not can_capture(start_piece[0], end_piece[0]):
+            if not can_capture(sp, ep):
                 return {'valid': False, 'reason': '不能吃掉终点位置的棋子'}
 
     board[end_pos] = board[start_pos]
-    board[start_pos] = [-1, 0]
+    board[start_pos] = [-1, -1]
     return {'valid': True}
 
 def can_capture(start_piece, end_piece):
