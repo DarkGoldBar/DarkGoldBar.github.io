@@ -13,6 +13,7 @@ class DchatClient {
             messages: [],
         }
         this.handler = null;
+        this.apiURL = apiURL
     }
 
     login(uuid, nickname, position) {
@@ -59,7 +60,7 @@ class DchatClient {
             this.room.room_id = room_id;
         }
 
-        const url = `${apiURL}?&page_path=${this.room.page_path}&room_id=${this.room.room_id}&uuid=${this.member.uuid}&nickname=${this.member.nickname}&position=${this.member.position}`
+        const url = `${this.apiURL}?&page_path=${this.room.page_path}&room_id=${this.room.room_id}&uuid=${this.member.uuid}&nickname=${this.member.nickname}&position=${this.member.position}`
         this.handler = new WebSocketHandler(url);
     }
 

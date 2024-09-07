@@ -1,5 +1,5 @@
 const apiURL = "wss://fxyfyu1ivj.execute-api.ap-northeast-1.amazonaws.com/Prod";
-const dchat = new DchatClient(apiURL);
+const dchat = new DchatClient(apiURL, "chatroom");
 
 updateUserList();
 

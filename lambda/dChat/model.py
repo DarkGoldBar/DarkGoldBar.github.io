@@ -39,8 +39,8 @@ class MemberInfo(BaseModel):
     connectionId: str
     uuid: str
     nickname: str
-    online: int
-    position: str
+    online: bool
+    position: int
 
 
 @dataclass

@@ -9,6 +9,7 @@ YOUR_REGION = os.environ.get('REGION', 'ap-northeast-1')
 TABLE_NAME = os.environ.get('TABLE_NAME', 'dChat')
 LIVETIME = int(os.environ.get('LIVETIME', '86400'))
 ITEMLIMIT = int(os.environ.get('ITEMLIMIT', '1000'))
+BODYSIZELIMIT = int(os.environ.get('BODYSIZELIMIT', '10000'))
 ENDPOINT_URL = f'https://{YOUR_API_ID}.execute-api.{YOUR_REGION}.amazonaws.com/Prod'
 
 dynamodb = boto3.resource('dynamodb')
@@ -18,7 +19,7 @@ apigateway = boto3.client('apigatewaymanagementapi', endpoint_url=ENDPOINT_URL)
 def lambda_handler(event, context):
     route_key = event['requestContext']['routeKey']
     connectionId = event['requestContext']['connectionId']    
-    print(f'CALL {route_key=}')
+    print(f'CALL {connectionId=} {route_key=}')
 
     if route_key == '$connect':
         query_params = event['queryStringParameters']
@@ -29,11 +30,16 @@ def lambda_handler(event, context):
         response = handle_disconnect(connectionId)
 
     elif route_key == '$default':
+        assert len(event['body']) < BODYSIZELIMIT
         body = json.loads(event['body'])
         action = body.get('action')
         print(f'{body=}')
         if action == 'reload':
             response = handle_reload(connectionId)
+        elif action == 'anqi-reset':
+            response = handle_anqi_reset(connectionId)
+        elif action == 'anqi-move':
+            response = handle_anqi_move(connectionId, body)
         else:
             text = body.get('text', body)
             response = handle_message(connectionId, text)
@@ -60,19 +66,20 @@ def handle_connect(connectionId, uuid, page_path, room_id, nickname=None, positi
         connectionId,
         uuid,
         nickname,
-        1,
-        position,
+        online=True,
+        position=position,
     )
-    new_message = Message(
-        'join',
-        uuid,
-        nickname,
-    )
+    new_message = {
+        'msgtype': 'join',
+        'uuid': uuid,
+        'nickname': nickname,
+        'position': position,
+    }
 
     room = get_room(page_path, room_id)
     table.put_item(Item=new_connect.asitem())
     join_room(room, new_member)
-    broadcast(room, json.dumps(new_message.asdict()), saveMessage=False)
+    broadcast(room, json.dumps(new_message), saveMessage=False, skip_uuid=new_connect.uuid)
 
     return {
         'statusCode': 200,
@@ -89,7 +96,7 @@ def handle_disconnect(connectionId):
     for mem in members:
         if mem['uuid'] == connect.uuid:
             this_member = mem
-            mem['online'] = 0
+            mem['online'] = False
             break
 
     table.update_item(
@@ -113,7 +120,6 @@ def handle_reload(connectionId):
     messages = room.get('messages', [])[-20:]
     for mem in members:
         mem.pop('connectionId', None)
-        mem['online'] = int(mem['online'])
         mem['position'] = int(mem.get('position', 0))
 
     data = {
@@ -181,15 +187,14 @@ def get_member_by_uuid(room, uuid):
     return MemberInfo(**m)
 
 
-def broadcast(room, message_json, saveMessage=False):
+def broadcast(room, message_json, saveMessage=False, skip_uuid=None):
     expiry = int(time.time()) + LIVETIME
     keys = {'PK': room['PK'], 'SK': room['SK']}
     members = room.get('members', [])
 
-    counter = 0
     lost_members = []
     for mem in members:
-        if mem['online'] == 1:
+        if (mem['online']) and (mem['uuid'] != skip_uuid):
             try:
                 apigateway.post_to_connection(
                     ConnectionId=mem['connectionId'],
@@ -198,7 +203,7 @@ def broadcast(room, message_json, saveMessage=False):
             except apigateway.exceptions.GoneException:
                 print(f"Connection {mem['connectionId']} is lost and removed.")
                 lost_members.append(mem)
-                mem['online'] = 0
+                mem['online'] = False
 
     expression_list = ['SET expiry = :val1']
     expression_value = {':val1': expiry}
@@ -231,7 +236,7 @@ def broadcast_disconnect(room, member_dict):
 
     members = room.get('members', [])
     for mem in members:
-        if mem['online'] == 1:
+        if mem['online']:
             try:
                 apigateway.post_to_connection(
                     ConnectionId=mem['connectionId'],
@@ -264,7 +269,7 @@ def join_room(room, member: MemberInfo):
             if mem['online']:
                 disconnect(mem['connectionId'], 'Multiple login')
             mem['connectionId'] = member.connectionId
-            mem['online'] = 1
+            mem['online'] = True
             table.update_item(
                 Key=keys,
                 UpdateExpression="SET members = :val1, expiry = :val2",
@@ -283,3 +288,179 @@ def join_room(room, member: MemberInfo):
                 ':val2': expiry
             }
         )
+
+
+#######
+# 暗棋 #
+#######
+
+def handle_anqi_reset(connectionId):
+    connect = get_connection(connectionId)
+    room = get_room(connect.page_path, connect.room_id)
+    keys = {'PK': room['PK'], 'SK': room['SK']}
+
+    gamestate = {    
+        'board': generate_initial_board(),
+        'turn_position': 1,
+        'gameover': 0,
+    }
+
+    new_message = {
+        'msgtype': 'anqi-update',
+        'gamestate': gamestate,
+    }
+    broadcast(room, json.dumps(new_message), saveMessage=False)
+
+    expiry = int(time.time()) + LIVETIME
+    table.update_item(
+        Key=keys,
+        UpdateExpression="SET messages = :val1, expiry = :expiry",
+        ExpressionAttributeValues={
+            ':val1': [json.dumps(gamestate)],
+            ':expiry': expiry
+        }
+    )
+
+    return {
+        'statusCode': 200,
+        'body': 'Board reset successfully'
+    }
+
+
+def handle_anqi_move(connectionId, body):
+    connect = get_connection(connectionId)
+    room = get_room(connect.page_path, connect.room_id)
+    member = get_member_by_uuid(room, connect.uuid)
+    keys = {'PK': room['PK'], 'SK': room['SK']}
+
+    gamestate = json.loads(room['messages'][0])
+    turn_position = gamestate['turn_position']
+    start_pos, end_pos = body['move']
+
+    if int(member.position) != turn_position:
+        return {
+            'statusCode': 403,
+            'body': 'Not your turn'
+        }
+
+    move_result = process_move(gamestate, start_pos, end_pos)
+    gamestate['turn_position'] = 3 - turn_position
+    if is_gameover(gamestate['board']):
+        gamestate['gameover'] = 1
+
+    if move_result['valid']:
+        new_message = {
+            'msgtype': 'anqi-update',
+            'gamestate': gamestate,
+        }
+        broadcast(room, json.dumps(new_message), saveMessage=False)
+
+        expiry = int(time.time()) + LIVETIME
+        table.update_item(
+            Key=keys,
+            UpdateExpression="SET messages[0] = :val1, expiry = :expiry",
+            ExpressionAttributeValues={
+                ':val1': json.dumps(gamestate),
+                ':expiry': expiry
+            }
+        )
+    else:
+        apigateway.post_to_connection(
+            ConnectionId=connectionId,
+            Data=json.dumps({
+                'type': 'invalid move',
+                'reason': move_result['reason'],
+            })
+        )
+
+    return {
+        'statusCode': 200,
+        'body': 'Turn move processed'
+    }
+
+
+def process_move(gamestate, start_pos, end_pos):
+    """处理移动逻辑
+    Args:
+        gamestate = {    
+            'board': generate_initial_board(),
+            'turn_position': 1,
+            'gameover': 0,
+        }
+
+        message = [1, 15] # 移动&吃
+        message = [4, 4]  # 翻开棋子
+    Return:
+        is_valid_move
+    """
+    board = gamestate['board']
+    turn_position = gamestate['turn_position']
+    gameover = gamestate['gameover']
+
+    if gameover:
+        return {'valid': False, 'reason': '游戏已结束'}
+
+    if not (0 <= start_pos < 32 and 0 <= end_pos < 32):
+        return {'valid': False, 'reason': '位置超出范围'}
+
+    if start_pos == end_pos:
+        board[start_pos][1] = 1
+        return {'valid': True}
+
+    sp, sf = board[start_pos]  # start_piece, start_fliped
+    if (sp == -1) or (sf == 0):
+        return {'valid': False, 'reason': '起点没有棋子或棋子未翻开'}
+
+    if not is_own(sp, turn_position):
+        return {'valid': False, 'reason': '起点不是自己的棋子'}
+
+    ep, ef = board[end_pos]  # end_piece, end_fliped
+    if is_pao(sp):
+        if (start_pos // 8 != end_pos // 8) and (start_pos % 8 != end_pos % 8):
+            return {'valid': False, 'reason': '不合理的移动'}
+        if ((start_pos - end_pos) in [1, -1, 8, -8]) and (ef != -1):
+            return {'valid': False, 'reason': '不合理的移动'}
+    else:
+        if (start_pos - end_pos) not in [1, -1, 8, -8]:
+            return {'valid': False, 'reason': '不合理的移动'}
+        if ef == 0:
+            return {'valid': False, 'reason': '不能移动到未翻开的位置，除非是炮'}
+        if ef > 0:
+            if is_own(ep, turn_position):
+                return {'valid': False, 'reason': '不能移动到被自己棋子占据的位置'}
+            if not can_capture(sp, ep):
+                return {'valid': False, 'reason': '不能吃掉终点位置的棋子'}
+
+    board[end_pos] = board[start_pos]
+    board[start_pos] = [-1, -1]
+    return {'valid': True}
+
+def generate_initial_board():
+    import random
+    piece_to_number = ['帅', '仕', '相', '马', '车', '炮', '兵', '将', '士', '象', '马', '车', '炮', '卒']
+    initial_board = [
+        [0, 0], [1, 0], [1, 0], [2, 0], [2, 0], [3, 0], [3, 0], [4, 0],
+        [4, 0], [5, 0], [5, 0], [6, 0], [6, 0], [6, 0], [6, 0], [6, 0],
+        [7, 0], [8, 0], [8, 0], [9, 0], [9, 0], [10, 0], [10, 0], [11, 0],
+        [11, 0], [12, 0], [12, 0], [13, 0], [13, 0], [13, 0], [13, 0], [13, 0]
+    ]
+    random.shuffle(initial_board)
+    return initial_board
+
+def is_pao(piece):
+    return (piece % 7) == 5
+
+def is_own(piece, turn_position):
+    return (piece // 7) == (turn_position - 1)
+
+def is_gameover(board):
+    red_count = sum((p // 7 == 0) for p, f in board)
+    black_count = sum((p // 7 == 1) for p, f in board)
+    return red_count == 0 or black_count == 0
+
+def can_capture(start_piece, end_piece):
+    p1 = 7 - start_piece % 7
+    p2 = 7 - end_piece % 7
+    if (p1 == 1) and (p2 == 7):
+        return True
+    return p1 >= p2

@@ -1,9 +1,8 @@
-const currentUser = getIdentify();
 const apiURL = "wss://fxyfyu1ivj.execute-api.ap-northeast-1.amazonaws.com/Prod";
-const pagePath = "anqi";
-const url = new URL(window.location.href);
-const roomId = url.searchParams.get("room_id");
-const socket = new WebSocket(`${apiURL}?uuid=${currentUser.uuid}&page_path=${pagePath}&room_id=${roomId}&nickname=${currentUser.nickname}&position=${currentUser.position}`);
+const dchat = new DchatClient(apiURL, "anqi");
+const urlParams = new URLSearchParams(window.location.search);
+dchat.login(0, 0, parseInt(urlParams.get('position')));
+dchat.connect();
 
 const exampleData = [
     [0, 1], [13, 1], [5, 1], [10, 1], [2, 0], [8, 1], [3, 0], [-1, -1],
@@ -14,48 +13,111 @@ const exampleData = [
 
 const gamestate = {
     board: exampleData,
-    turn_player: 0,
+    turn_position: 0,
     gameover: 0
 };
 
-const exampleUsers = [
-    {uuid: "11111111-xxxx-xxxx-xxxx-12345678abcd", position: 1, nickname: "YourNickName"},
-    {uuid: "22222222-xxxx-xxxx-xxxx-12345678abcd", position: 2, nickname: "name2"},
-    {uuid: "33333333-xxxx-xxxx-xxxx-12345678abcd", position: 0, nickname: "name3"},
-];
-
-var users = exampleUsers;
-console.log("UUID:", currentUser.uuid);
-console.log("Nickname:", currentUser.nickname);
-
 updateGame();
 updateUserList();
+
+dchat.handler.setMessageHandler('leave', (messageData) => {
+    dchat.room.members = dchat.room.members.filter(mem => (!(mem.uuid == messageData.uuid)));
+    updateUserList();
+});
+
+dchat.handler.setMessageHandler('join', (messageData) => {
+    const new_member = {
+        uuid: messageData.uuid,
+        nickname: messageData.nickname,
+        online: 1,
+        position: messageData.position,
+    }
+    const existFlag = dchat.room.members.some(m => m.uuid === new_member.uuid);
+    if (!existFlag) {
+        dchat.room.members.push(new_member);
+        updateUserList();
+    }
+});
+
+dchat.handler.setMessageHandler('text', (messageData) => {
+    dchat.room.messages.push(messageData);
+    console.log(messageData);
+});
+
+dchat.handler.setMessageHandler('reload', (messageData) => {
+    dchat.room.members = messageData.members;
+    dchat.room.messages = messageData.messages;
+    if (messageData.messages[0]) {
+        const gs = JSON.parse(messageData.messages[0]);
+        updateGame(gs);
+        updateUserList();
+    }
+});
+
+dchat.handler.setMessageHandler('anqi-update', (messageData) => {
+    updateGame(messageData.gamestate);
+});
+
+dchat.handler.setMessageHandler('disconnect', (messageData) => {
+    displayFullScreamDialog("服务器关闭连接", `原因: ${messageData.reason}`)
+});
 
 const cancelButton = document.querySelector("#cancel-button");
 cancelButton.disabled = true;
 cancelButton.addEventListener("click", function() {
     clearBoardHighlights();
-    cancelButton.disabled = true; // 取消按钮被点击后设为不可用
+    cancelButton.disabled = true;
 });
 
+const resetButton = document.querySelector("#reset-button");
+resetButton.addEventListener("click", function() {
+    dchat.send(JSON.stringify({
+        action: "anqi-reset",
+    }));
+    resetButton.disabled = true;
+});
 
-function updateGame() {
-    generateBoard(gamestate.board);
+function sendMoveToServer(fromIndex, toIndex) {
+    console.log(`Move from ${fromIndex} to ${toIndex}`);
+    dchat.send(JSON.stringify({
+        action: "anqi-move",
+        move: [fromIndex, toIndex],
+    }));
+}
+
+function updateGame(gs) {
+    if (gs) {
+        gamestate.board = gs.board;
+        gamestate.turn_position = gs.turn_position;
+        gamestate.gameover = gs.gameover;
+    }
+    if (gamestate.turn_position) {
+        resetButton.disabled = true;
+    }
+    let canmove = "both";
+    if ((gamestate.turn_position === 1) && (dchat.member.position === 1)) {
+        canmove = "red"
+    } else if ((gamestate.turn_position === 2) && (dchat.member.position === 2)) {
+        canmove = "black"
+    } else {
+        canmove = "none";
+    }
+    displayBoard(gamestate.board, canmove);
 
     const turnPlayerDiv = document.getElementById("turn-player");
-    const turnPlayerSpan = turnPlayerDiv.getElementsByTagName("span");
-    turnPlayerSpan.innerHTML = gamestate.turn_player;
+    const turnPlayerSpan = turnPlayerDiv.getElementsByTagName("span")[0];
+    turnPlayerSpan.innerHTML = gamestate.turn_position;
 
     const gameoverDiv = document.getElementById("gameover");
     if (gamestate.gameover === 1) {
-        gameoverDiv.style.display = "none";
-    } else {
         gameoverDiv.style.display = "block";
+    } else {
+        gameoverDiv.style.display = "none";
     }
 }
 
 
-function generateBoard(boardData) {
+function displayBoard(boardData, canmove) {
     const board = document.getElementById("board");
     board.innerHTML = ""; // 清空现有内容
 
@@ -72,15 +134,28 @@ function generateBoard(boardData) {
             ; // 空位
         } else if (item[1] === 0) {
             chess.classList.add("back");
-            chess.addEventListener("click", function() {
-                handlePieceClick(index);
-            });
+            if (canmove != "none") {
+                chess.addEventListener("click", function() {
+                    handlePieceClick(index);
+                });
+            }
         } else {
             chess.textContent = getPieceName(item[0]);
-            chess.classList.add(item[0] < 7 ? "red-piece" : "black-piece");
-            chess.addEventListener("click", function() {
-                handlePieceClick(index);
-            });
+            if (item[0] < 7) {
+                chess.classList.add("red-piece");
+                if ((canmove == "red") || (canmove == "both")) {
+                    chess.addEventListener("click", function() {
+                        handlePieceClick(index);
+                    });
+                }
+            } else {
+                chess.classList.add("black-piece");
+                if ((canmove == "black") || (canmove == "both")) {
+                    chess.addEventListener("click", function() {
+                        handlePieceClick(index);
+                    });
+                }
+            }
         }
 
         chessContainer.appendChild(chess);
@@ -190,11 +265,6 @@ function setupHighlight(fromIndex, toIndex) {
     }
 }
 
-function sendMoveToServer(fromIndex, toIndex) {
-    console.log(`Move from ${fromIndex} to ${toIndex}`);
-    // 实现向服务器发送数据的逻辑
-}
-
 function clearBoardHighlights() {
     document.querySelectorAll("#board .highlight").forEach(highlight => {
         highlight.remove();
@@ -207,242 +277,36 @@ function getPieceName(type) {
     return pieceNames[type];
 }
 
-
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // 交换元素
+function createMemberElement(member) {
+    const ele = document.createElement('div');
+    ele.className = 'user-item';
+    ele.title = member.uuid;
+    if (member.position !== 0) {
+        const posEle = document.createElement("span");
+        posEle.className = "position";
+        posEle.textContent = member.position;
+        ele.appendChild(posEle);
     }
-    return array;
+    const nameEle = document.createElement("span");
+    nameEle.textContent = member.nickname;
+    ele.appendChild(nameEle);
+    return ele
 }
-
-
-
-socket.onopen = function(event) {
-    console.log("Connected to WebSocket API");
-    if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({
-            action: "full_data_request",
-            page_path: pagePath,
-            room_id: roomId,
-        }));
-    }
-};
-
-
-socket.onmessage = function(event) {
-    const messageData = JSON.parse(event.data);
-    console.log(messageData);
-
-    switch (messageData.type) {
-        case "leave":
-            handleLeaveMessage(messageData);
-            break;
-        case "join":
-            handleJoinMessage(messageData);
-            break;
-        case "disconnect":
-            handleDisconnectMessage(messageData);
-            break;
-        case "fullDataResponse":
-            handleFullDataResponse(messageData);
-            break;
-        default:
-            console.warn("Unknown message type:", messageData.type);
-    }
-};
-
-socket.onclose = function(event) {
-    if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({
-            action: "before_disconnect",
-            type: "disconnecting",
-            reason: "Client is closing connection",
-            page_path: pagePath,
-            room_id: roomId,
-        }));
-    }
-    console.log("Disconnected from WebSocket API");
-};
-
-window.addEventListener("beforeunload", function() {
-    if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({
-            action: "before_disconnect",
-            type: "disconnecting",
-            reason: "Client is closing connection",
-            page_path: pagePath,
-            room_id: roomId,
-        }));
-    }
-});
-
-// 处理用户离开
-// {type: "leave", uuids: ["36653049-985e-4918-8ebc-ae21e67745cc"], timestamp: 1725279267}
-function handleLeaveMessage(messageData) {
-    const uuidsToRemove = messageData.uuids;
-    users = users.filter(user => !uuidsToRemove.includes(user.uuid));
-    updateUserList();
-}
-
-// 处理用户加入
-// {type: "join", uuid: "36653049-985e-4918-8ebc-ae21e67745cc", nickname: "36653049", timestamp: 1725279280}
-function handleJoinMessage(messageData) {
-    const newUser = {
-        uuid: messageData.uuid,
-        nickname: messageData.nickname
-    };
-
-    const userExists = users.some(user => user.uuid === newUser.uuid);
-
-    if (!userExists) {
-        users.push(newUser);
-        updateUserList();
-    }
-}
-
-// 处理文本消息
-// {type: "text", uuid: "627d7a3c-0953-4dd8-87b5-9fe99238380a", nickname: "627d7a3c", message: "asdf", timestamp: 1725279574}
-function handleTextMessage(messageData) {
-    displayMessage(
-        messageData.message, 
-        messageData.nickname, 
-        messageData.timestamp, 
-        messageData.uuid === currentUser.uuid
-    );
-}
-
-// 处理文本消息
-// {"type": "fullDataResponse", "users": [{"uuid": conn["UUID"], "nickname": conn["Nickname"]}], "messages": msessages}
-function handleFullDataResponse(data) {
-    // 更新用户列表
-    users = data.users;
-    updateUserList();
-
-    // 检查 messages 的长度
-    if (data.messages.length === 0) {
-        // 向服务器发送 'reset' 操作
-        const resetMessage = JSON.stringify({ action: 'reset' });
-        socket.send(resetMessage);
-    } else {
-        // 处理接收到的消息
-        const gs = JSON.parse(data.messages[0]);
-        gamestate.board = gs.board;
-        gamestate.turn_player = gs.turn_player;
-        gamestate.gameover = gs.gameover;
-        generateBoard();
-    }
-}
-
-
-    if ((currentUser.position === 1) && (gamestate.turn_player === 0)) {
-        socket.send(JSON.stringify({
-            action: "reset",
-            page_path: pagePath,
-            room_id: roomId,
-        }));
-}
-
-// 服务器断开连接
-// {"type": "disconnect", "reason": "Duplicate UUID detected"}
-function handleDisconnectMessage(messageData) {
-    const overlay = document.createElement("div");
-    overlay.classList.add("fullScreamDialogOverlay");
-
-    const dialog = document.createElement("div");
-    dialog.classList.add("fullScreamDialog");
-
-    const title = document.createElement("h2");
-    title.textContent = "Connection Closed";
-    dialog.appendChild(title);
-
-    const message = document.createElement("p");
-    message.textContent = `服务器关闭连接.\nReason: ${messageData.reason}`;
-    dialog.appendChild(message);
-
-    const closeButton = document.createElement("button");
-    closeButton.textContent = "OK";
-    closeButton.classList.add("close-button");
-
-    closeButton.onclick = function() {
-        document.body.removeChild(overlay);
-        document.body.removeChild(dialog);
-    };
-
-    dialog.appendChild(closeButton);
-
-    document.body.appendChild(overlay);
-    document.body.appendChild(dialog);
-}
-
 
 
 function updateUserList() {
-    function generateUserItem(user) {
-        const userItem = document.createElement("div");
-        if (user.position && user.position !== 0) {
-            const positionSpan = document.createElement("span");
-            positionSpan.className = "position";
-            positionSpan.textContent = user.position;
-            userItem.appendChild(positionSpan);
-        }
-        userItem.appendChild(document.createTextNode(user.nickname));
-        userItem.className = "user-item";
-        userItem.title = user.uuid;
-        return userItem
-    }
-
-    const userList = document.getElementById("user-list");
-    userList.innerHTML = "";
-
-    if (currentUser) {
-        const userItem = generateUserItem(currentUser)
-        userItem.classList.add("self")
-        userList.appendChild(userItem);
-    }
-
-    users.forEach(user => {
-        if (user.uuid !== currentUser?.uuid) {
-            const userItem = generateUserItem(user)
-            userList.appendChild(userItem);
+    const memberList = document.getElementById('user-list');
+    let ele;
+    memberList.innerHTML = '';
+    
+    const selfEle = createMemberElement(dchat.member);
+    selfEle.classList.add("self")
+    memberList.appendChild(selfEle);
+    
+    dchat.room.members.forEach(mem => {
+        if (mem.uuid !== dchat.member.uuid) {
+            ele = createMemberElement(mem);
+            memberList.appendChild(ele);
         }
     });
-}
-
-
-function getIdentify() {
-    function generateUUID() {
-        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c == "x" ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    }
-
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(";").shift();
-    }
-
-    function setCookie(name, value, days) {
-        const d = new Date();
-        d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-        const expires = `expires=${d.toUTCString()}`;
-        document.cookie = `${name}=${value}; ${expires}; path=/`;
-    }
-
-    const url = new URL(window.location.href);
-    let uuid = url.searchParams.get(uuid);
-    let nickname = url.searchParams.get(nickname);
-    let position = url.searchParams.get(position);
-
-    if (!uuid) { uuid = getCookie("uuid"); }
-    if (!uuid) { uuid = generateUUID(); }
-    if (!nickname) { nickname = getCookie("nickname"); }
-    if (!nickname) { nickname = uuid.substring(0, 8); }
-    if (!position) { position = 0; }
-
-    setCookie("uuid", uuid, 365);
-    setCookie("nickname", nickname, 365);
-    return { uuid, nickname, position };
 }
