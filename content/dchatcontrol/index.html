@@ -1,0 +1,87 @@
+---
+title: "Dchat 控制台"
+comment:
+  enable: false
+library:
+---
+
+<style>
+    #buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    #invitation-links {
+        margin-top: 10px;
+    }
+</style>
+
+<div id="dchat-control">
+    <div>
+        <label for="page_path">Page Path:</label>
+        <select id="page_path">
+            <option value="chatroom">Chatroom</option>
+            <option value="anqi">Anqi</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="room_id">Room ID:</label>
+        <input type="text" id="room_id" value="">
+    </div>
+
+    <div id="buttons">
+        <button id="randomButton">Generate Room ID</button>
+        <button id="submitButton">Submit</button>
+        <button id="inviteButton">Generate Invitation Links</button>
+    </div>
+
+    <div id="invitation-links"></div>
+</div>
+
+<script>
+    function generateRandomRoomId() {
+        return Math.random().toString(36).substring(2, 6).toUpperCase();
+    }
+
+    document.getElementById('room_id').value = generateRandomRoomId();
+
+    document.getElementById('randomButton').addEventListener('click', function() {
+        document.getElementById('room_id').value = generateRandomRoomId();
+    });
+
+    document.getElementById('submitButton').addEventListener('click', function() {
+        const pagePath = document.getElementById('page_path').value;
+        const roomId = document.getElementById('room_id').value;
+
+        const data = { action: 'createRoom', page_path: pagePath, room_id: roomId };
+
+        fetch('https://5tujfvrapuyg7aksvcfb2pnpte0syxef.lambda-url.ap-northeast-1.on.aws/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            alert(JSON.stringify(data))
+        })
+        .catch(error => {
+            console.log('Error:', error);
+            alert(JSON.stringify(error))
+        });
+    });
+https://darkgoldbar.github.io/
+    document.getElementById('inviteButton').addEventListener('click', function() {
+        const pagePath = document.getElementById('page_path').value;
+        const roomId = document.getElementById('room_id').value;
+
+        let invitationLinks = '';
+        for (let i = 1; i <= 2; i++) {
+            const url = `https://darkgoldbar.github.io/anqi?room_id=${roomId}&page_path=${pagePath}&position=${i}`;
+            invitationLinks += `<p><a href="${url}" target="_blank">${url}</a></p>`;
+        }
+
+        document.getElementById('invitation-links').innerHTML = invitationLinks;
+    });
+</script>
