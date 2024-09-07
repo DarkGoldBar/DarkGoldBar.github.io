@@ -1,181 +1,69 @@
 const apiURL = "wss://fxyfyu1ivj.execute-api.ap-northeast-1.amazonaws.com/Prod";
-const pagePath = "chatroom";
-const roomId = "123";
-const currentUser = getIdentify();
-const socket = new WebSocket(`${apiURL}?uuid=${currentUser.uuid}&page_path=${pagePath}&room_id=${roomId}&nickname=${currentUser.nickname}`);
-var users = [];
+const dchat = new DchatClient(apiURL);
 
-console.log('UUID:', currentUser.uuid);
-console.log('Nickname:', currentUser.nickname);
+updateUserList();
 
-socket.onopen = function(event) {
-    console.log("Connected to WebSocket API");
-    if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({
-            action: 'full_data_request',
-            page_path: pagePath,
-            room_id: roomId,
-        }));
+dchat.handler.setMessageHandler('leave', (messageData) => {
+    dchat.room.members = dchat.room.members.filter(mem => (!(mem.uuid == messageData.uuid)));
+    updateUserList();
+});
+
+dchat.handler.setMessageHandler('join', (messageData) => {
+    const new_member = {
+        uuid: messageData.uuid,
+        nickname: messageData.nickname,
+        online: 1,
+        position: messageData.position,
     }
-};
-
-socket.onmessage = function(event) {
-    const messageData = JSON.parse(event.data);
-    console.log(messageData);
-
-    switch (messageData.type) {
-        case 'leave':
-            handleLeaveMessage(messageData);
-            break;
-        case 'join':
-            handleJoinMessage(messageData);
-            break;
-        case 'text':
-            handleTextMessage(messageData);
-            break;
-        case 'disconnect':
-            handleDisconnectMessage(messageData);
-            break;
-        case 'fullDataResponse':
-            handleFullDataResponse(messageData);
-            break;
-        default:
-            console.warn('Unknown message type:', messageData.type);
-    }
-};
-
-socket.onclose = function(event) {
-    if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({
-            action: 'before_disconnect',
-            type: 'disconnecting',
-            reason: 'Client is closing connection',
-            page_path: pagePath,
-            room_id: roomId,
-        }));
-    }
-    console.log("Disconnected from WebSocket API");
-};
-
-window.addEventListener("beforeunload", function() {
-    if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({
-            action: 'before_disconnect',
-            type: 'disconnecting',
-            reason: 'Client is closing connection',
-            page_path: pagePath,
-            room_id: roomId,
-        }));
+    const existFlag = dchat.room.members.some(m => m.uuid === new_member.uuid);
+    if (!existFlag) {
+        dchat.room.members.push(new_member);
+        updateUserList();
     }
 });
 
-window.onload = function() {
-    updateUserList();
-};
-
-// 处理用户离开
-// {type: 'leave', uuids: ['36653049-985e-4918-8ebc-ae21e67745cc'], timestamp: 1725279267}
-function handleLeaveMessage(messageData) {
-    const uuidsToRemove = messageData.uuids;
-    users = users.filter(user => !uuidsToRemove.includes(user.uuid));
-    updateUserList();
-}
-
-// 处理用户加入
-// {type: 'join', uuid: '36653049-985e-4918-8ebc-ae21e67745cc', nickname: '36653049', timestamp: 1725279280}
-function handleJoinMessage(messageData) {
-    const newUser = {
-        uuid: messageData.uuid,
-        nickname: messageData.nickname
-    };
-
-    const userExists = users.some(user => user.uuid === newUser.uuid);
-
-    if (!userExists) {
-        users.push(newUser);
-        updateUserList();
-    }
-}
-
-// 处理文本消息
-// {type: 'text', uuid: '627d7a3c-0953-4dd8-87b5-9fe99238380a', nickname: '627d7a3c', message: 'asdf', timestamp: 1725279574}
-function handleTextMessage(messageData) {
+dchat.handler.setMessageHandler('text', (messageData) => {
+    dchat.room.messages.push(messageData)
     displayMessage(
-        messageData.message, 
+        messageData.text, 
         messageData.nickname, 
         messageData.timestamp, 
-        messageData.uuid === currentUser.uuid
+        messageData.uuid === dchat.member.uuid
     );
-}
+});
 
-// 处理文本消息
-// {'type': 'fullDataResponse', 'users': [{'uuid': conn['UUID'], 'nickname': conn['Nickname']}], 'messages': msessages}
-function handleFullDataResponse(data) {
-    // 更新用户列表
-    users = data.users;
-    updateUserList();
-
-    // 更新消息界面
-    const maxTimestamp = getMaxTimestamp();
-    const messages = data.messages;
-    messages.forEach(messageJson => {
-        messageData = JSON.parse(messageJson)
-        if (messageData.timestamp > maxTimestamp) {
-            displayMessage(
-                messageData.message, 
-                messageData.nickname, 
-                messageData.timestamp, 
-                messageData.uuid === currentUser.uuid
-            );
-        }
+dchat.handler.setMessageHandler('reload', (messageData) => {
+    let msg;
+    dchat.room.members = messageData.members;
+    dchat.room.messages = messageData.messages;
+    dchat.room.messages.forEach(messageJson => {
+        msg = JSON.parse(messageJson)
+        displayMessage(
+            msg.text, 
+            msg.nickname, 
+            msg.timestamp, 
+            msg.uuid === dchat.member.uuid,
+        );
     });
-}
+    updateUserList();
+});
 
-// 服务器断开连接
-// {'type': 'disconnect', 'reason': 'Duplicate UUID detected'}
-function handleDisconnectMessage(messageData) {
-    const overlay = document.createElement('div');
-    overlay.classList.add('fullScreamDialogOverlay');
-
-    const dialog = document.createElement('div');
-    dialog.classList.add('fullScreamDialog');
-
-    const title = document.createElement('h2');
-    title.textContent = 'Connection Closed';
-    dialog.appendChild(title);
-
-    const message = document.createElement('p');
-    message.textContent = `服务器关闭连接.\nReason: ${messageData.reason}`;
-    dialog.appendChild(message);
-
-    const closeButton = document.createElement('button');
-    closeButton.textContent = 'OK';
-    closeButton.classList.add('close-button');
-
-    closeButton.onclick = function() {
-        document.body.removeChild(overlay);
-        document.body.removeChild(dialog);
-    };
-
-    dialog.appendChild(closeButton);
-
-    document.body.appendChild(overlay);
-    document.body.appendChild(dialog);
-}
+dchat.handler.setMessageHandler('disconnect', (messageData) => {
+    displayFullScreamDialog("服务器关闭连接", `原因: ${messageData.reason}`)
+});
 
 
 function sendMessage() {
     const messageInput = document.getElementById('messageInput');
-    const message = messageInput.value;
-    if (message) {
-        socket.send(JSON.stringify({
-            message: message,
-            page_path: pagePath,
-            room_id: roomId
+    const text = messageInput.value;
+    if (text) {
+        dchat.send(JSON.stringify({
+            text: text,
         }));
         messageInput.value = '';
     }
 }
+
 
 function displayMessage(message, nickname, timestamp, isOwn = false) {
     const messageContainer = document.createElement('div');
@@ -202,79 +90,66 @@ function displayMessage(message, nickname, timestamp, isOwn = false) {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-function getIdentify() {
-    function generateUUID() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    }
 
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    }
+function displayFullScreamDialog(title, note) {
+    const overlay = document.createElement('div');
+    overlay.classList.add('fullScreamDialogOverlay');
 
-    function setCookie(name, value, days) {
-        const d = new Date();
-        d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-        const expires = `expires=${d.toUTCString()}`;
-        document.cookie = `${name}=${value}; ${expires}; path=/`;
-    }
+    const dialog = document.createElement('div');
+    dialog.classList.add('fullScreamDialog');
 
-    let uuid = getCookie('uuid');
-    let nickname = getCookie('nickname');
+    const titleEle = document.createElement('h2');
+    titleEle.textContent = title;
+    dialog.appendChild(title);
 
-    if (uuid && nickname) {
-        return { uuid, nickname };
-    } else {
-        uuid = generateUUID();
-        nickname = uuid.substring(0, 8);
+    const message = document.createElement('p');
+    message.textContent = note;
+    dialog.appendChild(message);
 
-        setCookie('uuid', uuid, 365);
-        setCookie('nickname', nickname, 365);
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'OK';
+    closeButton.classList.add('close-button');
 
-        return { uuid, nickname };
-    }
+    closeButton.onclick = function() {
+        document.body.removeChild(overlay);
+        document.body.removeChild(dialog);
+    };
+
+    dialog.appendChild(closeButton);
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(dialog);
 }
+
+
+function createMemberElement(member) {
+    const ele = document.createElement('div');
+    ele.className = 'user-item';
+    ele.textContent = member.nickname;
+    ele.title = member.uuid;
+    if (member.position !== 0) {
+        const posEle = document.createElement("span");
+        posEle.className = "position";
+        posEle.textContent = member.position;
+        ele.appendChild(posEle);
+    }
+    return ele
+}
+
 
 function updateUserList() {
-    const userList = document.getElementById('user-list');
-    userList.innerHTML = '';
+    const memberList = document.getElementById('user-list');
+    let ele;
+    memberList.innerHTML = '';
     
-    if (currentUser) {
-        const currentUserItem = document.createElement('div');
-        currentUserItem.textContent = currentUser.nickname;
-        currentUserItem.className = 'user-item self';
-        currentUserItem.title = currentUser.uuid;
-        userList.appendChild(currentUserItem);
-    }
+    const selfEle = createMemberElement(dchat.member);
+    selfEle.classList.add("self")
+    memberList.appendChild(selfEle);
     
-    users.forEach(user => {
-        if (user.uuid !== currentUser?.uuid) {
-            const userItem = document.createElement('div');
-            userItem.textContent = user.nickname;
-            userItem.className = 'user-item';
-            userItem.title = user.uuid;
-            userList.appendChild(userItem);
+    dchat.room.members.forEach(mem => {
+        if (mem.uuid !== dchat.member.uuid) {
+            ele = createMemberElement(mem);
+            memberList.appendChild(ele);
         }
     });
-}
-
-
-function getMaxTimestamp() {
-    const messagesDiv = document.getElementById('messages');
-    const messageContainers = messagesDiv.getElementsByClassName('message');
-    
-    let maxTimestamp = -Infinity; // 初始化为负无穷，确保可以找到最大的值
-    
-    for (const messageContainer of messageContainers) {
-        const timestamp = parseInt(messageContainer.getAttribute('data-timestamp'), 10);
-        if (timestamp > maxTimestamp) {
-            maxTimestamp = timestamp;
-        }
-    }
-
-    return maxTimestamp;
 }

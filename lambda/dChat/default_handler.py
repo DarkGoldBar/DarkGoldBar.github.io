@@ -2,354 +2,284 @@ import os
 import json
 import time
 import boto3
-from typing import Optional
-from boto3.dynamodb.conditions import Key, Attr
+from model import ConnectionInfo, MemberInfo, Message, DChatException
 
 YOUR_API_ID = os.environ.get('API_ID', 'YOUR_API_ID')
 YOUR_REGION = os.environ.get('REGION', 'ap-northeast-1')
 TABLE_NAME = os.environ.get('TABLE_NAME', 'dChat')
 LIVETIME = int(os.environ.get('LIVETIME', '86400'))
+ITEMLIMIT = int(os.environ.get('ITEMLIMIT', '1000'))
 ENDPOINT_URL = f'https://{YOUR_API_ID}.execute-api.{YOUR_REGION}.amazonaws.com/Prod'
-ITEMLIMIT = 1000
 
-class PublicObjects:
-    _table = None
-    _apigateway = None
-
-    @property
-    def table(self):
-        if self._table is None:
-            dynamodb = boto3.resource('dynamodb')
-            self._table = dynamodb.Table(TABLE_NAME)
-        return self._table
-
-    @property
-    def apigateway(self):
-        if self._apigateway is None:
-            self._apigateway = boto3.client('apigatewaymanagementapi', endpoint_url=ENDPOINT_URL)
-        return self._apigateway
-
-PO = PublicObjects()
-
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table(TABLE_NAME)
+apigateway = boto3.client('apigatewaymanagementapi', endpoint_url=ENDPOINT_URL)
 
 def lambda_handler(event, context):
     route_key = event['requestContext']['routeKey']
-    connection_id = event['requestContext']['connectionId']
+    connectionId = event['requestContext']['connectionId']    
+    print(f'CALL {route_key=}')
 
-    try:
-        if route_key == '$connect':
-            query_params = event['queryStringParameters']
-            uuid = query_params['uuid']
-            nickname = query_params.get('nickname', uuid[:4])
-            page_path = query_params['page_path']
-            room_id = query_params['room_id']
-            position = query_params.get('position', 0)
-            print(f"CALL handle_connect({connection_id}, {uuid}, {nickname}, {page_path}, {room_id}, {position})")
-            response = handle_connect(connection_id, uuid, nickname, page_path, room_id, position)
+    if route_key == '$connect':
+        query_params = event['queryStringParameters']
+        print(f'{query_params=}')
+        response = handle_connect(connectionId, **query_params)
 
-        elif route_key == '$disconnect':
-            print(f"CALL handle_disconnect({connection_id})")
-            response = handle_disconnect(connection_id)
+    elif route_key == '$disconnect':
+        response = handle_disconnect(connectionId)
 
-        elif route_key == '$default':
-            body = json.loads(event['body'])
-            action = body.get('action')
-            page_path = body['page_path']
-            room_id = body['room_id']
-            if action == 'before_disconnect':
-                print(f"CALL handle_before_disconnect({connection_id}, {page_path}, {room_id})")
-                response = handle_before_disconnect(connection_id, page_path, room_id)
-            elif action == 'full_data_request':
-                print(f"CALL handle_full_data_request({connection_id}, {page_path}, {room_id})")
-                response = handle_full_data_request(connection_id, page_path, room_id)
-            else:
-                message = body.get('message', '')
-                print(f"CALL handle_default({connection_id}, {page_path}, {room_id}, {message}) {action=}")
-                response = handle_default(connection_id, page_path, room_id, message)
-    except Exception as e:
-        response = {
-            'statusCode': 400,
-            'body': repr(e)
-        }
+    elif route_key == '$default':
+        body = json.loads(event['body'])
+        action = body.get('action')
+        print(f'{body=}')
+        if action == 'reload':
+            response = handle_reload(connectionId)
+        else:
+            text = body.get('text', body)
+            response = handle_message(connectionId, text)
 
     print(f"RESPONSE {response}")
     return response
 
 
-def handle_connect(connection_id, uuid, nickname, page_path, room_id, position):
-    table = PO.table
-    pk = page_path
-    sk = room_id
+def handle_connect(connectionId, uuid, page_path, room_id, nickname=None, position=0, **kwargs):
+    nickname = nickname if nickname else uuid[:4]
+    expiry = int(time.time()) + LIVETIME 
 
-    if connection_limit():
+    if get_item_count() > ITEMLIMIT:
         raise Exception('Max Connection Reached')
 
-    response = table.query(
-        KeyConditionExpression=Key('PK').eq(pk),
-        Limit=1
+    new_connect = ConnectionInfo(
+        connectionId,
+        uuid,
+        page_path,
+        room_id,
+        expiry=expiry,
     )
-    
-    if not response['Items']:
-        return {
-            'statusCode': 400,
-            'body': 'Error: Invalid page_path'
-        }   
+    new_member = MemberInfo(
+        connectionId,
+        uuid,
+        nickname,
+        1,
+        position,
+    )
+    new_message = Message(
+        'join',
+        uuid,
+        nickname,
+    )
 
-    item, err = get_item(pk, sk)
+    room = get_room(page_path, room_id)
+    table.put_item(Item=new_connect.asitem())
+    join_room(room, new_member)
+    broadcast(room, json.dumps(new_message.asdict()), saveMessage=False)
 
-    expiry = int(time.time()) + LIVETIME
-    new_connect = {
-        'ConnectionId': connection_id,
-        'UUID': uuid,
-        'Nickname': nickname,
-        'Online': 1,
-        'Position': int(position)
-    }
-
-    if not item:
-        table.put_item(
-            Item={
-                'PK': pk,
-                'SK': sk,
-                'Connections': [new_connect],
-                'Messages': [],
-                'expiry': expiry
-            }
-        )
-    else:
-        message = {
-            'type': 'join',
-            'uuid': uuid,
-            'nickname': nickname,
-            'timestamp': int(time.time())
-        }
-        message_json = json.dumps(message)
-
-        connections = item.get('Connections', [])
-        kick_same_uuid(connections, uuid)
-        for conn in connections:
-            if conn['UUID'] == uuid:
-                broadcast(item, message_json, saveMessage=False)
-                conn['ConnectionId'] = connection_id
-                conn['Online'] = 1
-                table.update_item(
-                    Key={'PK': pk, 'SK': sk},
-                    UpdateExpression="SET Connections = :val1, expiry = :val2",
-                    ExpressionAttributeValues={
-                        ':val1': connections,
-                        ':val2': expiry
-                    }
-                )
-                break
-        else:
-            broadcast(item, message_json, saveMessage=False)
-            table.update_item(
-                Key={'PK': pk, 'SK': sk},
-                UpdateExpression="SET Connections = list_append(Connections, :val1), expiry = :val2",
-                ExpressionAttributeValues={
-                    ':val1': [new_connect],
-                    ':val2': expiry
-                }
-            )
-            
     return {
         'statusCode': 200,
         'body': 'Connected successfully'
     }
 
 
-def handle_disconnect(connection_id):
-    return {
-        'statusCode': 200,
-        'body': 'Disconnected successfully'
-    }
+def handle_disconnect(connectionId):
+    this_member = None
+    connect = get_connection(connectionId)
+    room = get_room(connect.page_path, connect.room_id)
 
-
-def handle_before_disconnect(connection_id, page_path, room_id):
-    table = PO.table
-    item, err = get_item(page_path, room_id)
-    if err:
-        return err
-    
-    connections = item.get('Connections', [])
-    lost_connections = []
-    for conn in connections:
-        if conn['ConnectionId'] == connection_id:
-            conn['Online'] = 0
-            lost_connections = [conn]
+    members = room.get('members', [])
+    for mem in members:
+        if mem['uuid'] == connect.uuid:
+            this_member = mem
+            mem['online'] = 0
             break
 
-    if lost_connections:
-        broadcast_disconnect(item, lost_connections)
-
     table.update_item(
-        Key={'PK': page_path, 'SK': room_id},
-        UpdateExpression="SET Connections = :val1",
-        ExpressionAttributeValues={':val1': connections}
+        Key={'PK': connect.page_path, 'SK': connect.room_id},
+        UpdateExpression="SET members = :val1",
+        ExpressionAttributeValues={':val1': members}
     )
 
+    broadcast_disconnect(room, this_member)
 
-def handle_full_data_request(connection_id, page_path, room_id):
-    table = PO.table
-    apigateway = PO.apigateway
+    return {
+        'statusCode': 200,
+        'body': 'Disonnected successfully'
+    }
 
-    item, err = get_item(page_path, room_id)
-    if err:
-        return err
+def handle_reload(connectionId):
+    connect = get_connection(connectionId)
+    room = get_room(connect.page_path, connect.room_id)
     
-    # 获取在线用户列表
-    connections = item.get('Connections', [])
-    online_users = [
-        {'uuid': conn['UUID'], 'nickname': conn['Nickname']}
-        for conn in connections if conn.get('Online')
-    ]
-    
-    # 获取最新的20条消息记录
-    messages = item.get('Messages', [])[-20:]
+    members = room.get('members', [])
+    messages = room.get('messages', [])[-20:]
+    for mem in members:
+        mem.pop('connectionId', None)
+        mem['online'] = int(mem['online'])
+        mem['position'] = int(mem.get('position', 0))
 
-    # 构造响应数据
     data = {
-        'type': 'fullDataResponse',
-        'users': online_users,
+        'msgtype': 'reload',
+        'members': members,
         'messages': messages
     }
+    apigateway.post_to_connection(
+        ConnectionId=connectionId,
+        Data=json.dumps(data)
+    )
 
-    # 发送数据到客户端
-    try:
-        apigateway.post_to_connection(
-            ConnectionId=connection_id,
-            Data=json.dumps(data)
-        )
-        return {
-            'statusCode': 200,
-            'body': 'Full data sent successfully'
-        }
-    except Exception as e:
-        print(f"Failed to send full data: {str(e)}")
-        return {
-            'statusCode': 500,
-            'body': 'Error: Failed to send full data'
-        }
-
-
-def handle_default(connection_id, page_path, room_id, message):
-    item, err = get_item(page_path, room_id)
-    if err:
-        return err
-    
-    connections = item.get('Connections', [])
-    messages = item.get('Messages', [])
-    
-    connection_info = next((conn for conn in connections if conn['ConnectionId'] == connection_id), None)
-    if not connection_info:
-        return {
-            'statusCode': 404,
-            'body': 'Error: Connection Info not found'
-        }
-    new_message = {
-        'type': 'text',
-        'uuid': connection_info['UUID'],
-        'nickname': connection_info['Nickname'],
-        'message': message,
-        'timestamp': int(time.time())
+    return {
+        'statusCode': 200,
+        'body': 'Full data sent successfully'
     }
-    new_message_json = json.dumps(new_message)
-    messages.append(new_message_json)
-    broadcast(item, new_message_json)
+
+
+def handle_message(connectionId, text):
+    connect = get_connection(connectionId)
+    room = get_room(connect.page_path, connect.room_id)
+    member = get_member_by_uuid(room, connect.uuid)
+
+    new_message = Message(
+        'text',
+        member.uuid,
+        member.nickname,
+        text,
+    )
+    broadcast(room, json.dumps(new_message.asdict()), saveMessage=True)
+
     return {
         'statusCode': 200,
         'body': 'Message sent successfully'
     }
 
 
-def get_item(pk, sk) -> tuple[Optional[dict], Optional[dict]]:
-    response = PO.table.get_item(Key={'PK': pk, 'SK': sk})
-    if 'Item' not in response:
-        err = {
-            'statusCode': 404,
-            'body': 'Error: Item not found'
-        }
-        return None, err
-    return response['Item'], None
+def get_connection(connectionId):
+    response = table.get_item(Key={'PK': 'connection', 'SK': connectionId})
+    item = response.get('Item')
+    if item is None:
+        raise DChatException('Connection item not found')
+    item.pop('PK')
+    item['connectionId'] = item.pop('SK')
+    return ConnectionInfo(**item)
 
 
-def broadcast(item, message_json, saveMessage=True):
-    apigateway = PO.apigateway
-    table = PO.table
-    expiry = int(time.time()) + LIVETIME
-    keys = {'PK': item['PK'], 'SK': item['SK']}
-    connections = item.get('Connections', [])
-
-    lost_connections = []
-    for conn in connections:
-        if conn['Online']:
-            try:
-                apigateway.post_to_connection(
-                    ConnectionId=conn['ConnectionId'],
-                    Data=message_json
-                )
-            except apigateway.exceptions.GoneException:
-                print(f"Connection {conn['ConnectionId']} is lost and removed.")
-                lost_connections.append(conn)
-                conn['Online'] = 0
-
-    if lost_connections:
-        broadcast_disconnect(item, lost_connections)
-    
-    if saveMessage:
-        table.update_item(
-            Key=keys,
-            UpdateExpression="SET Connections = :val1, Messages = list_append(Messages, :val2), expiry = :val3",
-            ExpressionAttributeValues={
-                ':val1': connections,
-                ':val2': [message_json],
-                ':val3': expiry
-            }
-        )
+def get_room(page_path, room_id):
+    response = table.get_item(Key={'PK': page_path, 'SK': room_id})
+    item = response.get('Item')
+    if item is None:
+        raise DChatException('Room item not found')
+    return item
 
 
-def broadcast_disconnect(item, lost_connections):
-    apigateway = PO.apigateway
-    connections = item.get('Connections', [])
-
-    lost_conn_uuids = [conn['UUID'] for conn in lost_connections]
-    message = {
-        'type': 'leave',
-        'uuids': lost_conn_uuids,
-        'timestamp': int(time.time())
-    }
-    message_json = json.dumps(message)
-    for conn in connections:
-        if conn['Online']:
-            try:
-                apigateway.post_to_connection(
-                    ConnectionId=conn['ConnectionId'],
-                    Data=message_json
-                )
-            except apigateway.exceptions.GoneException:
-                print(f"Connection {conn['ConnectionId']} is lost.")
-
-
-def kick_same_uuid(connections, uuid):
-    apigateway = PO.apigateway
-    to_kick = [conn for conn in connections if conn['UUID'] == uuid and conn['Online']]
-    for conn in to_kick:
-        try:
-            apigateway.post_to_connection(
-                ConnectionId=conn['ConnectionId'],
-                Data=json.dumps({
-                    'type': 'disconnect',
-                    'reason': 'Duplicate UUID detected',
-                })
-            )
-            apigateway.delete_connection(ConnectionId=conn['ConnectionId'])
-            conn['Online'] = 0
-        except Exception as e:
-            print(f"Failed to disconnect {conn['ConnectionId']}: {str(e)}")
-
-
-def connection_limit():
+def get_item_count():
     client = boto3.client('dynamodb')
     response = client.describe_table(TableName=TABLE_NAME)
     item_count = response['Table']['ItemCount']
-    return item_count > ITEMLIMIT
+    return item_count
+
+
+def get_member_by_uuid(room, uuid):
+    m = next((mem for mem in room.get('members', []) if mem['uuid'] == uuid), None)
+    return MemberInfo(**m)
+
+
+def broadcast(room, message_json, saveMessage=False):
+    expiry = int(time.time()) + LIVETIME
+    keys = {'PK': room['PK'], 'SK': room['SK']}
+    members = room.get('members', [])
+
+    counter = 0
+    lost_members = []
+    for mem in members:
+        if mem['online'] == 1:
+            try:
+                apigateway.post_to_connection(
+                    ConnectionId=mem['connectionId'],
+                    Data=message_json
+                )
+            except apigateway.exceptions.GoneException:
+                print(f"Connection {mem['connectionId']} is lost and removed.")
+                lost_members.append(mem)
+                mem['online'] = 0
+
+    expression_list = ['SET expiry = :val1']
+    expression_value = {':val1': expiry}
+
+    if lost_members:
+        for member in lost_members:
+            broadcast_disconnect(room, member)
+        expression_list.append('members = :val2')
+        expression_value[':val2'] = members
+
+    if saveMessage:
+        expression_list.append('messages = list_append(messages, :val3)')
+        expression_value[':val3'] = [message_json]
+
+    table.update_item(
+        Key=keys,
+        UpdateExpression=', '.join(expression_list),
+        ExpressionAttributeValues=expression_value,
+    )
+
+
+def broadcast_disconnect(room, member_dict):
+    member = MemberInfo(**member_dict)
+    new_message = Message(
+        'leave',
+        member.uuid,
+        member.nickname,
+    )
+    message_json = json.dumps(new_message.asdict())
+
+    members = room.get('members', [])
+    for mem in members:
+        if mem['online'] == 1:
+            try:
+                apigateway.post_to_connection(
+                    ConnectionId=mem['connectionId'],
+                    Data=message_json
+                )
+            except apigateway.exceptions.GoneException as e:
+                print(f"Failed to send message to connection {mem['connectionId']}: {e}")
+
+
+def disconnect(connectionId, reason='Server closed socket'):
+    try:
+        apigateway.post_to_connection(
+            ConnectionId=connectionId,
+            Data=json.dumps({
+                'type': 'disconnect',
+                'reason': reason,
+            })
+        )
+        apigateway.delete_connection(ConnectionId=connectionId)
+    except Exception as e:
+        print(f'Failed in disconnect {connectionId=} for {reason=}.\n{repr(e)}')
+
+
+def join_room(room, member: MemberInfo):
+    keys = {'PK': room['PK'], 'SK': room['SK']}
+    expiry = int(time.time()) + LIVETIME 
+    members = room.get('members', [])
+    for mem in members:
+        if mem['uuid'] == member.uuid:
+            if mem['online']:
+                disconnect(mem['connectionId'], 'Multiple login')
+            mem['connectionId'] = member.connectionId
+            mem['online'] = 1
+            table.update_item(
+                Key=keys,
+                UpdateExpression="SET members = :val1, expiry = :val2",
+                ExpressionAttributeValues={
+                    ':val1': members,
+                    ':val2': expiry
+                }
+            )
+            break
+    else:
+        table.update_item(
+            Key=keys,
+            UpdateExpression="SET members = list_append(members, :val1), expiry = :val2",
+            ExpressionAttributeValues={
+                ':val1': [member.asdict()],
+                ':val2': expiry
+            }
+        )

@@ -1,5 +1,9 @@
-const currentUser = {uuid: '11111111-xxxx-xxxx-xxxx-12345678abcd', nickname: 'YourNickName', position: 1}
-var users = [];
+const currentUser = getIdentify();
+const apiURL = "wss://fxyfyu1ivj.execute-api.ap-northeast-1.amazonaws.com/Prod";
+const pagePath = "anqi";
+const url = new URL(window.location.href);
+const roomId = url.searchParams.get("room_id");
+const socket = new WebSocket(`${apiURL}?uuid=${currentUser.uuid}&page_path=${pagePath}&room_id=${roomId}&nickname=${currentUser.nickname}&position=${currentUser.position}`);
 
 const exampleData = [
     [0, 1], [13, 1], [5, 1], [10, 1], [2, 0], [8, 1], [3, 0], [-1, -1],
@@ -18,45 +22,63 @@ const exampleUsers = [
     {uuid: "11111111-xxxx-xxxx-xxxx-12345678abcd", position: 1, nickname: "YourNickName"},
     {uuid: "22222222-xxxx-xxxx-xxxx-12345678abcd", position: 2, nickname: "name2"},
     {uuid: "33333333-xxxx-xxxx-xxxx-12345678abcd", position: 0, nickname: "name3"},
-]
+];
 
-const cancelButton = document.querySelector('#cancel-button');
+var users = exampleUsers;
+console.log("UUID:", currentUser.uuid);
+console.log("Nickname:", currentUser.nickname);
+
+updateGame();
+updateUserList();
+
+const cancelButton = document.querySelector("#cancel-button");
 cancelButton.disabled = true;
-cancelButton.addEventListener('click', function() {
+cancelButton.addEventListener("click", function() {
     clearBoardHighlights();
     cancelButton.disabled = true; // 取消按钮被点击后设为不可用
 });
 
-generateBoard(gamestate.board);
-document.getElementById('gameover').style.display = 'none';
-users = exampleUsers;
-updateUserList();
+
+function updateGame() {
+    generateBoard(gamestate.board);
+
+    const turnPlayerDiv = document.getElementById("turn-player");
+    const turnPlayerSpan = turnPlayerDiv.getElementsByTagName("span");
+    turnPlayerSpan.innerHTML = gamestate.turn_player;
+
+    const gameoverDiv = document.getElementById("gameover");
+    if (gamestate.gameover === 1) {
+        gameoverDiv.style.display = "none";
+    } else {
+        gameoverDiv.style.display = "block";
+    }
+}
 
 
 function generateBoard(boardData) {
-    const board = document.getElementById('board');
-    board.innerHTML = ''; // 清空现有内容
+    const board = document.getElementById("board");
+    board.innerHTML = ""; // 清空现有内容
 
     boardData.forEach((item, index) => {
-        const chessContainer = document.createElement('div');
-        chessContainer.className = 'chess-container';
-        chessContainer.setAttribute('data-id', index);
+        const chessContainer = document.createElement("div");
+        chessContainer.className = "chess-container";
+        chessContainer.setAttribute("data-id", index);
         
-        const chess = document.createElement('div');
-        chess.className = 'chess';
+        const chess = document.createElement("div");
+        chess.className = "chess";
 
         // 根据数据来决定棋子的状态
         if (item[0] === -1 && item[1] === -1) {
             ; // 空位
         } else if (item[1] === 0) {
-            chess.classList.add('back');
-            chess.addEventListener('click', function() {
+            chess.classList.add("back");
+            chess.addEventListener("click", function() {
                 handlePieceClick(index);
             });
         } else {
             chess.textContent = getPieceName(item[0]);
-            chess.classList.add(item[0] < 7 ? 'red-piece' : 'black-piece');
-            chess.addEventListener('click', function() {
+            chess.classList.add(item[0] < 7 ? "red-piece" : "black-piece");
+            chess.addEventListener("click", function() {
                 handlePieceClick(index);
             });
         }
@@ -67,7 +89,7 @@ function generateBoard(boardData) {
 }
 
 function handlePieceClick(index) {
-    const pieceData = gamestate['board'][index];
+    const pieceData = gamestate["board"][index];
     const pieceType = pieceData[0];
     const flipped = pieceData[1];
 
@@ -155,12 +177,12 @@ function checkValidMove(fromIndex, toIndex) {
 }
 
 function setupHighlight(fromIndex, toIndex) {
-    const chess = document.querySelector(`#board [data-id='${toIndex}']`);
+    const chess = document.querySelector(`#board [data-id="${toIndex}"]`);
     if (chess) {
-        const highlight = document.createElement('div');
-        highlight.className = 'highlight';
+        const highlight = document.createElement("div");
+        highlight.className = "highlight";
         chess.appendChild(highlight);
-        highlight.addEventListener('click', function moveHandler() {
+        highlight.addEventListener("click", function moveHandler() {
             clearBoardHighlights();
             sendMoveToServer(fromIndex, toIndex); // 向服务器发送移动数据
             cancelButton.disabled = true;
@@ -170,33 +192,208 @@ function setupHighlight(fromIndex, toIndex) {
 
 function sendMoveToServer(fromIndex, toIndex) {
     console.log(`Move from ${fromIndex} to ${toIndex}`);
-    // 实现向服务器发送数据的逻辑s
+    // 实现向服务器发送数据的逻辑
 }
 
 function clearBoardHighlights() {
-    document.querySelectorAll('#board .highlight').forEach(highlight => {
+    document.querySelectorAll("#board .highlight").forEach(highlight => {
         highlight.remove();
     });
     cancelButton.disabled = true;
 }
 
+function getPieceName(type) {
+    const pieceNames = ["将", "士", "象", "车", "马", "炮", "兵", "帅", "仕", "相", "车", "马", "炮", "卒"];
+    return pieceNames[type];
+}
+
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // 交换元素
+    }
+    return array;
+}
+
+
+
+socket.onopen = function(event) {
+    console.log("Connected to WebSocket API");
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            action: "full_data_request",
+            page_path: pagePath,
+            room_id: roomId,
+        }));
+    }
+};
+
+
+socket.onmessage = function(event) {
+    const messageData = JSON.parse(event.data);
+    console.log(messageData);
+
+    switch (messageData.type) {
+        case "leave":
+            handleLeaveMessage(messageData);
+            break;
+        case "join":
+            handleJoinMessage(messageData);
+            break;
+        case "disconnect":
+            handleDisconnectMessage(messageData);
+            break;
+        case "fullDataResponse":
+            handleFullDataResponse(messageData);
+            break;
+        default:
+            console.warn("Unknown message type:", messageData.type);
+    }
+};
+
+socket.onclose = function(event) {
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            action: "before_disconnect",
+            type: "disconnecting",
+            reason: "Client is closing connection",
+            page_path: pagePath,
+            room_id: roomId,
+        }));
+    }
+    console.log("Disconnected from WebSocket API");
+};
+
+window.addEventListener("beforeunload", function() {
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            action: "before_disconnect",
+            type: "disconnecting",
+            reason: "Client is closing connection",
+            page_path: pagePath,
+            room_id: roomId,
+        }));
+    }
+});
+
+// 处理用户离开
+// {type: "leave", uuids: ["36653049-985e-4918-8ebc-ae21e67745cc"], timestamp: 1725279267}
+function handleLeaveMessage(messageData) {
+    const uuidsToRemove = messageData.uuids;
+    users = users.filter(user => !uuidsToRemove.includes(user.uuid));
+    updateUserList();
+}
+
+// 处理用户加入
+// {type: "join", uuid: "36653049-985e-4918-8ebc-ae21e67745cc", nickname: "36653049", timestamp: 1725279280}
+function handleJoinMessage(messageData) {
+    const newUser = {
+        uuid: messageData.uuid,
+        nickname: messageData.nickname
+    };
+
+    const userExists = users.some(user => user.uuid === newUser.uuid);
+
+    if (!userExists) {
+        users.push(newUser);
+        updateUserList();
+    }
+}
+
+// 处理文本消息
+// {type: "text", uuid: "627d7a3c-0953-4dd8-87b5-9fe99238380a", nickname: "627d7a3c", message: "asdf", timestamp: 1725279574}
+function handleTextMessage(messageData) {
+    displayMessage(
+        messageData.message, 
+        messageData.nickname, 
+        messageData.timestamp, 
+        messageData.uuid === currentUser.uuid
+    );
+}
+
+// 处理文本消息
+// {"type": "fullDataResponse", "users": [{"uuid": conn["UUID"], "nickname": conn["Nickname"]}], "messages": msessages}
+function handleFullDataResponse(data) {
+    // 更新用户列表
+    users = data.users;
+    updateUserList();
+
+    // 检查 messages 的长度
+    if (data.messages.length === 0) {
+        // 向服务器发送 'reset' 操作
+        const resetMessage = JSON.stringify({ action: 'reset' });
+        socket.send(resetMessage);
+    } else {
+        // 处理接收到的消息
+        const gs = JSON.parse(data.messages[0]);
+        gamestate.board = gs.board;
+        gamestate.turn_player = gs.turn_player;
+        gamestate.gameover = gs.gameover;
+        generateBoard();
+    }
+}
+
+
+    if ((currentUser.position === 1) && (gamestate.turn_player === 0)) {
+        socket.send(JSON.stringify({
+            action: "reset",
+            page_path: pagePath,
+            room_id: roomId,
+        }));
+}
+
+// 服务器断开连接
+// {"type": "disconnect", "reason": "Duplicate UUID detected"}
+function handleDisconnectMessage(messageData) {
+    const overlay = document.createElement("div");
+    overlay.classList.add("fullScreamDialogOverlay");
+
+    const dialog = document.createElement("div");
+    dialog.classList.add("fullScreamDialog");
+
+    const title = document.createElement("h2");
+    title.textContent = "Connection Closed";
+    dialog.appendChild(title);
+
+    const message = document.createElement("p");
+    message.textContent = `服务器关闭连接.\nReason: ${messageData.reason}`;
+    dialog.appendChild(message);
+
+    const closeButton = document.createElement("button");
+    closeButton.textContent = "OK";
+    closeButton.classList.add("close-button");
+
+    closeButton.onclick = function() {
+        document.body.removeChild(overlay);
+        document.body.removeChild(dialog);
+    };
+
+    dialog.appendChild(closeButton);
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(dialog);
+}
+
+
+
 function updateUserList() {
     function generateUserItem(user) {
-        const userItem = document.createElement('div');
+        const userItem = document.createElement("div");
         if (user.position && user.position !== 0) {
-            const positionSpan = document.createElement('span');
-            positionSpan.className = 'position';
+            const positionSpan = document.createElement("span");
+            positionSpan.className = "position";
             positionSpan.textContent = user.position;
             userItem.appendChild(positionSpan);
         }
         userItem.appendChild(document.createTextNode(user.nickname));
-        userItem.className = 'user-item';
+        userItem.className = "user-item";
         userItem.title = user.uuid;
         return userItem
     }
 
-    const userList = document.getElementById('user-list');
-    userList.innerHTML = '';
+    const userList = document.getElementById("user-list");
+    userList.innerHTML = "";
 
     if (currentUser) {
         const userItem = generateUserItem(currentUser)
@@ -213,16 +410,39 @@ function updateUserList() {
 }
 
 
-function getPieceName(type) {
-    const pieceNames = ['将', '士', '象', '车', '马', '炮', '兵', '帅', '仕', '相', '车', '马', '炮', '卒'];
-    return pieceNames[type];
-}
-
-
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // 交换元素
+function getIdentify() {
+    function generateUUID() {
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == "x" ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
     }
-    return array;
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+
+    function setCookie(name, value, days) {
+        const d = new Date();
+        d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+        const expires = `expires=${d.toUTCString()}`;
+        document.cookie = `${name}=${value}; ${expires}; path=/`;
+    }
+
+    const url = new URL(window.location.href);
+    let uuid = url.searchParams.get(uuid);
+    let nickname = url.searchParams.get(nickname);
+    let position = url.searchParams.get(position);
+
+    if (!uuid) { uuid = getCookie("uuid"); }
+    if (!uuid) { uuid = generateUUID(); }
+    if (!nickname) { nickname = getCookie("nickname"); }
+    if (!nickname) { nickname = uuid.substring(0, 8); }
+    if (!position) { position = 0; }
+
+    setCookie("uuid", uuid, 365);
+    setCookie("nickname", nickname, 365);
+    return { uuid, nickname, position };
 }
