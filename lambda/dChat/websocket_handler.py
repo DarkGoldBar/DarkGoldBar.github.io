@@ -303,6 +303,7 @@ def handle_anqi_reset(connectionId):
         'board': generate_initial_board(),
         'turn_position': 1,
         'gameover': 0,
+        'cols': 4,
     }
 
     new_message = {
@@ -396,6 +397,7 @@ def process_move(gamestate, start_pos, end_pos):
     board = gamestate['board']
     turn_position = gamestate['turn_position']
     gameover = gamestate['gameover']
+    cols = gamestate['cols']
 
     if gameover:
         return {'valid': False, 'reason': '游戏已结束'}
@@ -416,12 +418,12 @@ def process_move(gamestate, start_pos, end_pos):
 
     ep, ef = board[end_pos]  # end_piece, end_fliped
     if is_pao(sp):
-        if (start_pos // 8 != end_pos // 8) and (start_pos % 8 != end_pos % 8):
+        if (start_pos // cols != end_pos // cols) and (start_pos % cols != end_pos % cols):
             return {'valid': False, 'reason': '不合理的移动'}
-        if ((start_pos - end_pos) in [1, -1, 8, -8]) and (ef != -1):
+        if ((start_pos - end_pos) in [1, -1, cols, -cols]) and (ef != -1):
             return {'valid': False, 'reason': '不合理的移动'}
     else:
-        if (start_pos - end_pos) not in [1, -1, 8, -8]:
+        if (start_pos - end_pos) not in [1, -1, cols, -cols]:
             return {'valid': False, 'reason': '不合理的移动'}
         if ef == 0:
             return {'valid': False, 'reason': '不能移动到未翻开的位置，除非是炮'}

@@ -1,0 +1,194 @@
+/* Chat container styling */
+#chat-container {
+    display: flex;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    font-size: 12px
+}
+
+/* Chat section styling (left side) */
+#chat-section {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #F7F7F7;
+}
+
+/* 容器用于显示每条消息 */
+.message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f1f1f1;
+    position: relative;
+    max-width: 70%;
+}
+
+/* 自己发送的消息 */
+.own-message {
+    background-color: #d1e7dd;
+    margin-left: auto;
+    text-align: right;
+}
+
+/* 昵称的样式 */
+.nickname {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* 消息文本的样式 */
+.message-text {
+    margin: 0;
+    color: #333;
+}
+
+
+#input-container {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    background-color: #fafafa;
+}
+
+#messageInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+#messageInput:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+button {
+    padding: 3px 6px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #ccc; /* 灰色背景，表示不可用 */
+    color: #666; /* 灰色文字 */
+    cursor: not-allowed; /* 鼠标悬停时显示为不可点击状态 */
+    border: 1px solid #999; /* 灰色边框 */
+    opacity: 0.6; /* 设置透明度，使按钮看起来更显著 */
+    pointer-events: none; /* 禁用所有的鼠标事件 */
+}
+
+/* User list section styling (right side) */
+#user-list-section {
+    padding: 5px;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.user-item {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background-color: #f1f1f1;
+    color: #333;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;     /* 禁止换行 */
+    overflow: hidden;        /* 隐藏溢出的部分 */
+    text-overflow: ellipsis; /* 使用省略号表示溢出 */
+    display: inline-flex;   /* 保持为行内块元素，确保正确显示溢出效果 */
+}
+
+.user-item {
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background-color: #f1f1f1;
+    color: #333;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;     /* 禁止换行 */
+    overflow: hidden;        /* 隐藏溢出的部分 */
+    text-overflow: ellipsis; /* 使用省略号表示溢出 */
+    display: inline-block;   /* 保持为行内块元素，确保正确显示溢出效果 */
+}
+
+.user-item:hover {
+    background-color: #e0e0e0;
+}
+
+.user-item.self {
+    font-weight: bold;
+    background-color: #007bff;
+    color: #fff;
+}
+
+.user-item .position {
+    background-color: #f1c40f;
+    color: #fff;
+    padding: 2px 5px;
+    margin-right: 5px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* 蒙版的样式 */
+.fullScreamDialogOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* 对话框的样式 */
+.fullScreamDialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+}
+
+/* 对话框标题的样式 */
+.fullScreamDialog h2 {
+    margin: 0 0 10px 0;
+}
+
+/* 关闭按钮的样式 */
+.fullScreamDialog .close-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}

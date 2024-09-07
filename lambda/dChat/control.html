@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lambda POST Request</title>
+    <style>
+        #buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        #invitation-links {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <label for="page_path">Page Path:</label>
+        <select id="page_path">
+            <option value="chatroom">Chatroom</option>
+            <option value="anqi">Anqi</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="room_id">Room ID:</label>
+        <input type="text" id="room_id" value="">
+    </div>
+
+    <div id="buttons">
+        <button id="randomButton">Generate Room ID</button>
+        <button id="submitButton">Submit</button>
+        <button id="inviteButton">Generate Invitation Links</button>
+    </div>
+
+    <div id="invitation-links"></div>
+
+    <script>
+        // Function to generate a random 4-character alphanumeric string
+        function generateRandomRoomId() {
+            return Math.random().toString(36).substring(2, 6).toUpperCase();
+        }
+
+        // Set the initial value of the room_id input
+        document.getElementById('room_id').value = generateRandomRoomId();
+
+        // Event listener for the random button
+        document.getElementById('randomButton').addEventListener('click', function() {
+            document.getElementById('room_id').value = generateRandomRoomId();
+        });
+
+        // Event listener for the submit button
+        document.getElementById('submitButton').addEventListener('click', function() {
+            const pagePath = document.getElementById('page_path').value;
+            const roomId = document.getElementById('room_id').value;
+
+            const data = { action: 'createRoom', page_path: pagePath, room_id: roomId };
+
+            fetch('https://5tujfvrapuyg7aksvcfb2pnpte0syxef.lambda-url.ap-northeast-1.on.aws/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => alert('Success:', data))
+            .catch(error => alert('Error:', error));
+        });
+
+        // Event listener for the invite button
+        document.getElementById('inviteButton').addEventListener('click', function() {
+            const pagePath = document.getElementById('page_path').value;
+            const roomId = document.getElementById('room_id').value;
+
+            let invitationLinks = '';
+            for (let i = 1; i <= 2; i++) {
+                const url = `https://someurl.com?room_id=${roomId}&page_path=${pagePath}&position=${i}`;
+                invitationLinks += `<p><a href="${url}" target="_blank">${url}</a></p>`;
+            }
+
+            document.getElementById('invitation-links').innerHTML = invitationLinks;
+        });
+    </script>
+
+</body>
+</html>
