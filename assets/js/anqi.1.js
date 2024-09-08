@@ -212,8 +212,8 @@ function checkValidPaoMove(fromIndex, step) {
     let mounts = 0;
     const r = gamestate.cols;
     while (toIndex >= 0 && toIndex < 32) {
-        if ((Math.floor(fromIndex / r) !== (Math.floor(toIndex / r))) && ((fromIndex % r) !== (toIndex % r))) {
-            return false;
+        if ((Math.floor(fromIndex / r) !== (Math.floor(toIndex / r))) && (Math.abs(step) === 1)) {
+            return;
         }
         if (gamestate.board[toIndex][0] === -1) {
             if (i === 1) {
