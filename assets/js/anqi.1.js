@@ -18,9 +18,14 @@ const ZeroData = [
 
 const gamestate = {
     board: ZeroData,
-    turn_position: 0,
+    turn_position: 0,  // 0:无人 1:左 2:右
     gameover: 0,
     cols: 4,
+    last_move: [-1, -1],
+    left_color: "none",
+    right_color: "none",
+    left_eat: [],
+    right_eat: [],
 };
 
 document.addEventListener('DOMContentLoaded', function() {
