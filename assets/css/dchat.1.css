@@ -24,7 +24,7 @@
 }
 
 /* 容器用于显示每条消息 */
-.message {
+#messages .message {
     margin: 10px 0;
     padding: 10px;
     border-radius: 8px;
@@ -34,21 +34,21 @@
 }
 
 /* 自己发送的消息 */
-.own-message {
+#messages .own-message {
     background-color: #d1e7dd;
     margin-left: auto;
     text-align: right;
 }
 
 /* 昵称的样式 */
-.nickname {
+#messages .nickname {
     font-weight: bold;
     margin-bottom: 5px;
     display: block;
 }
 
 /* 消息文本的样式 */
-.message-text {
+#messages .message-text {
     margin: 0;
     color: #333;
 }
@@ -106,11 +106,21 @@ button:disabled {
     overflow-x: hidden;
 }
 
+#user-list-section.horizon {
+    padding: 3px;
+}
+
+#user-list-section.horizon #user-list{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
 .user-item {
-    padding: 10px;
+    padding: 2px 4px;
+    margin: 3px;
     cursor: pointer;
     border-radius: 4px;
-    margin-bottom: 8px;
     background-color: #f1f1f1;
     color: #333;
     transition: background-color 0.3s ease;
@@ -118,20 +128,6 @@ button:disabled {
     overflow: hidden;        /* 隐藏溢出的部分 */
     text-overflow: ellipsis; /* 使用省略号表示溢出 */
     display: inline-flex;   /* 保持为行内块元素，确保正确显示溢出效果 */
-}
-
-.user-item {
-    padding: 5px;
-    cursor: pointer;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    background-color: #f1f1f1;
-    color: #333;
-    transition: background-color 0.3s ease;
-    white-space: nowrap;     /* 禁止换行 */
-    overflow: hidden;        /* 隐藏溢出的部分 */
-    text-overflow: ellipsis; /* 使用省略号表示溢出 */
-    display: inline-block;   /* 保持为行内块元素，确保正确显示溢出效果 */
 }
 
 .user-item:hover {
@@ -147,7 +143,7 @@ button:disabled {
 .user-item .position {
     background-color: #f1c40f;
     color: #fff;
-    padding: 2px 5px;
+    padding: 0px 5px;
     margin-right: 5px;
     border-radius: 4px;
     font-weight: bold;

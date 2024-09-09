@@ -11,7 +11,11 @@ library:
     b: "js/anqi.1.js"
 ---
 
-<div id="chat-container">
+<div id="anqi-container">
+    <div id="user-list-section" class="horizon">
+        <div id="user-list">
+        </div>
+    </div>
     <div id="board-section">
         <div id="board-header">
             <div id="turn-player">当前行动玩家：<span>0</span></div>
@@ -22,13 +26,31 @@ library:
             </div>
         </div>
         <div id="board-body">
+            <div class="boardside">
+                <div id="left-name">
+                    <div class="user-item">12345678</div>
+                </div>
+                <div id="left-color">
+                    <div class="chess-container side"><div class="chess red-piece small">红</div></div>
+                </div>
+                <div id="left-eat">
+                    <div class="chess-container small"><div class="chess red-piece small">卒</div></div>
+                    <div class="chess-container small"><div class="chess black-piece small">卒</div></div>
+                    <div class="chess-container small"><div class="chess back small"></div></div>
+                </div>
+            </div>
             <div id="board">
                 <!-- Generate squares for the board -->
             </div>
-        </div>
-    </div>
-    <div id="user-list-section">
-        <div id="user-list">
+            <div class="boardside">
+                <div id="right-name">
+                    <div class="user-item">87654321</div>
+                </div>
+                <div id="right-color">
+                    <div class="chess black-piece">黑</div>
+                </div>
+                <div id="right-eat"></div>
+            </div>
         </div>
     </div>
 </div>
