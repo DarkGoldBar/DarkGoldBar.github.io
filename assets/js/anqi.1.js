@@ -103,9 +103,7 @@ function sendMoveToServer(fromIndex, toIndex) {
 
 function updateGame(gs) {
     if (gs) {
-        gamestate.board = gs.board;
-        gamestate.turn_position = gs.turn_position;
-        gamestate.gameover = gs.gameover;
+        Object.assign(gamestate, gs);
     }
     if (gamestate.turn_position) {
         const resetButton = document.querySelector("#reset-button");

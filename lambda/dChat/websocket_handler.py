@@ -304,6 +304,11 @@ def handle_anqi_reset(connectionId):
         'turn_position': 1,
         'gameover': 0,
         'cols': 4,
+        'last_move': [-1, -1],
+        'left_color': "none",
+        'right_color': "none",
+        'left_eat': [],
+        'right_eat': [],
     }
 
     new_message = {
