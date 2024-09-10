@@ -185,7 +185,7 @@ button:disabled {
 }
 
 #alert-container {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 50%;
     display: flex;
@@ -193,17 +193,17 @@ button:disabled {
     align-items: center;
 }
 
-.alert-box {
+#alert-container .alert-box {
     position: relative;
     height: 50px;
     opacity: 1;
     transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
 }
 
-.alert-box .content {
+#alert-container .content {
     position: absolute;
     top: -100px;
-    left: 50%;
+    left: 40%;
     transform: translateX(-50%);
     background-color: #ee9;
     color: black;
@@ -218,15 +218,15 @@ button:disabled {
     flex-direction: row;
 }
 
-.alert-box.show .content {
-    top: 20px;
+#alert-container .alert-box.show .content {
+    top: 10px;
 }
 
-.alert-box.fade-out {
+#alert-container .alert-box.fade-out {
     opacity: 0;
 }
 
-.alert-box .close-btn {
+#alert-container .alert-box .close-btn {
     background: none;
     border: none;
     color: #0008;
@@ -238,6 +238,8 @@ button:disabled {
     margin-left: 10px;
 }
 
-.alert-box p {
+#alert-container .alert-box p {
     margin: 0;
+    padding: 0;
+    text-wrap: nowrap;
 }

@@ -1,3 +1,5 @@
+const debug = window.location.origin.includes('localhost');
+
 class DchatClient {
     constructor(apiURL, page_path, room_id="123") {
         this.member = {
@@ -161,11 +163,13 @@ function createAlert(message) {
 
     setTimeout(() => {
         alertBox.classList.add('show');
-    }, 100); // Small delay to trigger transition
+    }, 100);
 
     setTimeout(() => {
-        closeAlert(alertBox);
-    }, 5000); // Auto close after 5 seconds
+        if (!debug) {
+            closeAlert(alertBox);
+        }
+    }, 5000);
 }
 
 
@@ -173,5 +177,5 @@ function closeAlert(alertBox) {
     alertBox.classList.add('fade-out');
     setTimeout(() => {
         alertBox.remove();
-    }, 600); // Delay to allow the transition to complete before removing
+    }, 600);
 }
