@@ -1,7 +1,7 @@
 const apiURL = "wss://fxyfyu1ivj.execute-api.ap-northeast-1.amazonaws.com/Prod";
 const dchat = new DchatClient(apiURL, "anqi");
 const urlParams = new URLSearchParams(window.location.search);
-const pieceNames = ["将", "士", "象", "车", "马", "炮", "兵", "帅", "仕", "相", "车", "马", "炮", "卒"];
+const pieceNames = ["将", "士", "象", "马", "车", "炮", "兵", "帅", "仕", "相", "马", "车", "炮", "卒"];
 
 const exampleData = [
     [0, 1], [13, 1], [5, 1], [10, 1], [2, 0], [8, 1], [3, 0], [-1, -1],
@@ -157,7 +157,7 @@ function updateGame(gs) {
     // left_color, right_color, left_eat, right_eat
     const member1 = dchat.room.members.find(member => member.position === 1);
     const member2 = dchat.room.members.find(member => member.position === 2);
-    displaySide(gamestate, "left", member1.nickname);
+    displaySide(gamestate, "left", (member1? member1.nickname : 'player1'));
     displaySide(gamestate, "right", (member2? member2.nickname : 'player2'));
 }
 
@@ -250,28 +250,32 @@ function handlePieceClick(index) {
     const pieceType = pieceData[0];
     const flipped = pieceData[1];
     const r = gamestate.cols;
+    const potentialMoves = [-r, r, -1, 1];
 
     clearBoardHighlights();
     const cancelButton = document.querySelector("#cancel-button");
     cancelButton.disabled = false;
 
     if (flipped === 0) {
-        // 未翻开的棋子，合法目标是它自身的位置
+        // 未翻开
         createHighlight(index, index);
-    } else if (flipped === 1 && pieceType !== 5 && pieceType !== 12) { 
-        // 翻开的棋子，不是炮
-        const potentialMoves = [index - r, index + r, index - 1, index + 1];
-        potentialMoves.forEach(toIndex => {
-            if (checkValidMove(index, toIndex)) {
-                createHighlight(index, toIndex);
+    } else if (flipped === 1 && (pieceType % 7 === 5)) {
+        // 炮
+        potentialMoves.forEach(step => {
+            checkValidPaoMove(index, step);
+        });
+    } else if (flipped === 1 && (pieceType % 7 === 4)) { 
+        // 车
+        potentialMoves.forEach(step => {
+            checkValidJuMove(index, step);
+        });
+    } else if (flipped === 1) { 
+        // 一般棋子
+        potentialMoves.forEach(step => {
+            if (checkValidMove(index, index + step)) {
+                createHighlight(index, index + step);
             }
         });
-    } else if (flipped === 1 && (pieceType === 5 || pieceType === 12)) {
-        // 翻开的棋子是炮，检查上下左右任意格
-        checkValidPaoMove(index, -r); // Up
-        checkValidPaoMove(index, r);  // Down
-        checkValidPaoMove(index, -1); // Left
-        checkValidPaoMove(index, 1);  // Right
     }
 }
 
@@ -311,16 +315,37 @@ function checkValidPaoMove(fromIndex, step) {
     }
 }
 
+function checkValidJuMove(fromIndex, step) {
+    let toIndex = fromIndex + step;
+    let i = 1;
+    const r = gamestate.cols;
+    while (toIndex >= 0 && toIndex < 32) {
+        if ((Math.floor(fromIndex / r) !== (Math.floor(toIndex / r))) && (Math.abs(step) === 1)) {
+            return;
+        } else if (gamestate.board[toIndex][0] === -1) {
+            createHighlight(fromIndex, toIndex);
+        } else {
+            if (checkValidMove(fromIndex, toIndex)) {
+                createHighlight(fromIndex, toIndex);
+            }
+            return;
+        }
+        i += 1;
+        toIndex += step;
+    }
+}
+
 function checkValidMove(fromIndex, toIndex) {
+    const r = gamestate.cols;
+    let st = gamestate.board[fromIndex][0];
+    let et = gamestate.board[toIndex][0];
+
     if (toIndex < 0 || toIndex >= 32) {
         return false;
     }
-    const r = gamestate.cols;
     if ((Math.floor(fromIndex / r) !== (Math.floor(toIndex / r))) && ((fromIndex % r) !== (toIndex % r))) {
         return false;
     }
-    let st = gamestate.board[fromIndex][0];
-    let et = gamestate.board[toIndex][0];
     if (et === -1) { // 目标为空
         return true;
     } else if (gamestate.board[toIndex][1] === 0) { // 目标未翻开

@@ -87,7 +87,10 @@ def handle_connect(connectionId, uuid, page_path, room_id, nickname=None, positi
         'position': position,
     }
 
-    room = get_room(page_path, room_id)
+    try:
+        room = get_room(page_path, room_id)
+    except DChatException as e:
+        return {'statusCode': 400, 'body': str(e.args)}
     table.put_item(Item=new_connect.asitem())
     join_room(room, new_member)
     broadcast(room, json.dumps(new_message), saveMessage=False, skip_uuid=new_connect.uuid)
@@ -460,23 +463,21 @@ def process_move(gamestate, start_pos, end_pos):
         board[start_pos][1] = 1
         return {'valid': True}
 
-    sp, sf = board[start_pos]  # start_piece, start_fliped
-    if (sp == -1) or (sf == 0):
+    st, sf = board[start_pos]  # start_type, start_flipped
+    if (st == -1) or (sf == 0):
         return {'valid': False, 'reason': '起点没有棋子或棋子未翻开'}
 
-    ep, ef = board[end_pos]  # end_piece, end_fliped
-    if is_pao(sp):
+    et, ef = board[end_pos]  # end_type, end_flipped
+    if is_pao(st):
         if ((start_pos - end_pos) in [1, -1, cols, -cols]) and (ef != -1):
             return {'valid': False, 'reason': '不合理的移动'}
     else:
-        if (start_pos - end_pos) not in [1, -1, cols, -cols]:
-            return {'valid': False, 'reason': '不合理的移动'}
         if ef == 0:
             return {'valid': False, 'reason': '不能移动到未翻开的位置'}
         if ef > 0:
-            if not ((sp < 7) ^ (ep < 7)):
+            if not ((st < 7) ^ (et < 7)):
                 return {'valid': False, 'reason': '不能吃掉自己棋子'}
-            if not can_capture(sp, ep):
+            if not can_capture(st, et):
                 return {'valid': False, 'reason': '不能吃掉终点位置的棋子'}
 
     eat, board[end_pos], board[start_pos] = board[end_pos], board[start_pos], [-1, -1]
