@@ -124,6 +124,7 @@ class WebSocketHandler {
     }
 
     handleWarningMessage(message) {
+        console.warn(message);
         createAlert(message.message);
     }
 }
