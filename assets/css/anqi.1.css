@@ -48,7 +48,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 255, 0, 0.5);
+    background-color: rgba(0, 255, 0, 0.4);
     border: 2px solid green;
     border-radius: 4px;
     pointer-events: auto;
@@ -59,8 +59,8 @@
 }
 
 #anqi-container .highlight.yellow {
-    background-color: rgba(255, 255, 0, 0.5);
-    border: 2px solid rgb(80, 80, 0);
+    background-color: rgba(255, 255, 0, 0.3);
+    border: none;
     z-index: 9;
 }
 
@@ -96,28 +96,30 @@
     border-radius: 20px;
 }
 
-#anqi-container .chess.small .chess-contents{
-    font-size: 15px;
-    border-radius: 12px;
-}
-
-#anqi-container .chess.wide .chess-contents{
-    font-size: 15px;
-    border-radius: 12px;
-}
-
-#anqi-container .chess.red .chess-contents{
+#anqi-container .red .chess-contents{
     background-color: #C14444;
     cursor: pointer;
 }
 
-#anqi-container .chess.black .chess-contents{
+#anqi-container .black .chess-contents{
     background-color: #333;
     cursor: pointer;
 }
 
-#anqi-container .chess.back .chess-contents{
+#anqi-container .back .chess-contents{
     background-color: #444;
     color: transparent;
     cursor: pointer;
+}
+
+#anqi-container .small .chess-contents{
+    font-size: 15px;
+    border-radius: 12px;
+    cursor: default;
+}
+
+#anqi-container .wide .chess-contents{
+    font-size: 15px;
+    border-radius: 12px;
+    cursor: default;
 }

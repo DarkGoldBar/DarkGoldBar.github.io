@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const dogButton = document.querySelector("#dog-button");
-    resetButton.addEventListener("click", function() {
+    dogButton.addEventListener("click", function() {
         dchat.send(JSON.stringify({
             action: "anqi-dog",
         }));
@@ -158,7 +158,7 @@ function updateGame(gs) {
     const member1 = dchat.room.members.find(member => member.position === 1);
     const member2 = dchat.room.members.find(member => member.position === 2);
     displaySide(gamestate, "left", member1.nickname);
-    displaySide(gamestate, "right", member2.nickname);
+    displaySide(gamestate, "right", (member2? member2.nickname : 'player2'));
 }
 
 
@@ -197,12 +197,12 @@ function displaySide(gamestate, side, nickname) {
         colorClass = "black"
         colorTitle = "黑"
     }
-    sideColor.innerHTML = `<div class="chess side ${colorClass}"><div class="chess-contents">${colorTitle}</div></div>`;
+    sideColor.innerHTML = `<div class="chess wide ${colorClass}"><div class="chess-contents">${colorTitle}</div></div>`;
 
     sideEat.innerHTML = "";
     gamestate[`${side}_eat`].forEach(item => {
         const chess = createChess(item[0], item[1]);
-        chess.classList.append("small");
+        chess.classList.add("small");
         sideEat.appendChild(chess);
     });
 }
@@ -215,27 +215,27 @@ function createChess(piece, flipped, index, setClick) {
     chessCont.className = "chess-contents";
     chess.appendChild(chessCont);
 
-    if (piece !== -1) {
-        return chess;
-    }
-    if (flipped === 0) {
+    let canClick = 0;
+    if (piece === -1) {
+        canClick = 0;
+    } else if (flipped === 0) {
         chess.classList.add("back");
-        chess.setAttribute("data-click", 3);
+        canClick = 3;
     } else {
-        chess.textContent = pieceNames[type];
+        chessCont.textContent = pieceNames[piece];
         if (piece < 7) {
             chess.classList.add("red");
-            chess.setAttribute("data-click", 1);
+            canClick = 1;
         } else {
             chess.classList.add("black");
-            chess.setAttribute("data-click", 2);
+            canClick = 2;
         }
     }
 
-    if (index) {
+    if (index !== undefined) {
         chess.setAttribute("data-id", index);
-        if (chessCont.getAttribute("data-click") & setClick) {
-            chessCont.addEventListener("click", function clickChess() {
+        if (canClick & setClick) {
+            chessCont.addEventListener("click", function () {
                 handlePieceClick(index);
             });
         }
@@ -257,13 +257,13 @@ function handlePieceClick(index) {
 
     if (flipped === 0) {
         // 未翻开的棋子，合法目标是它自身的位置
-        setupHighlight(index, index);
+        createHighlight(index, index);
     } else if (flipped === 1 && pieceType !== 5 && pieceType !== 12) { 
         // 翻开的棋子，不是炮
         const potentialMoves = [index - r, index + r, index - 1, index + 1];
         potentialMoves.forEach(toIndex => {
             if (checkValidMove(index, toIndex)) {
-                setupHighlight(index, toIndex);
+                createHighlight(index, toIndex);
             }
         });
     } else if (flipped === 1 && (pieceType === 5 || pieceType === 12)) {
@@ -357,7 +357,7 @@ function createHighlightYellow(index) {
     const chess = document.querySelector(`#board [data-id="${index}"]`);
     if (chess) {
         const highlight = document.createElement("div");
-        highlight.className = "highlight";
+        highlight.className = "highlight yellow";
         chess.appendChild(highlight);
     }
 }
