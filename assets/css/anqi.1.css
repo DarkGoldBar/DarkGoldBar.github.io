@@ -30,11 +30,6 @@
     width: 70px;
 }
 
-#anqi-container .boardside {
-    height: 100%;
-    width: 70px;
-}
-
 #board {
     display: grid;
     grid-template-columns: repeat(4, 50px);
@@ -58,7 +53,7 @@
     border-radius: 4px;
     pointer-events: auto;
     box-sizing: border-box;
-    z-index: 10;
+    z-index: 11;
     cursor: pointer;
     margin: 0;
 }
@@ -66,28 +61,30 @@
 #anqi-container .highlight.yellow {
     background-color: rgba(255, 255, 0, 0.5);
     border: 2px solid rgb(80, 80, 0);
+    z-index: 9;
 }
 
-#anqi-container .chess-container {
+#anqi-container .chess {
     display: inline-block;
     position: relative;
     width: 50px;
     height: 50px;
     margin: 1px;
     box-sizing: border-box;
+    z-index: 10;
 }
 
-#anqi-container .chess-container.small {
+#anqi-container .chess.small {
     width: 30px;
     height: 30px;
 }
 
-#anqi-container .chess-container.side {
+#anqi-container .chess.wide {
     width: 100%;
     height: 30px;
 }
 
-#anqi-container .chess {
+#anqi-container .chess-contents  {
     width: 100%;
     height: 100%;
     background-color: #D2B48C;
@@ -99,22 +96,27 @@
     border-radius: 20px;
 }
 
-#anqi-container .chess.small {
+#anqi-container .chess.small .chess-contents{
     font-size: 15px;
     border-radius: 12px;
 }
 
-#anqi-container .red-piece {
+#anqi-container .chess.wide .chess-contents{
+    font-size: 15px;
+    border-radius: 12px;
+}
+
+#anqi-container .chess.red .chess-contents{
     background-color: #C14444;
     cursor: pointer;
 }
 
-#anqi-container .black-piece {
+#anqi-container .chess.black .chess-contents{
     background-color: #333;
     cursor: pointer;
 }
 
-#anqi-container .back {
+#anqi-container .chess.back .chess-contents{
     background-color: #444;
     color: transparent;
     cursor: pointer;

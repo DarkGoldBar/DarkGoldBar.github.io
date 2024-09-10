@@ -96,7 +96,9 @@ class WebSocketHandler {
         }
     }
 
-    messageHandlers = {};
+    messageHandlers = {
+        warning: this.handleWarningMessage,
+    };
 
     handleMessage(event) {
         const message = JSON.parse(event.data);
@@ -120,4 +122,55 @@ class WebSocketHandler {
             console.warn('No handler found for message type:', msgtype);
         }
     }
+
+    handleWarningMessage(message) {
+        createAlert(message.message);
+    }
+}
+
+
+function createAlert(message) {
+    let alertContainer = document.getElementById('alert-container');
+    if (!alertContainer) {
+        alertContainer = document.createElement('div');
+        alertContainer.setAttribute('id', 'alert-container');
+        document.body.appendChild(alertContainer);
+    }
+
+    const alertBox = document.createElement('div');
+    alertBox.classList.add('alert-box');
+
+    const alertCont = document.createElement('div');
+    alertCont.classList.add('content');
+
+    const alertMessage = document.createElement('p');
+    alertMessage.innerText = message;
+
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('close-btn');
+    closeButton.innerText = 'X';
+    closeButton.onclick = function() {
+        closeAlert(alertBox);
+    };
+
+    alertCont.appendChild(alertMessage);
+    alertCont.appendChild(closeButton);
+    alertBox.appendChild(alertCont);
+    alertContainer.appendChild(alertBox);
+
+    setTimeout(() => {
+        alertBox.classList.add('show');
+    }, 100); // Small delay to trigger transition
+
+    setTimeout(() => {
+        closeAlert(alertBox);
+    }, 5000); // Auto close after 5 seconds
+}
+
+
+function closeAlert(alertBox) {
+    alertBox.classList.add('fade-out');
+    setTimeout(() => {
+        alertBox.remove();
+    }, 600); // Delay to allow the transition to complete before removing
 }

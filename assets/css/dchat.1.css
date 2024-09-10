@@ -89,15 +89,14 @@ button:hover {
 }
 
 button:disabled {
-    background-color: #ccc; /* 灰色背景，表示不可用 */
-    color: #666; /* 灰色文字 */
-    cursor: not-allowed; /* 鼠标悬停时显示为不可点击状态 */
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
     border: 1px solid #999; /* 灰色边框 */
-    opacity: 0.6; /* 设置透明度，使按钮看起来更显著 */
-    pointer-events: none; /* 禁用所有的鼠标事件 */
+    opacity: 0.6;
+    pointer-events: none;
 }
 
-/* User list section styling (right side) */
 #user-list-section {
     padding: 5px;
     background-color: #fff;
@@ -149,7 +148,6 @@ button:disabled {
     font-weight: bold;
 }
 
-/* 蒙版的样式 */
 .fullScreamDialogOverlay {
     position: fixed;
     top: 0;
@@ -160,7 +158,6 @@ button:disabled {
     z-index: 1000;
 }
 
-/* 对话框的样式 */
 .fullScreamDialog {
     position: fixed;
     top: 50%;
@@ -173,12 +170,10 @@ button:disabled {
     z-index: 1001;
 }
 
-/* 对话框标题的样式 */
 .fullScreamDialog h2 {
     margin: 0 0 10px 0;
 }
 
-/* 关闭按钮的样式 */
 .fullScreamDialog .close-button {
     margin-top: 10px;
     padding: 8px 16px;
@@ -187,4 +182,62 @@ button:disabled {
     color: white;
     border-radius: 4px;
     cursor: pointer;
+}
+
+#alert-container {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+}
+
+.alert-box {
+    position: relative;
+    height: 50px;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
+}
+
+.alert-box .content {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ee9;
+    color: black;
+    padding: 6px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 9999;
+    transition: top 0.5s ease-in-out;
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+}
+
+.alert-box.show .content {
+    top: 20px;
+}
+
+.alert-box.fade-out {
+    opacity: 0;
+}
+
+.alert-box .close-btn {
+    background: none;
+    border: none;
+    color: #0008;
+    cursor: pointer;
+    width: 30px;
+    height: 24px;
+    font-size: 14px;
+    text-align: center;
+    margin-left: 10px;
+}
+
+.alert-box p {
+    margin: 0;
 }

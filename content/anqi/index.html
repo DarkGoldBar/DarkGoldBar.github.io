@@ -22,32 +22,34 @@ library:
             <div id="gameover">gameover</div>
             <div id="board-control">
                 <button id="reset-button">新游戏</button>
+                <button id="dog-button">悔棋</button>
                 <button id="cancel-button">取消</button>
             </div>
         </div>
         <div id="board-body">
             <div class="boardside">
                 <div id="left-name">
-                    <div class="user-item">12345678</div>
+                    <div class="user-item">player1</div>
                 </div>
                 <div id="left-color">
-                    <div class="chess-container side"><div class="chess red-piece small">红</div></div>
+                    <div class="chess wide red"><div class="chess-contents"></div></div>
                 </div>
                 <div id="left-eat">
-                    <div class="chess-container small"><div class="chess red-piece small">卒</div></div>
-                    <div class="chess-container small"><div class="chess black-piece small">卒</div></div>
-                    <div class="chess-container small"><div class="chess back small"></div></div>
+                    <div class="chess small red"><div class="chess-contents">卒</div></div>
+                    <div class="chess small black"><div class="chess-contents">卒</div></div>
+                    <div class="chess small back"><div class="chess-contents"></div></div>
                 </div>
             </div>
             <div id="board">
                 <!-- Generate squares for the board -->
+                {{/*  <div class="chess small back" data-id=18><div class="chess-contents"></div></div>  */}}
             </div>
             <div class="boardside">
                 <div id="right-name">
-                    <div class="user-item">87654321</div>
+                    <div class="user-item">player2</div>
                 </div>
                 <div id="right-color">
-                    <div class="chess black-piece">黑</div>
+                    <div class="chess wide black"><div class="chess-contents"></div></div>
                 </div>
                 <div id="right-eat"></div>
             </div>
