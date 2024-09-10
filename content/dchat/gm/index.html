@@ -71,14 +71,16 @@ library:
             alert(JSON.stringify(error))
         });
     });
-https://darkgoldbar.github.io/
+
     document.getElementById('inviteButton').addEventListener('click', function() {
         const pagePath = document.getElementById('page_path').value;
         const roomId = document.getElementById('room_id').value;
 
         let invitationLinks = '';
         for (let i = 1; i <= 2; i++) {
-            const url = `https://darkgoldbar.github.io/anqi?room_id=${roomId}&page_path=${pagePath}&position=${i}`;
+            const currentUrl = window.location.href;
+            const baseUrl = currentUrl.replace(/\/gm\/$/, '/anqi/');
+            const url = `${baseUrl}?room_id=${roomId}&page_path=${pagePath}&position=${i}`;
             invitationLinks += `<p><a href="${url}" target="_blank">${url}</a></p>`;
         }
 

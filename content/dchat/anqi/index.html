@@ -1,0 +1,59 @@
+---
+title: "暗棋"
+comment:
+  enable: false
+library:
+  css:
+    a: "css/dchat.1.css"
+    b: "css/anqi.1.css"
+  js:
+    a: "js/dchat.1.js"
+    b: "js/anqi.1.js"
+---
+<div id="alert-container"></div>
+<div id="anqi-container">
+    <div id="user-list-section" class="horizon">
+        <div id="user-list">
+        </div>
+    </div>
+    <div id="board-section">
+        <div id="board-header">
+            <div id="turn-player">当前行动玩家：<span>0</span></div>
+            <div id="gameover">gameover</div>
+            <div id="board-control">
+                <button id="reset-button">新游戏</button>
+                <button id="dog-button">悔棋</button>
+                <button id="cancel-button">取消</button>
+            </div>
+        </div>
+        <div id="board-body">
+            <div class="boardside">
+                <div id="left-name">
+                    <div class="user-item">player1</div>
+                </div>
+                <div id="left-color">
+                    <div class="chess wide red"><div class="chess-contents"></div></div>
+                </div>
+                <div id="left-eat">
+                    <div class="chess small red"><div class="chess-contents">卒</div></div>
+                    <div class="chess small black"><div class="chess-contents">卒</div></div>
+                    <div class="chess small back"><div class="chess-contents"></div></div>
+                </div>
+            </div>
+            <div id="board">
+                <!-- Generate squares for the board -->
+                {{/*  <div class="chess small back" data-id=18><div class="chess-contents"></div></div>  */}}
+            </div>
+            <div class="boardside">
+                <div id="right-name">
+                    <div class="user-item">player2</div>
+                </div>
+                <div id="right-color">
+                    <div class="chess wide black"><div class="chess-contents"></div></div>
+                </div>
+                <div id="right-eat"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

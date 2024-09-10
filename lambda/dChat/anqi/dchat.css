@@ -1,9 +1,9 @@
 /* Chat container styling */
 #chat-container {
     display: flex;
-    height: 100vh;
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
+    font-size: 12px
 }
 
 /* Chat section styling (left side) */
@@ -50,7 +50,6 @@
 /* 消息文本的样式 */
 .message-text {
     margin: 0;
-    font-size: 14px;
     color: #333;
 }
 
@@ -67,7 +66,6 @@
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 16px;
     margin-right: 10px;
 }
 
@@ -77,11 +75,10 @@
 }
 
 button {
-    padding: 10px 20px;
+    padding: 3px 6px;
     border: none;
     background-color: #007bff;
     color: white;
-    font-size: 16px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -102,11 +99,11 @@ button:disabled {
 
 /* User list section styling (right side) */
 #user-list-section {
-    flex: 1;
-    padding: 20px;
+    padding: 5px;
     background-color: #fff;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .user-item {
@@ -117,6 +114,24 @@ button:disabled {
     background-color: #f1f1f1;
     color: #333;
     transition: background-color 0.3s ease;
+    white-space: nowrap;     /* 禁止换行 */
+    overflow: hidden;        /* 隐藏溢出的部分 */
+    text-overflow: ellipsis; /* 使用省略号表示溢出 */
+    display: inline-flex;   /* 保持为行内块元素，确保正确显示溢出效果 */
+}
+
+.user-item {
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background-color: #f1f1f1;
+    color: #333;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;     /* 禁止换行 */
+    overflow: hidden;        /* 隐藏溢出的部分 */
+    text-overflow: ellipsis; /* 使用省略号表示溢出 */
+    display: inline-block;   /* 保持为行内块元素，确保正确显示溢出效果 */
 }
 
 .user-item:hover {
