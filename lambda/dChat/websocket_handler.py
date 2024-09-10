@@ -38,6 +38,8 @@ def lambda_handler(event, context):
             response = handle_reload(connectionId)
         elif action == 'anqi-reset':
             response = handle_anqi_reset(connectionId)
+        elif action == 'anqi-dog':
+            response = handle_anqi_dog(connectionId)
         elif action == 'anqi-move':
             response = handle_anqi_move(connectionId, body)
         else:
@@ -45,6 +47,15 @@ def lambda_handler(event, context):
             response = handle_message(connectionId, text)
 
     print(f"RESPONSE {response}")
+    if response['statusCode'] >= 400:
+        data = {
+            'msgtype': 'warning',
+            'message': response['body']
+        }
+        apigateway.post_to_connection(
+            ConnectionId=connectionId,
+            Data=json.dumps(data)
+        )
     return response
 
 
@@ -305,10 +316,11 @@ def handle_anqi_reset(connectionId):
         'gameover': 0,
         'cols': 4,
         'last_move': [-1, -1],
-        'left_color': "none",
-        'right_color': "none",
+        'left_color': 'none',
+        'right_color': 'none',
         'left_eat': [],
         'right_eat': [],
+        'can_dog': False,
     }
 
     new_message = {
@@ -333,6 +345,38 @@ def handle_anqi_reset(connectionId):
     }
 
 
+def handle_anqi_dog(connectionId):
+    connect = get_connection(connectionId)
+    room = get_room(connect.page_path, connect.room_id)
+    keys = {'PK': room['PK'], 'SK': room['SK']}
+
+    if len(room['messages']) < 2:
+        return {'statusCode': 403, 'body': '无法悔棋'}
+
+    gamestate = json.loads(room['messages'][0])
+    if not gamestate['can_dog']:
+        return {'statusCode': 403, 'body': '无法悔棋'}
+
+    gamestate = json.loads(room['messages'][1])
+    gamestate['can_dog'] = False
+
+    new_message = {
+        'msgtype': 'anqi-update',
+        'gamestate': gamestate,
+    }
+    broadcast(room, json.dumps(new_message), saveMessage=False)
+    table.update_item(
+        Key=keys,
+        UpdateExpression="SET messages[0] = :val1",
+        ExpressionAttributeValues={
+            ':val1': json.dumps(gamestate),
+        }
+    )
+    return {
+        'statusCode': 200,
+        'body': 'Board undo successfully'
+    }
+
 def handle_anqi_move(connectionId, body):
     connect = get_connection(connectionId)
     room = get_room(connect.page_path, connect.room_id)
@@ -344,40 +388,44 @@ def handle_anqi_move(connectionId, body):
     start_pos, end_pos = body['move']
 
     if int(member.position) != turn_position:
-        return {
-            'statusCode': 403,
-            'body': 'Not your turn'
-        }
+        return {'statusCode': 403, 'body': '不是你的回合'}
+
+    if gamestate['gameover']:
+        return {'statusCode': 403, 'body': '游戏已结束'}
 
     move_result = process_move(gamestate, start_pos, end_pos)
+    if not move_result['valid']:
+        return {'statusCode': 403, 'body': move_result.get('reason', '移动错误')}
+
+    if gamestate['left_color'] == 'none':
+        gamestate['left_color'] = 'red' if (gamestate['board'][start_pos][0] < 7) else 'black'
+        gamestate['right_color'] = 'black' if (gamestate['left_color'] == 'red') else 'red'
+    if start_pos != end_pos:
+        eat_key = 'left' if (turn_position == 1) else 'right'
+        if move_result['eat'][0] > -1:
+            gamestate[eat_key].append(move_result['eat'])
+            gamestate[eat_key][-1][1] = 1
+    gamestate['can_dog'] = True
+    gamestate['last_move'] = [start_pos, end_pos]
     gamestate['turn_position'] = 3 - turn_position
     if is_gameover(gamestate['board']):
         gamestate['gameover'] = 1
 
-    if move_result['valid']:
-        new_message = {
-            'msgtype': 'anqi-update',
-            'gamestate': gamestate,
+    new_message = {
+        'msgtype': 'anqi-update',
+        'gamestate': gamestate,
+    }
+    broadcast(room, json.dumps(new_message), saveMessage=False)
+    expiry = int(time.time()) + LIVETIME
+    table.update_item(
+        Key=keys,
+        UpdateExpression="SET messages[0] = :val1, messages[1] = :val2, expiry = :expiry",
+        ExpressionAttributeValues={
+            ':val1': json.dumps(gamestate),
+            ':val2': room['messages'][0],
+            ':expiry': expiry
         }
-        broadcast(room, json.dumps(new_message), saveMessage=False)
-
-        expiry = int(time.time()) + LIVETIME
-        table.update_item(
-            Key=keys,
-            UpdateExpression="SET messages[0] = :val1, expiry = :expiry",
-            ExpressionAttributeValues={
-                ':val1': json.dumps(gamestate),
-                ':expiry': expiry
-            }
-        )
-    else:
-        apigateway.post_to_connection(
-            ConnectionId=connectionId,
-            Data=json.dumps({
-                'type': 'invalid move',
-                'reason': move_result['reason'],
-            })
-        )
+    )
 
     return {
         'statusCode': 200,
@@ -400,15 +448,13 @@ def process_move(gamestate, start_pos, end_pos):
         is_valid_move
     """
     board = gamestate['board']
-    turn_position = gamestate['turn_position']
-    gameover = gamestate['gameover']
     cols = gamestate['cols']
-
-    if gameover:
-        return {'valid': False, 'reason': '游戏已结束'}
 
     if not (0 <= start_pos < 32 and 0 <= end_pos < 32):
         return {'valid': False, 'reason': '位置超出范围'}
+    
+    if (start_pos // cols != end_pos // cols) and (start_pos % cols != end_pos % cols):
+        return {'valid': False, 'reason': '不合理的移动'}
 
     if start_pos == end_pos:
         board[start_pos][1] = 1
@@ -418,29 +464,23 @@ def process_move(gamestate, start_pos, end_pos):
     if (sp == -1) or (sf == 0):
         return {'valid': False, 'reason': '起点没有棋子或棋子未翻开'}
 
-    if not is_own(sp, turn_position):
-        return {'valid': False, 'reason': '起点不是自己的棋子'}
-
     ep, ef = board[end_pos]  # end_piece, end_fliped
     if is_pao(sp):
-        if (start_pos // cols != end_pos // cols) and (start_pos % cols != end_pos % cols):
-            return {'valid': False, 'reason': '不合理的移动'}
         if ((start_pos - end_pos) in [1, -1, cols, -cols]) and (ef != -1):
             return {'valid': False, 'reason': '不合理的移动'}
     else:
         if (start_pos - end_pos) not in [1, -1, cols, -cols]:
             return {'valid': False, 'reason': '不合理的移动'}
         if ef == 0:
-            return {'valid': False, 'reason': '不能移动到未翻开的位置，除非是炮'}
+            return {'valid': False, 'reason': '不能移动到未翻开的位置'}
         if ef > 0:
-            if is_own(ep, turn_position):
-                return {'valid': False, 'reason': '不能移动到被自己棋子占据的位置'}
+            if not ((sp < 7) ^ (ep < 7)):
+                return {'valid': False, 'reason': '不能吃掉自己棋子'}
             if not can_capture(sp, ep):
                 return {'valid': False, 'reason': '不能吃掉终点位置的棋子'}
 
-    board[end_pos] = board[start_pos]
-    board[start_pos] = [-1, -1]
-    return {'valid': True}
+    eat, board[end_pos], board[start_pos] = board[end_pos], board[start_pos], [-1, -1]
+    return {'valid': True, 'eat': eat}
 
 def generate_initial_board():
     import random
@@ -456,9 +496,6 @@ def generate_initial_board():
 
 def is_pao(piece):
     return (piece % 7) == 5
-
-def is_own(piece, turn_position):
-    return (piece // 7) == (turn_position - 1)
 
 def is_gameover(board):
     red_count = sum((p // 7 == 0) for p, f in board)
