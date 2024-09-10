@@ -1,17 +1,25 @@
+---
+title: "访问量统计"
+draft: false
+comment:
+  enable: false
+---
+
+<div id="ranking"></div>
+
+<script>
 const data_example = [{"Counter": 4, "page": "https://darkgoldbar.github.io/posts/tools/qrcode/"}, 
                       {"Counter": 6, "page": "https://darkgoldbar.github.io/posts/code/create-a-severless-blog-comment-system/"}];
 const dcomServer = "https://27n4glpsqowyvyndhv4tltfoby0ovlty.lambda-url.ap-northeast-3.on.aws/";
 const dcomSite = "https://darkgoldbar.github.io";
 
-window.addEventListener('load', ranking_init);
-
-function ranking_init() {
-    if (!(dcomSite) || (window.location.origin == dcomSite)) {
-        ranking_request();
-    } else {
-        ranking_render(data_example);
-    }
-}
+window.addEventListener('load', function ranking() {
+  if (window.location.origin == dcomSite) {
+      ranking_request();
+  } else {
+      ranking_render(data_example);
+  }
+});
 
 function ranking_request() {
     const xhr = new XMLHttpRequest();
@@ -57,3 +65,4 @@ function ranking_render(data) {
     table.appendChild(tbody);
     ranking.appendChild(table);
 }
+</script>

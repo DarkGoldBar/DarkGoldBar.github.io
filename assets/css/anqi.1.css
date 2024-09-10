@@ -1,3 +1,10 @@
+#anqi-container {
+    display: block;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    font-size: 12px
+}
+
 #board-section {
     flex-grow: 1;
     user-select: none;
@@ -18,6 +25,11 @@
     justify-content: center;
 }
 
+#anqi-container .boardside {
+    height: 100%;
+    width: 70px;
+}
+
 #board {
     display: grid;
     grid-template-columns: repeat(4, 50px);
@@ -27,35 +39,52 @@
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    margin: 10px 0px;
+    margin: 10px 5px;
 }
 
-#board .highlight {
+#anqi-container .highlight {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 255, 0, 0.5); /* 半透明绿色背景 */
-    border: 2px solid green; /* 绿色边框 */
-    border-radius: 4px; /* 边角圆润 */
-    pointer-events: auto; /* 允许点击事件 */
-    box-sizing: border-box; /* 包括边框在内的宽高计算 */
-    z-index: 10;
+    background-color: rgba(0, 255, 0, 0.4);
+    border: 2px solid green;
+    border-radius: 4px;
+    pointer-events: auto;
+    box-sizing: border-box;
+    z-index: 11;
     cursor: pointer;
     margin: 0;
 }
 
-#board .chess-container {
-    display: inline-block; /* 使棋盘格子在同一行显示 */
-    position: relative; /* 允许绝对定位的子元素 */
-    width: 50px; /* 设置棋盘格子的宽度 */
-    height: 50px; /* 设置棋盘格子的高度 */
-    margin: 1px; /* 添加间距，使棋盘格子之间有间隔 */
-    box-sizing: border-box; /* 包括边框和内边距在元素的总宽度和高度中 */
+#anqi-container .highlight.yellow {
+    background-color: rgba(255, 255, 0, 0.3);
+    border: none;
+    z-index: 9;
 }
 
-#board .chess {
+#anqi-container .chess {
+    display: inline-block;
+    position: relative;
+    width: 50px;
+    height: 50px;
+    margin: 1px;
+    box-sizing: border-box;
+    z-index: 10;
+}
+
+#anqi-container .chess.small {
+    width: 30px;
+    height: 30px;
+}
+
+#anqi-container .chess.wide {
+    width: 100%;
+    height: 30px;
+}
+
+#anqi-container .chess-contents  {
     width: 100%;
     height: 100%;
     background-color: #D2B48C;
@@ -67,18 +96,30 @@
     border-radius: 20px;
 }
 
-#board .red-piece {
+#anqi-container .red .chess-contents{
     background-color: #C14444;
     cursor: pointer;
 }
 
-#board .black-piece {
+#anqi-container .black .chess-contents{
     background-color: #333;
     cursor: pointer;
 }
 
-#board .back {
+#anqi-container .back .chess-contents{
     background-color: #444;
     color: transparent;
     cursor: pointer;
+}
+
+#anqi-container .small .chess-contents{
+    font-size: 15px;
+    border-radius: 12px;
+    cursor: default;
+}
+
+#anqi-container .wide .chess-contents{
+    font-size: 15px;
+    border-radius: 12px;
+    cursor: default;
 }
