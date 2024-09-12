@@ -1,7 +1,7 @@
 const apiURL = "wss://fxyfyu1ivj.execute-api.ap-northeast-1.amazonaws.com/Prod";
 const dchat = new DchatClient(apiURL, "anqi");
 const urlParams = new URLSearchParams(window.location.search);
-const pieceNames = ["将", "士", "象", "马", "车", "炮", "兵", "帅", "仕", "相", "马", "车", "炮", "卒"];
+const pieceNames = ["将", "士", "象", "车", "马", "炮", "兵", "帅", "仕", "相", "车", "马", "炮", "卒"];
 
 const exampleData = [
     [0, 1], [13, 1], [5, 1], [10, 1], [2, 0], [8, 1], [3, 0], [-1, -1],
@@ -264,11 +264,11 @@ function handlePieceClick(index) {
         potentialMoves.forEach(step => {
             checkValidPaoMove(index, step);
         });
-    } else if (flipped === 1 && (pieceType % 7 === 4)) { 
-        // 车
-        potentialMoves.forEach(step => {
-            checkValidJuMove(index, step);
-        });
+    // } else if (flipped === 1 && (pieceType % 7 === 3)) { 
+    //     // 车
+    //     potentialMoves.forEach(step => {
+    //         checkValidJuMove(index, step);
+    //     });
     } else if (flipped === 1) { 
         // 一般棋子
         potentialMoves.forEach(step => {
