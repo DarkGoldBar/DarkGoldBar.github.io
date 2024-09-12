@@ -403,12 +403,16 @@ def handle_anqi_move(connectionId, body):
     if gamestate['left_color'] == 'none':
         gamestate['left_color'] = 'red' if (gamestate['board'][start_pos][0] < 7) else 'black'
         gamestate['right_color'] = 'black' if (gamestate['left_color'] == 'red') else 'red'
+
     if start_pos != end_pos:
+        gamestate['can_dog'] = True
         eat_key = ('left' if (turn_position == 1) else 'right') + '_eat'
         if move_result['eat'][0] > -1:
             gamestate[eat_key].append(move_result['eat'])
             gamestate[eat_key][-1][1] = 1
-    gamestate['can_dog'] = True
+        elif move_result['eat'][1] == 0:
+            gamestate['can_dog'] = False
+
     gamestate['last_move'] = [start_pos, end_pos]
     gamestate['turn_position'] = 3 - turn_position
     if is_gameover(gamestate['board']):
