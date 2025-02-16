@@ -1,0 +1,10 @@
+
+table[data-v-5b0e2d50], th[data-v-5b0e2d50], td[data-v-5b0e2d50] {
+  border: 1px solid;
+}
+table[data-v-5b0e2d50] {
+  border-collapse: collapse;
+}
+td[data-v-5b0e2d50] {
+  padding: 5px;
+}
