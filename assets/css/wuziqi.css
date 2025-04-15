@@ -1,0 +1,1 @@
+#app{display:flex;flex-direction:column;align-items:center;justify-content:center}#config-panel{display:flex;flex-direction:column;gap:10px;border:1px solid #ccc;padding:20px;border-radius:8px;background:#f9f9f9}svg{border:1px black solid;background-color:bisque}.grid line{stroke:#ccc}.qizi:hover{stroke:#00f;stroke-width:2px}.qizi.placed{stroke:#000;stroke-width:1px}
