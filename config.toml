@@ -276,3 +276,7 @@ enableEmoji = false
     noHl = false
     style = 'emacs'
     tabWidth = 4
+
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
