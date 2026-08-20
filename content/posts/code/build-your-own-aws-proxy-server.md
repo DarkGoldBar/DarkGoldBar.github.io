@@ -3,7 +3,7 @@ title: "建立自己的AWS代理服务器"
 subtitle: "Build Your Own Aws Proxy Server"
 date: 2023-11-14T14:36:46+08:00
 lastmod: 2023-11-14T14:36:46+08:00
-draft: false
+draft: true
 author: ""
 authorLink: ""
 description: ""
@@ -47,8 +47,7 @@ seo:
   images: []
 ---
 <!-- 正文 -->
-为了个人使用代理方便，写了一个简单的aws-ec2的启动、查询、销毁网页工具。[简易代理服务管理器]({{< ref "posts/tools/server_launcher.md" >}})  
-这个工具里的隐私信息使用了本地的cookie做持久化，不需要每次输入。里面的4项配置的构造方法没有说明，这次就写一个说明教程。
+为了个人使用代理方便，写了一个简单的aws-ec2的工具。 
 
 <!--more-->
 
