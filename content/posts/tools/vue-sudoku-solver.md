@@ -23,5 +23,4 @@ comment:
 ---
 
 <!-- 正文 -->
-
-[/vue-sudoku-solver]vue-sudoku-solver
+[vue-sudoku-solver](/vue-sudoku-solver)
