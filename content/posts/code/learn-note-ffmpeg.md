@@ -3,7 +3,7 @@ title: "ffmpeg代码笔记"
 subtitle: ""
 date: 2022-11-15T15:30:00+08:00
 lastmod: 2023-03-07T17:24:00+08:00
-draft: false
+draft: true
 author: ""
 authorLink: ""
 description: "常用ffmpeg命令，和部分命令的参数解释"

@@ -3,7 +3,7 @@ title: "Nginx简易本地服务器"
 subtitle: ""
 date: 2023-07-18T16:53:00+08:00
 lastmod: 2023-07-18T16:53:00+08:00
-draft: false
+draft: true
 author: ""
 authorLink: ""
 description: ""

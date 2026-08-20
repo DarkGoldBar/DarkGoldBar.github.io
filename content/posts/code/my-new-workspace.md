@@ -3,7 +3,7 @@ title: "新工作环境记录"
 subtitle: ""
 date: 2022-12-07T14:36:46+08:00
 lastmod: 2022-12-07T14:36:46+08:00
-draft: false
+draft: true
 author: ""
 authorLink: ""
 description: ""
