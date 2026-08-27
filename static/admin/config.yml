@@ -1,11 +1,11 @@
+locale: 'zh'
 backend:
   name: github
   repo: DarkGoldBar/DarkGoldBar.github.io
   branch: main # Branch to update (optional; defaults to master)
   base_url: https://darkgoldbar-github-io.pages.dev
   auth_endpoint: /api/auth
-media_folder: static/img
-public_folder: /img
+media_folder: static/images
 collections:
   - name: 'blog'
     label: 'Blog'
@@ -18,4 +18,32 @@ collections:
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Publish Date', name: 'date', widget: 'datetime' }
       - { label: 'Description', name: 'description', widget: 'string' }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
+
+  - name: 'code'
+    label: 'code'
+    folder: 'content/posts/code'
+    create: true
+    slug: '{{slug}}'
+    editor:
+      preview: false
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+      - { label: 'Description', name: 'description', widget: 'string' }
+      - { label: 'Featured Image', name: 'featuredImage', widget: 'image'}
+      - label: 'Tags'
+        name: 'tags'
+        widget: 'list'
+        allow_add: true
+        default: []
+        field: { label: 'Tag', name: 'tag', widget: 'string' }
+      - label: 'Categories'
+        name: 'categories'
+        widget: 'list'
+        allow_add: true
+        default: []
+        field: { label: 'Category', name: 'category', widget: 'string' }
+      - { label: 'Author', name: 'author', widget: 'string' }
+      - { label: 'Author Link', name: 'authorLink', widget: 'string' , pattern: ['mailto:.*', "Must start with 'mailto:'"]}
       - { label: 'Body', name: 'body', widget: 'markdown' }
