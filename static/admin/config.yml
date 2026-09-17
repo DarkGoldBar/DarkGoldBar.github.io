@@ -4,7 +4,7 @@ backend:
   name: github
   repo: DarkGoldBar/DarkGoldBar.github.io
   branch: main
-  base_url: https://sveltia-cms-auth.heigoapp.workers.dev
+  base_url: https://auth.heigo.cc
   auth_endpoint: /api/auth
 media_folder: "static/images"
 public_folder: "/images"
