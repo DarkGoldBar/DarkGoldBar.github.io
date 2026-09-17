@@ -21,7 +21,7 @@ collections:
       - { label: '发布日期', name: 'date', widget: 'datetime' }
       - { label: '草稿', name: 'draft', widget: 'boolean', default: false }
       - { label: '描述', name: 'description', widget: 'string' }
-      - { label: '正文', name: 'body', widget: 'markdown' }
+      - { label: '正文', name: 'body', widget: 'markdown-it' }
 
   - name: 'code'
     label: '代码类'
@@ -50,7 +50,7 @@ collections:
         field: { label: '分类', name: 'category', widget: 'string' }
       - { label: '作者', name: 'author', widget: 'string' }
       - { label: '作者链接', name: 'authorLink', widget: 'string' , pattern: ['mailto:.*', "必须以“mailto:”开头"]}
-      - { label: '正文', name: 'body', widget: 'markdown' }
+      - { label: '正文', name: 'body', widget: 'markdown-it' }
 
   - name: 'ljh'
     label: '刘建侯'
@@ -77,4 +77,4 @@ collections:
         field: { label: '分类', name: 'category', widget: 'string' }
       - { label: '作者', name: 'author', widget: 'string' }
       - { label: '作者链接', name: 'authorLink', widget: 'string', pattern: ['mailto:.*', "必须以“mailto:”开头"] }
-      - { label: '正文', name: 'body', widget: 'markdown' }
+      - { label: '正文', name: 'body', widget: 'markdown-it' }
