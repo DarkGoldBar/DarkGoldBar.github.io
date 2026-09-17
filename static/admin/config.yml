@@ -16,8 +16,6 @@ collections:
     public_folder: '/images/blog'
     create: true
     slug: '{{slug}}'
-    editor:
-      preview: false
     fields:
       - { label: '标题', name: 'title', widget: 'string' }
       - { label: '发布日期', name: 'date', widget: 'datetime' }
@@ -32,8 +30,6 @@ collections:
     public_folder: '/images/code'
     create: true
     slug: '{{slug}}'
-    editor:
-      preview: false
     fields:
       - { label: '标题', name: 'title', widget: 'string' }
       - { label: '发布日期', name: 'date', widget: 'datetime' }
@@ -63,8 +59,6 @@ collections:
     public_folder: '/images/ljh'
     create: true
     slug: 'ljh{{slug}}'
-    editor:
-      preview: false
     fields:
       - { label: '标题', name: 'title', widget: 'string' }
       - { label: '发布日期', name: 'date', widget: 'datetime' }
