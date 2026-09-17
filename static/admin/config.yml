@@ -1,14 +1,13 @@
-locale: 'zh'
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
 backend:
   name: github
   repo: DarkGoldBar/DarkGoldBar.github.io
-  branch: main # Branch to update (optional; defaults to master)
-  base_url: https://darkgoldbar-github-io.pages.dev
+  branch: main
+  base_url: sveltia-cms-auth.heigoapp.workers.dev
   auth_endpoint: /api/auth
 media_folder: "static/images"
 public_folder: "/images"
-media_library:
-  name: folder-media-library
 collections:
   - name: 'blog'
     label: '测试'
