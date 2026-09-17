@@ -6,6 +6,9 @@ backend:
   base_url: https://darkgoldbar-github-io.pages.dev
   auth_endpoint: /api/auth
 media_folder: static/images
+public_folder: /images
+media_library:
+  name: folder-media-library
 collections:
   - name: 'blog'
     label: '测试'
