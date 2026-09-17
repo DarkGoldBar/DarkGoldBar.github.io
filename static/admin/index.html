@@ -6,12 +6,12 @@
     <title>Content Manager</title>
   </head>
   <body>
-    <!-- 加载 Decap CMS 及支持目录浏览的媒体库扩展 -->
+    <!-- Load Decap CMS and the folder-aware media-library plugin. -->
     <link rel="stylesheet" href="/admin/dark.css">
-    <script src="https://unpkg.com/decap-cms@3.3.3/dist/decap-cms.js"></script>
-    <script src="/admin/folder-media-library.js"></script>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script src="https://unpkg.com/decap-cms-media-library-with-folders/dist/index.js"></script>
     <script>
-      CMS.registerMediaLibrary(DecapFolderMediaLibrary.default);
+      CMS.registerMediaLibrary(DecapCmsMediaLibraryWithFolders);
     </script>
   </body>
 </html>
