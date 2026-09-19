@@ -10,6 +10,8 @@ languageName = "简体中文"
 # 是否包括中日韩文字
 hasCJKLanguage = true
 
+timeZone = "Asia/Shanghai"
+
 # 主题
 theme = "LoveIt"
 # 网站标题
@@ -21,11 +23,6 @@ enableRobotsTXT = true
 enableGitInfo = true
 # 是否使用 emoji 代码
 enableEmoji = false
-
-# 作者配置
-[author]
-  name = "DarkGoldBar"
-  link = "https://github.com/DarkGoldBar"
 
 # 菜单配置
 [menu]
@@ -99,13 +96,6 @@ enableEmoji = false
       pre = "<i class='fa fa-terminal'></i>"
       name = "代码"
       url = "/categories/代码笔记/"
-      title = ""
-    [[languages.zh-cn.menu.main]]
-      weight = 6
-      identifier = "tools"
-      pre = "<i class='fa fa-wrench'></i>"
-      name = "工具"
-      url = "/categories/工具/"
       title = ""
     [[languages.zh-cn.menu.main]]
       weight = 7
