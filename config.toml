@@ -1,4 +1,4 @@
-baseURL = "https://blog.heigo.cc"
+baseURL = "https://heigo.cc"
 publishDir = 'public'
 
 # 设置默认的语言 ["en", "zh-cn", "fr", "pl", ...]
