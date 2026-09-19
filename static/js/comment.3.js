@@ -1,5 +1,5 @@
 var dcomPage = window.location.origin + window.location.pathname;
-var dcomSite = "https://darkgoldbar.github.io";
+var dcomSite = "https://heigo.cc";
 var dcomServer = "https://o3cx4bmlod.execute-api.ap-northeast-1.amazonaws.com/Prod/";
 
 
@@ -9,11 +9,8 @@ window.addEventListener('load', dcomInit);
 function dcomInit() {
     const dcomEle = document.getElementById('d-comment');
     const dcomVCEle = document.getElementById('d-counter');
-    if (!dcomEle) {
-        return;
-    }
-
-    dcomEle.innerHTML = `
+    if (dcomEle) {
+        dcomEle.innerHTML = `
     <form action="#">
         <div class="flex">
             <input type="text" name="nickname" placeholder="昵称(必填)" required>
@@ -32,16 +29,20 @@ function dcomInit() {
     <p class="comment-nomore" hide>没有更多评论了</p>
     `;
 
-    const moreEle = dcomEle.querySelector('[type=more-comment]');
-    const formEle = dcomEle.querySelector('form');
-    moreEle.addEventListener('click', dcomGetMore);
-    formEle.addEventListener('submit', (event) => {
-        event.preventDefault();
-        dcomPost(true);
-    });
+        const moreEle = dcomEle.querySelector('[type=more-comment]');
+        const formEle = dcomEle.querySelector('form');
+        moreEle.addEventListener('click', dcomGetMore);
+        formEle.addEventListener('submit', (event) => {
+            event.preventDefault();
+            dcomPost(true);
+        });
+    }
+
     if (!(dcomSite) || (window.location.origin === dcomSite)) {
-        dcomGet();
-        if (dcomVCEle)  {
+        if (dcomEle) {
+            dcomGet();
+        }
+        if (dcomVCEle) {
             dcomVC();
         }
     }

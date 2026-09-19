@@ -1,5 +1,7 @@
 **/.vscode
 **/node_modules
+.hugo_build.lock
+resources/_gen/
 
 docs/
 public/

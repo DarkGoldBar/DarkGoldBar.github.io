@@ -1,0 +1,25 @@
+{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+
+{{- define "content" -}}
+    {{- $params := .Scratch.Get "params" -}}
+    <style>
+        .lab-app-frame {
+            display: block;
+            width: 100%;
+            height: calc(100vh - 8rem);
+            min-height: 36rem;
+            border: 0;
+        }
+        .lab-visitor-count {
+            margin-top: 1rem;
+            text-align: center;
+        }
+    </style>
+    <article class="page lab">
+        <div class="content" id="content">
+            {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
+        </div>
+        <div class="post-meta lab-visitor-count" id="d-counter"></div>
+        <script src="{{ "js/comment.3.js" | relURL }}"></script>
+    </article>
+{{- end -}}
