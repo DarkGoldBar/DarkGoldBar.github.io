@@ -2,5 +2,11 @@
 
 ---
 
-# 主页地址
-https://DarkGoldBar.github.io
+## 主页地址
+https://heigo.cc
+
+## 开发
+- 下载主题
+```
+git submodule update --init --recursive
+```
