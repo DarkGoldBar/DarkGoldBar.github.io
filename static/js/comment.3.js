@@ -1,4 +1,4 @@
-var dcomPage = window.location.origin + window.location.pathname;
+var dcomPage = "https://darkgoldbar.github.io" + window.location.pathname;
 var dcomSite = "https://heigo.cc";
 var dcomServer = "https://o3cx4bmlod.execute-api.ap-northeast-1.amazonaws.com/Prod/";
 
