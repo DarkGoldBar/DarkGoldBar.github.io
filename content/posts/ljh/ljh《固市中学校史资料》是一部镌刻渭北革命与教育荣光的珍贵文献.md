@@ -86,4 +86,16 @@ authorLink: mailto:luijianhou@sina.com
 
 ![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_01.jpg "固市中学校史资料_01")![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_02.jpg "固市中学校史资料_02")
 
-![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_03.jpg "固市中学校史资料_03")![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_04.jpg "固市中学校史资料_04")![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_05.jpg "固市中学校史资料_05")![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_06.jpg "固市中学校史资料_06")![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_07.jpg "固市中学校史资料_07")
+![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_03.jpg "固市中学校史资料_03")![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_04.jpg "固市中学校史资料_04")![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_05.jpg "固市中学校史资料_05")![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_06.jpg "固市中学校史资料_06")![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_07.jpg "固市中学校史资料_07")![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_08.jpg "固市中学校史资料_08")
+
+![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_09.jpg "固市中学校史资料_09")
+
+![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_10.jpg "固市中学校史资料_10")
+
+![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_11.jpg "固市中学校史资料_11")
+
+![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_12.jpg "固市中学校史资料_12")
+
+![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_13.jpg "固市中学校史资料_13")
+
+![](/images/%E5%9B%BA%E5%B8%82%E4%B8%AD%E5%AD%A6%E6%A0%A1%E5%8F%B2%E8%B5%84%E6%96%99_14.jpg "固市中学校史资料_14")
