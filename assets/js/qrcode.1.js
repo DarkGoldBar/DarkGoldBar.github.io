@@ -6190,9 +6190,8 @@ const _export_sfc = (sfc, props) => {
 const _sfc_main = {
   __name: "App",
   setup(__props) {
-    var text = ref("https://darkgoldbar.github.io/");
-    var width = ref(128);
-    var height = ref(128);
+    var text = ref("https://heigo.cc/");
+    var width = ref(256);
     var colorDark = ref("#000000");
     var colorLight = ref("#ffffff");
     var correctLevel = ref("H");
@@ -6202,9 +6201,9 @@ const _sfc_main = {
         generateQRCode();
       };
       script.onerror = function() {
-        alert("qrcodejs failed!");
+        alert("二维码组件加载失败，请刷新页面重试。");
       };
-      script.setAttribute("src", "https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js");
+      script.setAttribute("src", "/js/vendor/qrcode.min.js");
       document.head.appendChild(script);
     });
     function generateQRCode() {
@@ -6217,7 +6216,7 @@ const _sfc_main = {
       const config = {
         text: text.value,
         width: width.value,
-        height: height.value,
+        height: width.value,
         colorDark: colorDark.value,
         colorLight: colorLight.value,
         correctLevel: cLevelMap[correctLevel.value]
@@ -6230,85 +6229,63 @@ const _sfc_main = {
         createBaseVNode("table", null, [
           createBaseVNode("tbody", null, [
             createBaseVNode("tr", null, [
-              _cache[12] || (_cache[12] = createBaseVNode("td", null, "文字", -1)),
               createBaseVNode("td", null, [
-                withDirectives(createBaseVNode("input", {
-                  type: "text",
-                  "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => isRef(text) ? text.value = $event : text = $event),
-                  onChange: _cache[1] || (_cache[1] = ($event) => generateQRCode())
-                }, null, 544), [
-                  [vModelText, unref(text)]
+                createBaseVNode("div", { class: "qrcode-options" }, [
+                  createBaseVNode("label", { class: "qrcode-field" }, [
+                    createBaseVNode("span", null, "宽度"),
+                    withDirectives(createBaseVNode("input", {
+                      type: "number",
+                      "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => isRef(width) ? width.value = $event : width = $event),
+                      onChange: _cache[1] || (_cache[1] = ($event) => generateQRCode())
+                    }, null, 544), [[vModelText, unref(width)]])
+                  ]),
+                  createBaseVNode("label", { class: "qrcode-field" }, [
+                    createBaseVNode("span", null, "前景色"),
+                    withDirectives(createBaseVNode("input", {
+                      type: "color",
+                      "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => isRef(colorDark) ? colorDark.value = $event : colorDark = $event),
+                      onChange: _cache[3] || (_cache[3] = ($event) => generateQRCode())
+                    }, null, 544), [[vModelText, unref(colorDark)]])
+                  ]),
+                  createBaseVNode("label", { class: "qrcode-field" }, [
+                    createBaseVNode("span", null, "背景色"),
+                    withDirectives(createBaseVNode("input", {
+                      type: "color",
+                      "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => isRef(colorLight) ? colorLight.value = $event : colorLight = $event),
+                      onChange: _cache[5] || (_cache[5] = ($event) => generateQRCode())
+                    }, null, 544), [[vModelText, unref(colorLight)]])
+                  ]),
+                  createBaseVNode("label", { class: "qrcode-field" }, [
+                    createBaseVNode("span", null, "纠错等级"),
+                    withDirectives(createBaseVNode("select", {
+                      "onUpdate:modelValue": _cache[6] || (_cache[6] = ($event) => isRef(correctLevel) ? correctLevel.value = $event : correctLevel = $event),
+                      onChange: _cache[7] || (_cache[7] = ($event) => generateQRCode())
+                    }, [
+                      createBaseVNode("option", { value: "L" }, "L"),
+                      createBaseVNode("option", { value: "M" }, "M"),
+                      createBaseVNode("option", { value: "Q" }, "Q"),
+                      createBaseVNode("option", { value: "H" }, "H")
+                    ], 544), [[vModelSelect, unref(correctLevel)]])
+                  ])
                 ])
               ])
             ]),
             createBaseVNode("tr", null, [
-              _cache[13] || (_cache[13] = createBaseVNode("td", null, "宽度", -1)),
               createBaseVNode("td", null, [
-                withDirectives(createBaseVNode("input", {
-                  type: "number",
-                  "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => isRef(width) ? width.value = $event : width = $event),
-                  onChange: _cache[3] || (_cache[3] = ($event) => generateQRCode())
-                }, null, 544), [
-                  [vModelText, unref(width)]
-                ])
-              ])
-            ]),
-            createBaseVNode("tr", null, [
-              _cache[14] || (_cache[14] = createBaseVNode("td", null, "高度", -1)),
-              createBaseVNode("td", null, [
-                withDirectives(createBaseVNode("input", {
-                  type: "number",
-                  "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => isRef(height) ? height.value = $event : height = $event),
-                  onChange: _cache[5] || (_cache[5] = ($event) => generateQRCode())
-                }, null, 544), [
-                  [vModelText, unref(height)]
-                ])
-              ])
-            ]),
-            createBaseVNode("tr", null, [
-              _cache[15] || (_cache[15] = createBaseVNode("td", null, "前景色", -1)),
-              createBaseVNode("td", null, [
-                withDirectives(createBaseVNode("input", {
-                  type: "color",
-                  "onUpdate:modelValue": _cache[6] || (_cache[6] = ($event) => isRef(colorDark) ? colorDark.value = $event : colorDark = $event),
-                  onChange: _cache[7] || (_cache[7] = ($event) => generateQRCode())
-                }, null, 544), [
-                  [vModelText, unref(colorDark)]
-                ])
-              ])
-            ]),
-            createBaseVNode("tr", null, [
-              _cache[16] || (_cache[16] = createBaseVNode("td", null, "背景色", -1)),
-              createBaseVNode("td", null, [
-                withDirectives(createBaseVNode("input", {
-                  type: "color",
-                  "onUpdate:modelValue": _cache[8] || (_cache[8] = ($event) => isRef(colorLight) ? colorLight.value = $event : colorLight = $event),
-                  onChange: _cache[9] || (_cache[9] = ($event) => generateQRCode())
-                }, null, 544), [
-                  [vModelText, unref(colorLight)]
-                ])
-              ])
-            ]),
-            createBaseVNode("tr", null, [
-              _cache[18] || (_cache[18] = createBaseVNode("td", null, "纠错等级", -1)),
-              createBaseVNode("td", null, [
-                withDirectives(createBaseVNode("select", {
-                  "onUpdate:modelValue": _cache[10] || (_cache[10] = ($event) => isRef(correctLevel) ? correctLevel.value = $event : correctLevel = $event),
-                  onChange: _cache[11] || (_cache[11] = ($event) => generateQRCode())
-                }, _cache[17] || (_cache[17] = [
-                  createBaseVNode("option", { value: "L" }, "L", -1),
-                  createBaseVNode("option", { value: "M" }, "M", -1),
-                  createBaseVNode("option", { value: "Q" }, "Q", -1),
-                  createBaseVNode("option", { value: "H" }, "H", -1)
-                ]), 544), [
-                  [vModelSelect, unref(correctLevel)]
+                createBaseVNode("label", { class: "qrcode-field qrcode-field--text" }, [
+                  createBaseVNode("span", null, "文字内容"),
+                  withDirectives(createBaseVNode("input", {
+                    type: "text",
+                    "onUpdate:modelValue": _cache[8] || (_cache[8] = ($event) => isRef(text) ? text.value = $event : text = $event),
+                    onChange: _cache[9] || (_cache[9] = ($event) => generateQRCode())
+                  }, null, 544), [[vModelText, unref(text)]])
                 ])
               ])
             ])
           ])
         ]),
-        _cache[19] || (_cache[19] = createBaseVNode("hr", null, null, -1)),
-        _cache[20] || (_cache[20] = createBaseVNode("div", { id: "qrcode" }, null, -1))
+        _cache[10] || (_cache[10] = createBaseVNode("hr", null, null, -1)),
+        _cache[11] || (_cache[11] = createBaseVNode("div", { id: "qrcode" }, null, -1))
       ], 64);
     };
   }

@@ -1,10 +1,168 @@
+.qrcode-tool {
+  --qr-accent: #2563eb;
+  --qr-accent-soft: rgba(37, 99, 235, 0.1);
+  --qr-border: rgba(100, 116, 139, 0.22);
+  --qr-card: rgba(255, 255, 255, 0.92);
+  --qr-muted: #64748b;
+  max-width: 1100px;
+  margin: 1.5rem auto 0;
+}
 
-table[data-v-5b0e2d50], th[data-v-5b0e2d50], td[data-v-5b0e2d50] {
-  border: 1px solid;
+[theme="dark"] .qrcode-tool {
+  --qr-accent: #60a5fa;
+  --qr-accent-soft: rgba(96, 165, 250, 0.13);
+  --qr-border: rgba(148, 163, 184, 0.2);
+  --qr-card: rgba(30, 41, 59, 0.88);
+  --qr-muted: #94a3b8;
 }
-table[data-v-5b0e2d50] {
-  border-collapse: collapse;
+
+.qrcode-hero {
+  margin-bottom: 1.5rem;
 }
-td[data-v-5b0e2d50] {
-  padding: 5px;
+
+.qrcode-hero h1 {
+  margin: 0 0 0.25rem;
+  font-size: clamp(1.6rem, 4vw, 2.25rem);
+  line-height: 1.2;
+}
+
+.qrcode-hero p,
+.qrcode-privacy {
+  margin: 0;
+  color: var(--qr-muted);
+}
+
+#app[data-v-app] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+#app > table[data-v-5b0e2d50],
+#qrcode[data-v-5b0e2d50] {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  border: 1px solid var(--qr-border);
+  border-radius: 1.25rem;
+  background: var(--qr-card);
+  box-shadow: 0 1rem 2.5rem rgba(15, 23, 42, 0.08);
+}
+
+#app > table[data-v-5b0e2d50] {
+  border-collapse: separate;
+  border-spacing: 0;
+  padding: 1.25rem;
+}
+
+#app tbody[data-v-5b0e2d50],
+#app tr[data-v-5b0e2d50],
+#app td[data-v-5b0e2d50] {
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+}
+
+#app tr[data-v-5b0e2d50] + tr[data-v-5b0e2d50] {
+  margin-top: 1rem;
+}
+
+.qrcode-options[data-v-5b0e2d50] {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.qrcode-field[data-v-5b0e2d50] {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.qrcode-field[data-v-5b0e2d50] > span {
+  color: var(--qr-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+#app input[data-v-5b0e2d50],
+#app select[data-v-5b0e2d50] {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid var(--qr-border);
+  border-radius: 0.7rem;
+  padding: 0.6rem 0.75rem;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#app input[data-v-5b0e2d50]:focus,
+#app select[data-v-5b0e2d50]:focus {
+  border-color: var(--qr-accent);
+  box-shadow: 0 0 0 3px var(--qr-accent-soft);
+}
+
+#app input[type="color"][data-v-5b0e2d50] {
+  padding: 0.3rem;
+  cursor: pointer;
+}
+
+#app > hr[data-v-5b0e2d50] {
+  display: none;
+}
+
+#qrcode[data-v-5b0e2d50] {
+  position: relative;
+  min-height: 23rem;
+  overflow: auto;
+  padding: 3.75rem 1.5rem 1.5rem;
+  background-image: radial-gradient(var(--qr-border) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+#qrcode[data-v-5b0e2d50]::before {
+  content: "二维码预览";
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  color: var(--qr-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+#qrcode[data-v-5b0e2d50] canvas,
+#qrcode[data-v-5b0e2d50] img {
+  margin: 0 auto;
+  border-radius: 0.35rem;
+  box-shadow: 0 0.65rem 1.75rem rgba(15, 23, 42, 0.14);
+}
+
+.qrcode-privacy {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 720px) {
+  .qrcode-tool {
+    margin-top: 0.75rem;
+  }
+
+  .qrcode-options[data-v-5b0e2d50] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #qrcode[data-v-5b0e2d50] {
+    min-height: 20rem;
+  }
+}
+
+@media (max-width: 420px) {
+  #app > table[data-v-5b0e2d50] {
+    padding: 1rem;
+  }
 }
