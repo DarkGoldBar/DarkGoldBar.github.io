@@ -7,4 +7,4 @@ aliases:
   - /posts/tools/word-weeper/
 ---
 
-<iframe class="lab-app-frame" src="/word-weeper/" title="扫词" loading="eager"></iframe>
+<iframe class="lab-app-frame" src="https://DarkGoldBar.github.io/word-weeper/" title="扫词" loading="eager"></iframe>

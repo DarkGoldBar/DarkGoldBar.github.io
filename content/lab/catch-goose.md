@@ -7,4 +7,4 @@ aliases:
   - /posts/tools/catch-goose/
 ---
 
-<iframe class="lab-app-frame" src="/catch-goose/" title="抓大鹅" loading="eager"></iframe>
+<iframe class="lab-app-frame" src="https://DarkGoldBar.github.io/catch-goose/" title="抓大鹅" loading="eager"></iframe>

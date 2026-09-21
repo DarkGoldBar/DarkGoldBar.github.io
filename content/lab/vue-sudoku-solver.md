@@ -7,4 +7,4 @@ aliases:
   - /posts/tools/vue-sudoku-solver/
 ---
 
-<iframe class="lab-app-frame" src="/vue-sudoku-solver/" title="数独" loading="eager"></iframe>
+<iframe class="lab-app-frame" src="https://DarkGoldBar.github.io/vue-sudoku-solver/" title="数独" loading="eager"></iframe>
